@@ -223,7 +223,20 @@
     const fly = (bounds) => { const [c, z] = view(bounds); lmap.flyTo(c, z, { duration: reduce ? 0 : 0.8 }); };
     const showAll = () => { const [c, z] = view(allBounds()); lmap.setView(c, z, { animate: false }); };
 
-    // District chips
+    // District list in the dataset panel (bottom right): tap a row to fly there, the box shows/hides the layer
+    const list = document.getElementById('smLayers');
+    const row = (g, name, count, c) => {
+      const li = document.createElement('li');
+      li.dataset.layer = g;
+      li.style.setProperty('--c', c);
+      li.innerHTML = `<button type="button" class="sm-fly${g === 'all' ? ' is-on' : ''}" data-fly="${g}"><i aria-hidden="true"></i><span>${name}</span><em class="mono">${count}</em></button>`
+        + (g === 'all' ? '' : `<label class="sm-vis" title="Show or hide ${name}"><input type="checkbox" checked aria-label="Show ${name} on the map" /><b aria-hidden="true"></b></label>`);
+      list.append(li);
+      const box = li.querySelector('input');
+      if (box) box.addEventListener('change', (e) => toggleLayer(g, e.target.checked));
+    };
+    row('all', 'All skills', feats.length, 'var(--ink)');
+    Object.entries(GROUPS).forEach(([g, d]) => row(g, d.name, layers[g].own.length, `var(${d.c})`));
     const chips = [...map.querySelectorAll('[data-fly]')];
     const focus = (g) => {
       chips.forEach((c) => c.classList.toggle('is-on', c.dataset.fly === g));
@@ -250,7 +263,6 @@
     }, { passive: false });
 
     // Dataset panel: layer toggles with feature counts, cursor readout, zoom level
-    const list = document.getElementById('smLayers');
     const toggleLayer = (g, on) => {
       layers[g].on = on;
       on ? layers[g].group.addTo(lmap) : lmap.removeLayer(layers[g].group);
@@ -260,14 +272,6 @@
       restyle();
       document.getElementById('smCount').textContent = feats.filter((f) => layers[f.g].on).length;
     };
-    Object.entries(GROUPS).forEach(([g, d]) => {
-      const li = document.createElement('li');
-      li.dataset.layer = g;
-      li.style.setProperty('--c', `var(${d.c})`);
-      li.innerHTML = `<label><input type="checkbox" checked /><i aria-hidden="true"></i><span>${d.name}</span><em class="mono">${layers[g].own.length}</em></label>`;
-      li.querySelector('input').addEventListener('change', (e) => toggleLayer(g, e.target.checked));
-      list.append(li);
-    });
     const cursor = document.getElementById('smCursor'), zl = document.getElementById('smZoomLvl');
     const fmt = (ll) => `${Math.abs(ll.lat).toFixed(4)}° ${ll.lat >= 0 ? 'N' : 'S'}, ${Math.abs(ll.lng).toFixed(4)}° ${ll.lng >= 0 ? 'E' : 'W'}`;
     lmap.on('mousemove', (e) => { cursor.textContent = fmt(e.latlng); });
@@ -279,7 +283,6 @@
     const fold = panel.querySelector('.sm-data__fold');
     const setFold = (open) => { panel.classList.toggle('is-folded', !open); fold.setAttribute('aria-expanded', open); fold.textContent = open ? '−' : '+'; };
     fold.addEventListener('click', () => setFold(panel.classList.contains('is-folded')));
-    if (vp.clientWidth < 720) setFold(false);
     L.DomEvent.disableClickPropagation(panel); L.DomEvent.disableScrollPropagation(panel);
 
     showAll();
