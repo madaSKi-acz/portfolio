@@ -40,12 +40,12 @@
     c.innerHTML = `<defs><filter id="waveBlur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="24"/></filter></defs>
       <g class="wave-fx__all">
         <path class="w-glow" fill="none" stroke-linecap="round" stroke-width="90" filter="url(#waveBlur)"/>
-        <path class="w-spray1" fill="none" stroke="rgba(235,246,255,.42)" stroke-linecap="round" stroke-width="1.6"/>
-        <path class="w-spray2" fill="none" stroke="rgba(150,205,240,.32)" stroke-linecap="round" stroke-width="1"/>
-        <path class="w-crest1" fill="none" stroke="rgba(170,215,245,.35)" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"/>
-        <path class="w-crest2" fill="none" stroke="rgba(240,248,255,.75)" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
-        <path class="w-crest3" fill="none" stroke="rgba(255,255,255,.95)" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5"/>
-        <path class="w-foam" fill="rgba(255,255,255,.7)"/>
+        <path class="w-spray1" fill="none" stroke="rgba(235,246,255,.2)" stroke-linecap="round" stroke-width="1.1"/>
+        <path class="w-spray2" fill="none" stroke="rgba(150,205,240,.15)" stroke-linecap="round" stroke-width=".8"/>
+        <path class="w-crest1" fill="none" stroke="rgba(170,215,245,.14)" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+        <path class="w-crest2" fill="none" stroke="rgba(240,248,255,.32)" stroke-linecap="round" stroke-linejoin="round" stroke-width="5"/>
+        <path class="w-crest3" fill="none" stroke="rgba(255,255,255,.55)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"/>
+        <path class="w-foam" fill="rgba(255,255,255,.32)"/>
       </g>`;
     document.body.append(c);
     const q = (k) => c.querySelector(k);
@@ -62,7 +62,7 @@
     return { W, H, L, u, v, q0: Math.min(...qs) - 60, q1: Math.max(...qs) + 60 };
   };
   // Crest offset along the travel direction at position q on the crest, at time t (0..1)
-  const crest = (q, t) => Math.sin(q * 0.011 + t * 7) * 26 + Math.sin(q * 0.027 - t * 11) * 11 + Math.sin(q * 0.005 + t * 3) * 34;
+  const crest = (q, t) => Math.sin(q * 0.011 + t * 7) * 16 + Math.sin(q * 0.027 - t * 11) * 6 + Math.sin(q * 0.005 + t * 3) * 24;
   const front = (t, G) => -140 + (G.L + 280) * easeWave(t);
   const pt = (G, p, q) => [G.W + G.u.x * p + G.v.x * q, G.u.y * p + G.v.y * q];
   const waveFrames = (G) => {
@@ -87,11 +87,11 @@
     let line = '';
     for (let q = G.q0; q <= G.q1; q += 14) { const [x, y] = pt(G, s + crest(q, t), q); line += `${line ? 'L' : 'M'}${f1(x)} ${f1(y)}`; }
     // soft light (or shadow) moving with the crest
-    fx.glow.setAttribute('stroke', toDark ? 'rgba(120,170,255,.24)' : 'rgba(255,248,230,.3)');
+    fx.glow.setAttribute('stroke', toDark ? 'rgba(120,170,255,.12)' : 'rgba(255,248,230,.16)');
     for (const el of [fx.glow, fx.c1, fx.c2, fx.c3]) el.setAttribute('d', line);
     // spray streaks trailing behind the crest, pointing the way the wave moves
     let a1 = '', a2 = '';
-    for (let i = 0; i < 260; i++) {
+    for (let i = 0; i < 90; i++) {
       const q = G.q0 + rnd(i) * (G.q1 - G.q0);
       const back = 8 + rnd(i + 0.5) * 130 * (0.4 + rnd(i + 0.9));
       const p = s + crest(q, t) - back, len = 10 + rnd(i + 0.3) * 46;
@@ -102,19 +102,20 @@
     fx.s1.setAttribute('d', a1); fx.s2.setAttribute('d', a2);
     // foam clumps along the crest
     let fm = '';
-    for (let i = 0; i < 140; i++) {
+    for (let i = 0; i < 50; i++) {
       const q = G.q0 + rnd(i + 50) * (G.q1 - G.q0);
       const [x, y] = pt(G, s + crest(q, t) - rnd(i + 51) * 22, q);
-      const r = 1.5 + rnd(i + 53) * 5.5;
+      const r = 1 + rnd(i + 53) * 3;
       fm += `M${f1(x - r)} ${f1(y)}a${f1(r)} ${f1(r)} 0 1 0 ${f1(2 * r)} 0a${f1(r)} ${f1(r)} 0 1 0 ${f1(-2 * r)} 0`;
     }
     fx.foam.setAttribute('d', fm);
   };
-  // Text the crest lights up as it passes
-  const LIT = 'h1, h2, h3, .statement, .label, .tag, .btn, .stn b, .metro__key span, .facts strong, .facts span, .route li, .project h3, .contact__mail, .sm-district span, .pin__label, .sm-title h2';
+  // What the crest lights up as it passes: text glows, objects (cards, pins, buttons, map panels) get a halo.
+  // The objects should read more than the wave itself.
+  const LIT_TEXT = 'h1, h2, h3, .statement, .label, .tag, .metro__key span, .facts strong, .facts span, .route__when, .contact__mail, .sm-district span, .footer__inner';
+  const LIT_BOX = '.btn, .nav__cta, .theme-btn, .stn i, .stn b, .project, .route li, .socials a, .sm-data, .sm-card, .sm-zoom button, .pin__head, .pin__label, .sm-home span';
   const lightText = (G, startAt) => {
-    const timers = [];
-    document.querySelectorAll(LIT).forEach((el) => {
+    const hit = (el, cls) => {
       const r = el.getBoundingClientRect();
       if (r.bottom < 0 || r.top > G.H || r.width === 0) return;
       const p = (r.left + r.width / 2 - G.W) * G.u.x + (r.top + r.height / 2) * G.u.y;
@@ -122,10 +123,11 @@
       let lo = 0, hi = 1;
       for (let k = 0; k < 18; k++) { const m = (lo + hi) / 2; if (front(m, G) < p) lo = m; else hi = m; }
       const at = startAt + lo * WAVE_MS - performance.now();
-      timers.push(setTimeout(() => { el.classList.remove('wave-lit'); void el.offsetWidth; el.classList.add('wave-lit'); }, Math.max(0, at - 60)));
-      timers.push(setTimeout(() => el.classList.remove('wave-lit'), Math.max(0, at + 1100)));
-    });
-    return timers;
+      setTimeout(() => { el.classList.remove(cls); void el.getBoundingClientRect(); el.classList.add(cls); }, Math.max(0, at - 80));
+      setTimeout(() => el.classList.remove(cls), Math.max(0, at + 1700));
+    };
+    document.querySelectorAll(LIT_TEXT).forEach((el) => hit(el, 'wave-lit'));
+    document.querySelectorAll(LIT_BOX).forEach((el) => hit(el, 'wave-lit-box'));
   };
   themeBtn.addEventListener('click', () => {
     const next = isDark() ? 'light' : 'dark';
