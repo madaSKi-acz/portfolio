@@ -244,6 +244,7 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   const select = (f) => {
     feats.forEach((o) => o.pin.classList.toggle('is-on', o === f));
     selected = f;
+    map.classList.toggle('has-card', !!f);
     if (!f) { card.hidden = true; clearRoute(); return; }
     const c = css(GROUPS[f.g].c);
     card.style.setProperty('--c', `var(${GROUPS[f.g].c})`);
@@ -293,7 +294,9 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   };
   // The overview sits a little closer than a strict fit; the edges fade out anyway
   const fly = (bounds, boost = 0) => { const cam = camera(bounds); if (cam) lmap.flyTo({ ...cam, zoom: cam.zoom + boost, duration: reduce ? 0 : 1100, curve: 1.3, essential: true }); };
-  const showAll = () => lmap.jumpTo({ center: HOME, zoom: Z });
+  // Phones see a little more (about a 400 m scale) so more than one district fits on screen
+  const homeZoom = () => (vp.clientWidth < 720 ? Z - 0.9 : Z);
+  const showAll = () => lmap.jumpTo({ center: HOME, zoom: homeZoom() });
 
   // ---------- District list (bottom-right panel) ----------
   const list = document.getElementById('smLayers');
@@ -327,7 +330,7 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     map.classList.toggle('is-filtered', g !== 'all');
     feats.forEach((f) => f.pin.classList.toggle('is-match', f.g === g));
     restyle();
-    if (g === 'all') return lmap.flyTo({ center: HOME, zoom: Z, duration: reduce ? 0 : 1100, curve: 1.3, essential: true });
+    if (g === 'all') return lmap.flyTo({ center: HOME, zoom: homeZoom(), duration: reduce ? 0 : 1100, curve: 1.3, essential: true });
     if (!layers[g].on) toggleLayer(g, true);
     fly(layers[g].bounds);
   };
@@ -346,16 +349,21 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   lmap.on('mousemove', (e) => { cursor.textContent = fmt(e.lngLat); });
   el.addEventListener('mouseleave', () => { cursor.textContent = fmt(lmap.getCenter()); });
   lmap.on('zoom', showZoom);
+  // Zoomed out: hide pin name tags and shorten district labels, like map apps do, so nothing collides
+  const syncFar = () => map.classList.toggle('is-far', lmap.getZoom() < Z - 0.45);
+  lmap.on('zoom', syncFar);
   lmap.on('moveend', () => { if (!matchMedia('(hover: hover)').matches) cursor.textContent = fmt(lmap.getCenter()); });
 
   const panel = document.getElementById('smData');
   const fold = panel.querySelector('.sm-data__fold');
   const setFold = (open) => { panel.classList.toggle('is-folded', !open); fold.setAttribute('aria-expanded', open); fold.textContent = open ? '−' : '+'; };
   fold.addEventListener('click', () => setFold(panel.classList.contains('is-folded')));
+  if (vp.clientWidth < 720) setFold(false);   // phones start with the panel folded, so the map has room
 
   showAll();
   cursor.textContent = fmt(lmap.getCenter());
   showZoom();
+  syncFar();
   let rz;
   addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { if (!selected && focusGroup === 'all') showAll(); placeCard(); }, 150); });
 
