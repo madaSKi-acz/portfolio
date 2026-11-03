@@ -45,8 +45,17 @@ export function initSkillMap({ root: map, reduce, isDark }) {
 
   // ---------- Skills as point features ----------
   const pinEls = [...map.querySelectorAll('.sm-pins .pin')];
+  // Pull each district toward "You are here" (PULL) and tighten pins inside it a little (TIGHT)
+  const PULL = 0.72, TIGHT = 0.85;
+  const raw = pinEls.map((p) => ({ g: p.dataset.group, x: parseFloat(p.style.getPropertyValue('--x')), y: parseFloat(p.style.getPropertyValue('--y')) }));
+  const centroid = {};
+  raw.forEach((r) => { const c = (centroid[r.g] ||= { x: 0, y: 0, n: 0 }); c.x += r.x; c.y += r.y; c.n++; });
+  const placed = raw.map((r) => {
+    const c = centroid[r.g], cx = c.x / c.n, cy = c.y / c.n;
+    return { x: 600 + (cx - 600) * PULL + (r.x - cx) * TIGHT, y: 450 + (cy - 450) * PULL + (r.y - cy) * TIGHT };
+  });
   const feats = pinEls.map((p, i) => {
-    const x = parseFloat(p.style.getPropertyValue('--x')), y = parseFloat(p.style.getPropertyValue('--y'));
+    const { x, y } = placed[i];
     const wrap = document.createElement('div');
     wrap.className = 'sm-marker';
     wrap.append(p);
@@ -69,7 +78,7 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   Object.keys(GROUPS).forEach((g) => {
     const own = feats.filter((f) => f.g === g);
     const ring = [];
-    own.forEach((f) => { for (let a = 0; a < 16; a++) ring.push([f.x + Math.cos((a / 16) * 2 * Math.PI) * 70, f.y - 30 + Math.sin((a / 16) * 2 * Math.PI) * 70]); });
+    own.forEach((f) => { for (let a = 0; a < 16; a++) ring.push([f.x + Math.cos((a / 16) * 2 * Math.PI) * 58, f.y - 30 + Math.sin((a / 16) * 2 * Math.PI) * 58]); });
     const poly = hull(ring).map(([x, y]) => toLngLat(x, y));
     poly.push(poly[0]);
     const bounds = poly.reduce((b, p) => b.extend(p), new ml.LngLatBounds(poly[0], poly[0]));
@@ -77,7 +86,7 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     const lab = document.createElement('div');
     lab.className = 'sm-district';
     lab.innerHTML = `<span>${GROUPS[g].where}</span>`;
-    const label = new ml.Marker({ element: lab, anchor: 'center' }).setLngLat(toLngLat(cx, Math.min(...own.map((f) => f.y)) - 120)).addTo(lmap);
+    const label = new ml.Marker({ element: lab, anchor: 'center' }).setLngLat(toLngLat(cx, g === 'data' ? Math.max(...own.map((f) => f.y)) + 62 : Math.min(...own.map((f) => f.y)) - 104)).addTo(lmap);
     layers[g] = { own, poly, bounds, label, on: true };
   });
   const districtData = () => ({
@@ -191,7 +200,8 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   const clearRoute = () => { cancelAnimationFrame(routeAnim); routeLine = []; const s = lmap.getSource('sm-route'); if (s) s.setData(lineData([])); };
 
   // ---------- Info card ----------
-  let selected = null;
+  let selected = null, routeToken = null;
+  const ROUTE_WAIT = 900;
   const placeCard = () => {
     if (!selected || card.hidden) return;
     const w = vp.clientWidth;
@@ -214,8 +224,15 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     card.querySelector('.sm-card__where').textContent = GROUPS[f.g].where;
     card.querySelector('.sm-card__status').textContent = f.status === 'Daily' ? 'Daily driver' : 'Ready to ship';
     card.hidden = false;
-    drawRoute(curve(HOME, f.ll), c);
-    roadRoute(f).then((pts) => { if (pts && selected === f) drawRoute(pts, c); });
+    // One route, drawn once: the street route if it answers quickly, otherwise the animated guess.
+    // (A late street route is kept for the next tap instead of replacing the line mid-way.)
+    clearRoute();
+    const token = (routeToken = {});
+    const wait = new Promise((r) => setTimeout(() => r(null), ROUTE_WAIT));
+    Promise.race([roadRoute(f), wait]).then((pts) => {
+      if (selected !== f || routeToken !== token) return;
+      drawRoute(pts || curve(HOME, f.ll), c);
+    });
     const pt = lmap.project(f.ll);
     const w = vp.clientWidth, h = vp.clientHeight;
     if (pt.x < 60 || pt.x > w - 60 || pt.y < 120 || pt.y > h - 40) lmap.easeTo({ center: f.ll, duration: reduce ? 0 : 600 });
@@ -230,7 +247,8 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   card.querySelector('.sm-card__x').addEventListener('click', () => select(null));
 
   // ---------- Camera ----------
-  const allBounds = () => feats.reduce((b, f) => b.extend(f.ll), new ml.LngLatBounds(HOME, HOME));
+  // Fit the district outlines (not just the pins), so no district is cut at the edge
+  const allBounds = () => Object.values(layers).reduce((b, l) => b.extend(l.bounds), new ml.LngLatBounds(HOME, HOME));
   // Leave room for the dataset panel (bottom right) and the zoom buttons
   const padding = () => {
     if (vp.clientWidth < 720) return { top: 70, bottom: 60, left: 20, right: 20 };
@@ -238,15 +256,15 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     return { top: 60, bottom: 20, left: side + 10, right: side + 270 };
   };
   const camera = (bounds) => {
-    if (vp.clientWidth >= 720) return lmap.cameraForBounds(bounds, { padding: padding(), maxZoom: Z + 1 });
+    if (vp.clientWidth >= 720) return lmap.cameraForBounds(bounds, { padding: padding(), maxZoom: Z + 1.6 });
     // Narrow screens: fill the height and let people pan sideways
     const c = bounds.getCenter();
     const tall = new ml.LngLatBounds([c.lng, bounds.getSouth()], [c.lng, bounds.getNorth()]);
-    const cam = lmap.cameraForBounds(tall, { padding: { top: 70, bottom: 60, left: 0, right: 0 }, maxZoom: Z + 1 });
+    const cam = lmap.cameraForBounds(tall, { padding: { top: 70, bottom: 60, left: 0, right: 0 }, maxZoom: Z + 1.6 });
     return cam && { ...cam, center: c };
   };
   // The overview sits a little closer than a strict fit; the edges fade out anyway
-  const ALL_BOOST = 0.3;
+  const ALL_BOOST = 0.2;
   const fly = (bounds, boost = 0) => { const cam = camera(bounds); if (cam) lmap.flyTo({ ...cam, zoom: cam.zoom + boost, duration: reduce ? 0 : 1100, curve: 1.3, essential: true }); };
   const showAll = () => { const cam = camera(allBounds()); if (cam) lmap.jumpTo({ ...cam, zoom: cam.zoom + (vp.clientWidth >= 720 ? ALL_BOOST : 0) }); };
 
