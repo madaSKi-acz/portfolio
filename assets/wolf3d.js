@@ -4,8 +4,8 @@
 // heading up the page = walking away from you.
 import * as THREE from './vendor/three.module.min.js';
 
-const CANVAS_W = 140;
-const CANVAS_H = 114;
+const CANVAS_W = 104;
+const CANVAS_H = 85;
 
 const rand = (a, b) => a + Math.random() * (b - a);
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -126,7 +126,7 @@ function buildWolf() {
 }
 
 // Text and UI the wolf should never rest on top of
-const AVOID = 'h1, h2, h3, p, .btn, .metro, .line, .facts, .route li, .project, .contact__mail, .socials, .tag, .label, .footer__inner';
+const AVOID = 'h1, h2, h3, p, .btn, .metro, .board, .facts, .route li, .project, .contact__mail, .socials, .tag, .label, .footer__inner';
 
 function greeting() {
   const h = new Date().getHours();
@@ -182,7 +182,7 @@ export function startWolf({ reduceMotion = false } = {}) {
 
   // ---------- Page geometry ----------
   const feet = { x: CANVAS_W / 2, y: CANVAS_H * 0.62 };     // wolf's feet inside the canvas
-  const FOOT = { w: 74, h: 50 };                            // wolf footprint for overlap tests
+  const FOOT = { w: 56, h: 38 };                            // wolf footprint for overlap tests
   const docW = () => document.documentElement.clientWidth;
   const docH = () => document.documentElement.scrollHeight;
   let blocks = [];
