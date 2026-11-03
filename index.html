@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/vendor/leaflet.css?v=1.9.4" />
-  <link rel="stylesheet" href="styles.css?v=14" />
+  <link rel="stylesheet" href="styles.css?v=15" />
   <script>
     try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
@@ -84,14 +84,7 @@
       <div class="skillmap" id="skillmap">
           <div class="sm-bar">
             <div class="sm-title"><p class="label">02 / Skills</p><h2>Skill city</h2></div>
-            <div class="sm-chips" role="group" aria-label="Fly to district">
-            <button data-fly="all" class="is-on">All</button>
-            <button data-fly="front" style="--c: var(--orange)">Front end</button>
-            <button data-fly="back" style="--c: var(--blue)">Back end</button>
-            <button data-fly="data" style="--c: var(--green)">Data &amp; maps</button>
-            <button data-fly="flow" style="--c: var(--violet)">Workflow</button>
-            </div>
-            <p class="sm-hint mono">Drag · ctrl+scroll to zoom · tap a pin</p>
+            <p class="sm-hint mono">Drag · ctrl+scroll to zoom · tap a pin or a district</p>
           </div>
           <div class="sm-viewport" id="smViewport">
             <!-- Centered on Koh Pich / Bassac riverside, Phnom Penh (Independence Monument to Koh Norea). Change data-center (lat,lng) to move the map; the skill districts are laid out around it. -->
@@ -128,7 +121,7 @@
               </header>
               <div class="sm-data__body">
                 <p class="sm-data__meta mono"><span id="smCount">17</span> features · 4 layers · EPSG:4326</p>
-                <ul class="sm-data__layers" id="smLayers"></ul>
+                <ul class="sm-data__layers" id="smLayers" aria-label="Districts"></ul>
                 <dl class="sm-data__read mono">
                   <div><dt>Cursor</dt><dd id="smCursor">—</dd></div>
                   <div><dt>Zoom</dt><dd id="smZoomLvl">—</dd></div>
@@ -215,6 +208,6 @@
   </footer>
 
   <script src="assets/vendor/leaflet.js?v=1.9.4" defer></script>
-  <script src="main.js?v=14" defer></script>
+  <script src="main.js?v=15" defer></script>
 </body>
 </html>
