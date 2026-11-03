@@ -89,10 +89,23 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     const label = new ml.Marker({ element: lab, anchor: 'center' }).setLngLat(toLngLat(cx, g === 'data' ? Math.max(...own.map((f) => f.y)) + 62 : Math.min(...own.map((f) => f.y)) - 104)).addTo(lmap);
     layers[g] = { own, poly, bounds, label, on: true };
   });
-  const districtData = () => ({
+  // Districts are drawn as a soft glow around their pins (a heatmap per district), so they blend
+  // into the streets instead of sitting on top as hard outlines
+  const pointData = () => ({
     type: 'FeatureCollection',
-    features: Object.entries(layers).map(([g, l]) => ({ type: 'Feature', properties: { g, color: css(GROUPS[g].c) }, geometry: { type: 'Polygon', coordinates: [l.poly] } })),
+    features: feats.map((f) => ({ type: 'Feature', properties: { g: f.g }, geometry: { type: 'Point', coordinates: f.ll } })),
   });
+  const rgba = (hex, a) => {
+    const h = hex.replace('#', '');
+    const n = parseInt(h.length === 3 ? h.split('').map((c) => c + c).join('') : h, 16);
+    return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
+  };
+  const glowColor = (g) => {
+    const c = css(GROUPS[g].c) || '#888', k = isDark() ? 1.25 : 1;
+    return ['interpolate', ['linear'], ['heatmap-density'],
+      0, rgba(c, 0), 0.04, rgba(c, 0.07 * k), 0.15, rgba(c, 0.15 * k), 0.35, rgba(c, 0.22 * k), 0.7, rgba(c, 0.27 * k), 1, rgba(c, 0.3 * k)];
+  };
+  const GLOW = 105;   // glow radius in px at the default zoom; it scales with the map
 
   // "You are here"
   const homeEl = document.createElement('div');
@@ -102,16 +115,14 @@ export function initSkillMap({ root: map, reduce, isDark }) {
 
   // ---------- Our layers on top of the basemap (re-added after a theme/style switch) ----------
   let focusGroup = 'all', routeLine = [], routeColor = '#000';
-  const visible = () => Object.keys(layers).filter((g) => layers[g].on);
   const restyle = () => {
-    if (!lmap.getLayer('sm-district-fill')) return;
-    const op = (on, off) => (focusGroup === 'all' ? on : ['case', ['==', ['get', 'g'], focusGroup], on, off]);
-    const filter = ['in', ['get', 'g'], ['literal', visible()]];
-    lmap.getSource('sm-districts').setData(districtData());
-    lmap.setFilter('sm-district-fill', filter);
-    lmap.setFilter('sm-district-line', filter);
-    lmap.setPaintProperty('sm-district-fill', 'fill-opacity', op(isDark() ? 0.16 : 0.12, 0.04));
-    lmap.setPaintProperty('sm-district-line', 'line-opacity', op(0.8, 0.3));
+    Object.keys(GROUPS).forEach((g) => {
+      const id = `sm-glow-${g}`;
+      if (!lmap.getLayer(id)) return;
+      lmap.setLayoutProperty(id, 'visibility', layers[g].on ? 'visible' : 'none');
+      lmap.setPaintProperty(id, 'heatmap-color', glowColor(g));
+      lmap.setPaintProperty(id, 'heatmap-opacity', focusGroup === 'all' || focusGroup === g ? 1 : 0.3);
+    });
   };
   const addOverlays = () => {
     const style = lmap.getStyle();
@@ -122,9 +133,16 @@ export function initSkillMap({ root: map, reduce, isDark }) {
       }
     }
     const beforeId = style.layers.find((l) => l.type === 'symbol')?.id;
-    lmap.addSource('sm-districts', { type: 'geojson', data: districtData() });
-    lmap.addLayer({ id: 'sm-district-fill', type: 'fill', source: 'sm-districts', paint: { 'fill-color': ['get', 'color'], 'fill-opacity': 0.12 } }, beforeId);
-    lmap.addLayer({ id: 'sm-district-line', type: 'line', source: 'sm-districts', paint: { 'line-color': ['get', 'color'], 'line-width': 2, 'line-dasharray': [3, 3], 'line-opacity': 0.8 } }, beforeId);
+    lmap.addSource('sm-skills', { type: 'geojson', data: pointData() });
+    Object.keys(GROUPS).forEach((g) => lmap.addLayer({
+      id: `sm-glow-${g}`, type: 'heatmap', source: 'sm-skills', filter: ['==', ['get', 'g'], g],
+      paint: {
+        'heatmap-radius': ['interpolate', ['exponential', 2], ['zoom'], Z - 4, GLOW / 16, Z + 4, GLOW * 16],
+        'heatmap-intensity': 1.8,
+        'heatmap-color': glowColor(g),
+        'heatmap-opacity-transition': { duration: 400 },
+      },
+    }, beforeId));
     lmap.addSource('sm-route', { type: 'geojson', data: lineData(routeLine) });
     lmap.addLayer({ id: 'sm-route-halo', type: 'line', source: 'sm-route', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': css('--card') || '#fff', 'line-width': 9, 'line-opacity': 0.85 } });
     lmap.addLayer({ id: 'sm-route', type: 'line', source: 'sm-route', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': routeColor, 'line-width': 5 } });
