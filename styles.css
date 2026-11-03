@@ -10,6 +10,7 @@
   --blue: #2f5bea;
   --green: #12a36b;
   --violet: #8a4df0;
+  --wolf: #6f6b77; --wolf-dark: #4f4b57; --wolf-light: #dcd5c8; --wolf-eye: #16151a;
   --ease: cubic-bezier(.22, 1, .36, 1);
   --display: "Bricolage Grotesque", "Inter", system-ui, sans-serif;
   --body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -20,12 +21,14 @@
   :root:not([data-theme="light"]) {
     --paper: #121214; --paper-2: #18181b; --card: #1c1c20; --ink: #eeebe4; --muted: #96918a; --rule: #2c2b30;
     --orange: #ff6a45; --blue: #5b82ff; --green: #2fc488; --violet: #a77bff;
+    --wolf: #a7a2b0; --wolf-dark: #7f7a89; --wolf-light: #ece6dc; --wolf-eye: #121214;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --paper: #121214; --paper-2: #18181b; --card: #1c1c20; --ink: #eeebe4; --muted: #96918a; --rule: #2c2b30;
   --orange: #ff6a45; --blue: #5b82ff; --green: #2fc488; --violet: #a77bff;
+  --wolf: #a7a2b0; --wolf-dark: #7f7a89; --wolf-light: #ece6dc; --wolf-eye: #121214;
   color-scheme: dark;
 }
 
@@ -35,6 +38,7 @@ html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body {
   margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body);
   font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+  padding-bottom: 48px;
   transition: background-color .4s var(--ease), color .4s var(--ease);
 }
 h1, h2, h3 { font-family: var(--display); line-height: 1.05; letter-spacing: -0.03em; margin: 0; font-weight: 700; }
@@ -64,21 +68,6 @@ section[id] { scroll-margin-top: 64px; }
 .theme-btn span { width: 16px; height: 16px; border-radius: 50%; background: linear-gradient(90deg, var(--ink) 50%, transparent 50%); border: 1.5px solid var(--ink); transition: transform .5s var(--ease); }
 :root[data-theme="dark"] .theme-btn span { transform: rotate(180deg); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .theme-btn span { transform: rotate(180deg); } }
-
-/* ============ Route rail ============ */
-.rail { position: fixed; right: 28px; top: 50%; transform: translateY(-50%); z-index: 40; display: flex; flex-direction: column; gap: 26px; align-items: center; }
-.rail__track { position: absolute; top: 6px; bottom: 6px; left: 50%; width: 3px; margin-left: -1.5px; background: var(--rule); border-radius: 3px; overflow: hidden; }
-.rail__fill { position: absolute; inset: 0; background: var(--orange); transform-origin: top; transform: scaleY(0); }
-.rail a { position: relative; width: 13px; height: 13px; border-radius: 50%; background: var(--paper); border: 3px solid var(--rule); transition: border-color .3s, transform .3s var(--ease); }
-.rail a.is-past { border-color: var(--orange); }
-.rail a.is-active { border-color: var(--orange); transform: scale(1.35); }
-.rail a::after {
-  content: attr(data-label); position: absolute; right: 22px; top: 50%; transform: translate(6px, -50%); white-space: nowrap;
-  font-family: var(--mono); font-size: .72rem; color: var(--muted); opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s var(--ease);
-}
-.rail a:hover::after, .rail a.is-active::after { opacity: 1; transform: translate(0, -50%); }
-.rail a.is-active::after { color: var(--ink); }
-@media (max-width: 1100px) { .rail { display: none; } }
 
 /* ============ Buttons ============ */
 .btn { display: inline-flex; align-items: center; padding: .85rem 1.5rem; border-radius: 999px; font-weight: 600; font-size: .95rem; transition: transform .3s var(--ease), background-color .3s, color .3s; }
@@ -239,6 +228,87 @@ section[id] { scroll-margin-top: 64px; }
   .line__stops li { flex-direction: row; width: auto; gap: 1rem; text-align: left; font-size: .95rem; }
   .route li { grid-template-columns: 1fr; gap: .2rem; padding-left: 40px; }
   .nav__cta { display: none; }
+}
+
+
+/* ============ Journey road + wolf ============ */
+.trail { position: fixed; left: 0; right: 0; bottom: 0; height: 48px; z-index: 45; background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid var(--rule); }
+.trail__road { position: absolute; left: 20px; right: 20px; bottom: 14px; height: 8px; border-radius: 8px; background: var(--ink);
+  background-image: repeating-linear-gradient(90deg, transparent 0 14px, color-mix(in srgb, var(--paper) 75%, transparent) 14px 26px); background-size: 100% 2px; background-position: 0 3px; background-repeat: no-repeat; }
+.trail__stops { position: absolute; left: 20px; right: 20px; bottom: 14px; height: 8px; }
+.trail__stops a { position: absolute; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--paper); border: 3px solid var(--ink); transition: border-color .3s, transform .3s var(--ease); }
+.trail__stops a.is-past { border-color: var(--orange); }
+.trail__stops a::after { content: attr(data-label); position: absolute; bottom: 18px; left: 50%; transform: translate(-50%, 4px); white-space: nowrap; font-family: var(--mono); font-size: .68rem; padding: .1rem .45rem; border-radius: 5px; background: var(--ink); color: var(--paper); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s var(--ease); }
+.trail__stops a:hover { transform: scale(1.25); }
+.trail__stops a:hover::after { opacity: 1; transform: translate(-50%, 0); }
+
+.wolf { position: absolute; left: 0; bottom: 19px; width: 96px; height: 65px; padding: 0; border: 0; background: none; cursor: pointer; will-change: transform; z-index: 2; -webkit-tap-highlight-color: transparent; }
+.wolf__flip { display: block; width: 100%; height: 100%; transition: transform .25s var(--ease); }
+.wolf.is-left .wolf__flip { transform: scaleX(-1); }
+.wolf__svg { width: 100%; height: 100%; overflow: visible; }
+.wolf__svg path, .wolf__svg rect { fill: var(--wolf); }
+.wolf__svg .w-leg--bf rect, .wolf__svg .w-leg--ff rect, .wolf__svg .w-ear--back, .wolf__svg .w-saddle { fill: var(--wolf-dark); }
+.wolf__svg .w-light { fill: var(--wolf-light); }
+.wolf__svg .w-inner { fill: var(--wolf-dark); }
+.wolf__svg .w-eye, .wolf__svg .w-nose { fill: var(--wolf-eye); }
+.w-shadow { fill: var(--ink); opacity: .14; }
+.w-leg--bn { transform-origin: 35px 42px; } .w-leg--bf { transform-origin: 44px 42px; }
+.w-leg--fn { transform-origin: 83px 42px; } .w-leg--ff { transform-origin: 75px 42px; }
+.w-tail { transform-origin: 27px 34px; } .w-head { transform-origin: 84px 32px; }
+.w-body { transform-origin: 60px 50px; } .w-eye { transform-origin: 105px 19px; } .w-ear { transform-origin: 95px 14px; }
+.w-leg, .w-tail, .w-head, .w-body { transition: transform .35s var(--ease); }
+
+/* Idle: breathe, wag, blink, ear twitch */
+.wolf .w-body { animation: breathe 2.6s ease-in-out infinite; }
+.wolf .w-tail { animation: wag .42s ease-in-out infinite alternate; }
+.wolf .w-eye { animation: blink 4.2s infinite; }
+.wolf .w-ear { animation: twitch 5.5s infinite; }
+@keyframes breathe { 50% { transform: scale(1.015, 1.03); } }
+@keyframes wag { from { transform: rotate(-4deg); } to { transform: rotate(16deg); } }
+@keyframes blink { 0%, 93%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
+@keyframes twitch { 0%, 80%, 100% { transform: rotate(0); } 83% { transform: rotate(-14deg); } 86% { transform: rotate(4deg); } }
+
+/* Running gallop; --gait set from scroll speed */
+.wolf.is-running .w-body { animation: bob var(--gait, .4s) linear infinite; }
+.wolf.is-running .w-tail { animation: stream var(--gait, .4s) ease-in-out infinite; }
+.wolf.is-running .w-head { animation: nod var(--gait, .4s) ease-in-out infinite; }
+.wolf.is-running .w-leg--fn { animation: legF var(--gait, .4s) linear infinite; }
+.wolf.is-running .w-leg--ff { animation: legF var(--gait, .4s) linear infinite; animation-delay: calc(var(--gait, .4s) * -.12); }
+.wolf.is-running .w-leg--bn { animation: legB var(--gait, .4s) linear infinite; }
+.wolf.is-running .w-leg--bf { animation: legB var(--gait, .4s) linear infinite; animation-delay: calc(var(--gait, .4s) * -.12); }
+@keyframes legF { 0% { transform: rotate(-38deg); } 45% { transform: rotate(30deg); } 100% { transform: rotate(-38deg); } }
+@keyframes legB { 0% { transform: rotate(32deg); } 50% { transform: rotate(-34deg); } 100% { transform: rotate(32deg); } }
+@keyframes bob { 0%, 100% { transform: translateY(0) rotate(0); } 25% { transform: translateY(-4px) rotate(-3deg); } 75% { transform: translateY(-2px) rotate(3deg); } }
+@keyframes stream { 0%, 100% { transform: rotate(34deg); } 50% { transform: rotate(22deg); } }
+@keyframes nod { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(5deg); } }
+
+/* Sleeping */
+.wolf.is-sleeping .w-body { transform: translateY(19px); }
+.wolf.is-sleeping .w-leg--fn, .wolf.is-sleeping .w-leg--ff { animation: none; transform: translateY(-2px) rotate(-88deg) scaleY(.75); }
+.wolf.is-sleeping .w-leg--bn, .wolf.is-sleeping .w-leg--bf { animation: none; transform: rotate(-84deg) scaleY(.55); }
+.wolf.is-sleeping .w-head { animation: none; transform: translateY(10px) rotate(14deg); }
+.wolf.is-sleeping .w-tail { animation: none; transform: translate(2px, -6px) rotate(38deg); }
+.wolf.is-sleeping .w-eye { animation: none; transform: scaleY(.12); }
+.wolf.is-sleeping .w-body { animation: none; }
+.wolf.is-sleeping .w-ear { animation: none; transform: rotate(-20deg); }
+
+/* Howl */
+.wolf.is-howling .w-head { animation: howl 2.2s var(--ease) forwards; }
+.wolf.is-howling .w-tail { animation: none; transform: rotate(12deg); }
+.wolf.is-howling .w-eye { animation: none; transform: scaleY(.15); }
+@keyframes howl { 0% { transform: rotate(0); } 20%, 80% { transform: rotate(-38deg) translate(-2px, -2px); } 100% { transform: rotate(0); } }
+
+/* Hop on click */
+.wolf.is-hop .wolf__flip { animation: hop .55s var(--ease); }
+@keyframes hop { 0%, 100% { translate: 0 0; } 40% { translate: 0 -22px; } }
+
+.wolf__bubble { position: absolute; left: 50%; bottom: calc(100% + 4px); transform: translate(-50%, 6px) scale(.8); white-space: nowrap; font-family: var(--mono); font-size: .72rem; padding: .15rem .5rem; border-radius: 8px; background: var(--ink); color: var(--paper); opacity: 0; pointer-events: none; transition: opacity .25s, transform .3s var(--ease); }
+.wolf__bubble::after { content: ""; position: absolute; left: 50%; top: 100%; margin-left: -4px; border: 4px solid transparent; border-top-color: var(--ink); }
+.wolf__bubble.is-on { opacity: 1; transform: translate(-50%, 0) scale(1); }
+
+@media (max-width: 640px) {
+  .wolf { width: 68px; height: 46px; bottom: 19px; }
+  .trail__road, .trail__stops { left: 12px; right: 12px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

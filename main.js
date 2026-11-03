@@ -14,12 +14,7 @@
 
   // Nav background + route rail progress
   const nav = document.getElementById('nav');
-  const fill = document.getElementById('railFill');
-  const onScroll = () => {
-    nav.classList.toggle('is-scrolled', scrollY > 10);
-    const max = document.documentElement.scrollHeight - innerHeight;
-    fill.style.transform = `scaleY(${max > 0 ? Math.min(scrollY / max, 1) : 0})`;
-  };
+  const onScroll = () => nav.classList.toggle('is-scrolled', scrollY > 10);
   onScroll();
   addEventListener('scroll', onScroll, { passive: true });
 
@@ -43,20 +38,99 @@
     reveals.forEach((el) => io.observe(el));
   }
 
-  // Rail: highlight the current section and the ones already passed
-  const stops = [...document.querySelectorAll('.rail a')];
-  const sections = stops.map((a) => document.querySelector(a.getAttribute('href')));
-  if ('IntersectionObserver' in window) {
-    const sio = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (!e.isIntersecting) return;
-        const idx = sections.indexOf(e.target);
-        stops.forEach((a, i) => {
-          a.classList.toggle('is-active', i === idx);
-          a.classList.toggle('is-past', i < idx);
-        });
-      });
-    }, { rootMargin: '-45% 0px -50% 0px' });
-    sections.forEach((s) => s && sio.observe(s));
-  }
+  // ---------- Journey road + wolf ----------
+  const road = document.getElementById('trailStops');
+  const wolf = document.getElementById('wolf');
+  const bubble = document.getElementById('wolfBubble');
+  const stopsDef = [['top', 'Start'], ['about', 'About'], ['skills', 'Skills'], ['experience', 'Experience'], ['projects', 'Projects'], ['contact', 'Contact']];
+  const stops = stopsDef.map(([id, label]) => {
+    const a = document.createElement('a');
+    a.href = `#${id}`; a.dataset.label = label; a.setAttribute('aria-label', label);
+    road.appendChild(a);
+    return { a, el: document.getElementById(id), frac: 0 };
+  });
+
+  const maxScroll = () => Math.max(document.documentElement.scrollHeight - innerHeight, 1);
+  const layoutStops = () => {
+    const max = maxScroll();
+    stops.forEach((s) => {
+      s.frac = Math.min(Math.max(s.el.offsetTop / max, 0), 1);
+      s.a.style.left = `${s.frac * 100}%`;
+    });
+  };
+  layoutStops();
+  addEventListener('resize', layoutStops);
+  addEventListener('load', layoutStops);
+
+  let bubbleTimer;
+  const say = (text, ms = 1600) => {
+    bubble.textContent = text;
+    bubble.classList.add('is-on');
+    clearTimeout(bubbleTimer);
+    bubbleTimer = setTimeout(() => bubble.classList.remove('is-on'), ms);
+  };
+
+  const roadX = (frac) => {
+    const r = road.getBoundingClientRect();
+    return r.left + frac * r.width;
+  };
+  const progress = () => Math.min(Math.max(scrollY / maxScroll(), 0), 1);
+
+  let x = roadX(progress());
+  let lastMove = performance.now();
+  let state = 'idle';
+  let howled = false;
+  const setState = (next) => {
+    if (state === next) return;
+    if (state === 'sleeping' && next !== 'sleeping') say('!', 700);
+    wolf.classList.toggle('is-running', next === 'running');
+    wolf.classList.toggle('is-sleeping', next === 'sleeping');
+    state = next;
+    if (next === 'sleeping') say('z z z', 2400);
+  };
+
+  const tick = (now) => {
+    const target = roadX(progress());
+    const step = (target - x) * (reduce ? 1 : 0.075);
+    x += step;
+    const speed = Math.abs(step);
+    const w = wolf.offsetWidth;
+    const rr = road.getBoundingClientRect();
+    const cx = Math.min(Math.max(x, rr.left + w * 0.4), rr.right - w * 0.4);
+    wolf.style.transform = `translateX(${cx - w / 2}px)`;
+
+    if (speed > 0.35) {
+      wolf.classList.toggle('is-left', step < 0);
+      wolf.style.setProperty('--gait', `${Math.max(0.24, Math.min(0.62, 0.66 - speed * 0.035)).toFixed(2)}s`);
+      lastMove = now;
+      if (!reduce) setState('running');
+      if (progress() < 0.95) howled = false;
+    } else {
+      const idle = now - lastMove;
+      if (idle > 9000) setState('sleeping');
+      else if (state !== 'sleeping') setState('idle');
+      if (!howled && progress() > 0.97 && idle > 350 && state === 'idle') {
+        howled = true;
+        wolf.classList.add('is-howling');
+        say('Awoooo!', 2000);
+        setTimeout(() => wolf.classList.remove('is-howling'), 2200);
+      }
+    }
+
+    // Stations the wolf has passed light up
+    stops.forEach((s) => s.a.classList.toggle('is-past', roadX(s.frac) <= x + 2));
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+
+  // Pet the wolf
+  const pets = ['♥', '♥ ♥', 'woof!', '♥'];
+  let petCount = 0;
+  wolf.addEventListener('click', () => {
+    lastMove = performance.now();
+    setState('idle');
+    wolf.classList.remove('is-hop'); void wolf.offsetWidth; wolf.classList.add('is-hop');
+    say(pets[petCount++ % pets.length], 1100);
+  });
+  wolf.addEventListener('animationend', (e) => { if (e.animationName === 'hop') wolf.classList.remove('is-hop'); });
 })();
