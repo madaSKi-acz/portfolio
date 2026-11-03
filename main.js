@@ -23,25 +23,109 @@
     document.addEventListener('skillmap:styled', done, { once: true });
     setTimeout(done, 450);
   });
-  // Keyframes for a wavy, rippling front (like water spreading) instead of a perfect circle.
-  // Each frame is a polygon around (x, y): two travelling waves bend its edge, the waves calm
-  // as the water settles, and the growth eases in and out.
-  const waterFrames = (x, y, R) => {
-    const FRAMES = 48, POINTS = 96, frames = [];
-    const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-    for (let f = 0; f <= FRAMES; f++) {
-      const t = f / FRAMES, rad = R * ease(t);
-      const amp = Math.min(34, 10 + rad * 0.035) * (1 - t * 0.7);
-      const pts = [];
-      for (let i = 0; i < POINTS; i++) {
-        const a = (i / POINTS) * Math.PI * 2;
-        const wave = Math.sin(a * 7 + t * 9) * 0.6 + Math.sin(a * 13 - t * 14) * 0.3 + Math.sin(a * 3 + t * 5) * 0.4;
-        const d = Math.max(0, rad + wave * amp * Math.min(1, rad / 60));
-        pts.push(`${(x + Math.cos(a) * d).toFixed(1)}px ${(y + Math.sin(a) * d).toFixed(1)}px`);
+  // ---------- Theme wave ----------
+  // A breaking wave sweeps diagonally from the toggle's corner (top right) to the bottom left.
+  // Behind the wave the page is already in the new theme (the clip on the new snapshot); the crest
+  // is a foam line with spray drawn live on a canvas above it; text lights up as the crest passes.
+  const WAVE_MS = 1900;
+  const easeWave = (t) => 0.5 - Math.cos(Math.PI * t) / 2;   // gentle in and out, like a swell
+  // The foam layer is SVG (paths updated in place each frame), so no stale frames can linger
+  let fx = null;
+  const NS = 'http://www.w3.org/2000/svg';
+  const waveCanvas = () => {
+    if (fx) return fx;
+    const c = document.createElementNS(NS, 'svg');
+    c.setAttribute('class', 'wave-fx');
+    c.setAttribute('aria-hidden', 'true');
+    c.innerHTML = `<defs><filter id="waveBlur" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="24"/></filter></defs>
+      <g class="wave-fx__all">
+        <path class="w-glow" fill="none" stroke-linecap="round" stroke-width="90" filter="url(#waveBlur)"/>
+        <path class="w-spray1" fill="none" stroke="rgba(235,246,255,.42)" stroke-linecap="round" stroke-width="1.6"/>
+        <path class="w-spray2" fill="none" stroke="rgba(150,205,240,.32)" stroke-linecap="round" stroke-width="1"/>
+        <path class="w-crest1" fill="none" stroke="rgba(170,215,245,.35)" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"/>
+        <path class="w-crest2" fill="none" stroke="rgba(240,248,255,.75)" stroke-linecap="round" stroke-linejoin="round" stroke-width="9"/>
+        <path class="w-crest3" fill="none" stroke="rgba(255,255,255,.95)" stroke-linecap="round" stroke-linejoin="round" stroke-width="3.5"/>
+        <path class="w-foam" fill="rgba(255,255,255,.7)"/>
+      </g>`;
+    document.body.append(c);
+    const q = (k) => c.querySelector(k);
+    fx = { c, all: q('.wave-fx__all'), glow: q('.w-glow'), s1: q('.w-spray1'), s2: q('.w-spray2'), c1: q('.w-crest1'), c2: q('.w-crest2'), c3: q('.w-crest3'), foam: q('.w-foam') };
+    return fx;
+  };
+  // Seeded noise so the foam looks the same from frame to frame (it moves, it doesn't flicker)
+  const rnd = (i) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+  const geometry = () => {
+    const W = innerWidth, H = innerHeight, L = Math.hypot(W, H);
+    const u = { x: -W / L, y: H / L };          // travel direction: top right -> bottom left
+    const v = { x: H / L, y: W / L };           // along the crest
+    const qs = [[0, 0], [W, 0], [0, H], [W, H]].map(([x, y]) => (x - W) * v.x + y * v.y);
+    return { W, H, L, u, v, q0: Math.min(...qs) - 60, q1: Math.max(...qs) + 60 };
+  };
+  // Crest offset along the travel direction at position q on the crest, at time t (0..1)
+  const crest = (q, t) => Math.sin(q * 0.011 + t * 7) * 26 + Math.sin(q * 0.027 - t * 11) * 11 + Math.sin(q * 0.005 + t * 3) * 34;
+  const front = (t, G) => -140 + (G.L + 280) * easeWave(t);
+  const pt = (G, p, q) => [G.W + G.u.x * p + G.v.x * q, G.u.y * p + G.v.y * q];
+  const waveFrames = (G) => {
+    const frames = [], N = 56, S = 40;
+    for (let f = 0; f <= N; f++) {
+      const t = f / N, s = front(t, G), pts = [];
+      for (let i = 0; i <= S; i++) {
+        const q = G.q0 + ((G.q1 - G.q0) * i) / S;
+        pts.push(pt(G, s + crest(q, t), q));
       }
-      frames.push(`polygon(${pts.join(',')})`);
+      pts.push(pt(G, -400, G.q1), pt(G, -400, G.q0));
+      frames.push(`polygon(${pts.map(([x, y]) => `${x.toFixed(1)}px ${y.toFixed(1)}px`).join(',')})`);
     }
     return frames;
+  };
+  const f1 = (n) => n.toFixed(1);
+  const drawFoam = (G, t, toDark) => {
+    fx.c.setAttribute('viewBox', `0 0 ${G.W} ${G.H}`);
+    if (t >= 1) { fx.all.setAttribute('opacity', 0); return; }
+    const s = front(t, G);
+    fx.all.setAttribute('opacity', Math.min(1, t * 6, (1 - t) * 5).toFixed(3));
+    let line = '';
+    for (let q = G.q0; q <= G.q1; q += 14) { const [x, y] = pt(G, s + crest(q, t), q); line += `${line ? 'L' : 'M'}${f1(x)} ${f1(y)}`; }
+    // soft light (or shadow) moving with the crest
+    fx.glow.setAttribute('stroke', toDark ? 'rgba(120,170,255,.24)' : 'rgba(255,248,230,.3)');
+    for (const el of [fx.glow, fx.c1, fx.c2, fx.c3]) el.setAttribute('d', line);
+    // spray streaks trailing behind the crest, pointing the way the wave moves
+    let a1 = '', a2 = '';
+    for (let i = 0; i < 260; i++) {
+      const q = G.q0 + rnd(i) * (G.q1 - G.q0);
+      const back = 8 + rnd(i + 0.5) * 130 * (0.4 + rnd(i + 0.9));
+      const p = s + crest(q, t) - back, len = 10 + rnd(i + 0.3) * 46;
+      const [x, y] = pt(G, p, q), [x2, y2] = pt(G, p - len, q + (rnd(i + 0.7) - 0.5) * 10);
+      const seg = `M${f1(x)} ${f1(y)}L${f1(x2)} ${f1(y2)}`;
+      if (rnd(i + 0.2) > 0.4) a1 += seg; else a2 += seg;
+    }
+    fx.s1.setAttribute('d', a1); fx.s2.setAttribute('d', a2);
+    // foam clumps along the crest
+    let fm = '';
+    for (let i = 0; i < 140; i++) {
+      const q = G.q0 + rnd(i + 50) * (G.q1 - G.q0);
+      const [x, y] = pt(G, s + crest(q, t) - rnd(i + 51) * 22, q);
+      const r = 1.5 + rnd(i + 53) * 5.5;
+      fm += `M${f1(x - r)} ${f1(y)}a${f1(r)} ${f1(r)} 0 1 0 ${f1(2 * r)} 0a${f1(r)} ${f1(r)} 0 1 0 ${f1(-2 * r)} 0`;
+    }
+    fx.foam.setAttribute('d', fm);
+  };
+  // Text the crest lights up as it passes
+  const LIT = 'h1, h2, h3, .statement, .label, .tag, .btn, .stn b, .metro__key span, .facts strong, .facts span, .route li, .project h3, .contact__mail, .sm-district span, .pin__label, .sm-title h2';
+  const lightText = (G, startAt) => {
+    const timers = [];
+    document.querySelectorAll(LIT).forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > G.H || r.width === 0) return;
+      const p = (r.left + r.width / 2 - G.W) * G.u.x + (r.top + r.height / 2) * G.u.y;
+      // find when the front reaches this point (front() is monotonic, so a quick search will do)
+      let lo = 0, hi = 1;
+      for (let k = 0; k < 18; k++) { const m = (lo + hi) / 2; if (front(m, G) < p) lo = m; else hi = m; }
+      const at = startAt + lo * WAVE_MS - performance.now();
+      timers.push(setTimeout(() => { el.classList.remove('wave-lit'); void el.offsetWidth; el.classList.add('wave-lit'); }, Math.max(0, at - 60)));
+      timers.push(setTimeout(() => el.classList.remove('wave-lit'), Math.max(0, at + 1100)));
+    });
+    return timers;
   };
   themeBtn.addEventListener('click', () => {
     const next = isDark() ? 'light' : 'dark';
@@ -50,14 +134,26 @@
       try { localStorage.setItem('theme', next); } catch (e) {}
     };
     if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) { apply(); return; }
-    const b = themeBtn.getBoundingClientRect();
-    const x = b.left + b.width / 2, y = b.top + b.height / 2;
-    const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    const G = geometry();
+    const { c } = waveCanvas();
     const waitMap = mapInView();
-    const t = document.startViewTransition(() => { apply(); return waitMap ? mapRestyled() : undefined; });
+    const t = document.startViewTransition(() => {
+      apply();
+      c.classList.add('is-on');                  // the foam layer joins the new view as its own layer
+      return waitMap ? mapRestyled() : undefined;
+    });
     t.ready.then(() => {
-      root.animate({ clipPath: waterFrames(x, y, r * 1.08) }, { duration: 1700, easing: 'linear', pseudoElement: '::view-transition-new(root)' });
+      root.animate({ clipPath: waveFrames(G) }, { duration: WAVE_MS, easing: 'linear', pseudoElement: '::view-transition-new(root)' });
+      const t0 = performance.now();
+      lightText(G, t0);
+      const tick = (now) => {
+        const k = Math.min((now - t0) / WAVE_MS, 1);
+        drawFoam(G, k, next === 'dark');
+        if (k < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
     }).catch(() => {});
+    t.finished.finally(() => { c.classList.remove('is-on'); fx.all.setAttribute('opacity', 0); });
   });
 
   // Nav background + route rail progress
