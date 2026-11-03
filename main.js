@@ -39,10 +39,29 @@
   }
 
   // ---------- 3D pet wolf (loaded after the page is ready) ----------
-  const loadWolf = () => import('./assets/wolf3d.js?v=7')
-    .then((m) => m.startWolf({ reduceMotion: reduce }))
-    .catch(() => {});
-  const whenIdle = window.requestIdleCallback || ((fn) => setTimeout(fn, 600));
-  if (document.readyState === 'complete') whenIdle(loadWolf);
-  else addEventListener('load', () => whenIdle(loadWolf));
+  const toggle = document.getElementById('wolfToggle');
+  let wolfOff = false;
+  try { wolfOff = localStorage.getItem('wolf-off') === '1'; } catch (e) {}
+  let pet = null, loading = false;
+  const loadWolf = () => {
+    if (pet || loading) { if (pet) pet.el.hidden = false; return; }
+    loading = true;
+    import('./assets/wolf3d.js?v=8')
+      .then((m) => { pet = m.startWolf({ reduceMotion: reduce }); })
+      .catch(() => {})
+      .finally(() => { loading = false; });
+  };
+  const syncToggle = () => { toggle.textContent = wolfOff ? '🐺 Show wolf' : '🐺 Hide wolf'; };
+  syncToggle();
+  toggle.addEventListener('click', () => {
+    wolfOff = !wolfOff;
+    try { localStorage.setItem('wolf-off', wolfOff ? '1' : '0'); } catch (e) {}
+    syncToggle();
+    if (wolfOff) { if (pet) pet.el.hidden = true; } else loadWolf();
+  });
+  if (!wolfOff) {
+    const whenIdle = window.requestIdleCallback || ((fn) => setTimeout(fn, 600));
+    if (document.readyState === 'complete') whenIdle(loadWolf);
+    else addEventListener('load', () => whenIdle(loadWolf));
+  }
 })();

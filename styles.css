@@ -33,6 +33,7 @@
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body {
+  position: relative; overflow-x: clip;
   margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body);
   font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased;
   transition: background-color .4s var(--ease), color .4s var(--ease);
@@ -228,13 +229,15 @@ section[id] { scroll-margin-top: 64px; }
 
 
 /* ============ Pet wolf (3D, see assets/wolf3d.js) ============ */
-.pet { position: fixed; left: 0; top: 0; width: 210px; height: 170px; z-index: 45; pointer-events: none; will-change: transform; }
+.pet { position: absolute; left: 0; top: 0; width: 140px; height: 114px; z-index: 30; pointer-events: none; will-change: transform, opacity; }
 .pet__canvas { width: 100%; height: 100%; display: block; }
-.pet__hit { position: absolute; left: 50%; top: 58%; width: 70px; height: 52px; transform: translate(-50%, -50%); border: 0; padding: 0; background: none; cursor: pointer; pointer-events: auto; border-radius: 50%; -webkit-tap-highlight-color: transparent; }
-.pet__bubble { position: absolute; left: 50%; top: 14px; transform: translate(-50%, 6px) scale(.8); white-space: nowrap; font-family: var(--mono); font-size: .68rem; padding: .12rem .45rem; border-radius: 6px; background: var(--ink); color: var(--paper); opacity: 0; transition: opacity .25s, transform .3s var(--ease); }
+.pet__hit { position: absolute; left: 50%; top: 56%; width: 56px; height: 40px; transform: translate(-50%, -50%); border: 0; padding: 0; background: none; cursor: pointer; pointer-events: auto; border-radius: 50%; -webkit-tap-highlight-color: transparent; }
+.pet__bubble { position: absolute; left: 50%; top: 2px; transform: translate(-50%, 6px) scale(.8); white-space: nowrap; font-family: var(--mono); font-size: .68rem; padding: .12rem .45rem; border-radius: 6px; background: var(--ink); color: var(--paper); opacity: 0; transition: opacity .25s, transform .3s var(--ease); }
 .pet__bubble::after { content: ""; position: absolute; left: 50%; top: 100%; margin-left: -4px; border: 4px solid transparent; border-top-color: var(--ink); }
 .pet__bubble.is-on { opacity: 1; transform: translate(-50%, 0) scale(1); }
-@media (max-width: 640px) { .pet { width: 150px; height: 121px; } .pet__hit { width: 56px; height: 42px; } }
+@media (max-width: 640px) { .pet { width: 112px; height: 91px; } .pet__hit { width: 46px; height: 34px; } }
+.wolf-toggle { font: inherit; color: inherit; background: none; border: 1px solid var(--rule); border-radius: 999px; padding: .2rem .7rem; cursor: pointer; transition: border-color .25s, color .25s; }
+.wolf-toggle:hover { border-color: var(--ink); color: var(--ink); }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

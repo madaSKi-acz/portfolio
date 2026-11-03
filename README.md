@@ -9,7 +9,7 @@ A one-page personal portfolio built with plain HTML, CSS and JavaScript. It has 
 | `index.html` | All the content. Look for `TODO` comments and "Your Name". |
 | `styles.css` | Design tokens (colors, fonts) at the top, then the styles for each section. |
 | `main.js` | Theme toggle and scroll reveal animations. Loads the wolf after the page is ready. |
-| `assets/wolf3d.js` | The 3D pet wolf: low-poly model, trot/gallop/idle/sleep/howl animation, and curved roaming. |
+| `assets/wolf3d.js` | The 3D pet wolf: low-poly model, trot/gallop/idle/sleep/howl animation, curved roaming in page space, time-of-day greeting. It rests only on empty space and fades while passing over text. Visitors can hide it from the footer. |
 | `assets/vendor/three.module.min.js` | [Three.js](https://threejs.org) r160 (MIT, see `three.LICENSE`), bundled locally. |
 | `.nojekyll` | Tells GitHub Pages to serve the files without running Jekyll. |
 
