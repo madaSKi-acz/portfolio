@@ -9,10 +9,38 @@
   // Theme toggle
   const isDark = () =>
     root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
-  document.getElementById('themeToggle').addEventListener('click', () => {
+  // The new theme sweeps in from the toggle (top right) to the far corner (bottom left), like light
+  // moving across the page. Browsers without View Transitions, or reduced motion, switch instantly.
+  const themeBtn = document.getElementById('themeToggle');
+  const mapInView = () => {
+    const m = document.getElementById('skillmap');
+    if (!m || !m.classList.contains('has-map')) return false;
+    const r = m.getBoundingClientRect();
+    return r.bottom > 0 && r.top < innerHeight;
+  };
+  // Give the map a moment to draw its new style, so it changes together with the page
+  const mapRestyled = () => new Promise((done) => {
+    document.addEventListener('skillmap:styled', done, { once: true });
+    setTimeout(done, 450);
+  });
+  themeBtn.addEventListener('click', () => {
     const next = isDark() ? 'light' : 'dark';
-    root.dataset.theme = next;
-    try { localStorage.setItem('theme', next); } catch (e) {}
+    const apply = () => {
+      root.dataset.theme = next;
+      try { localStorage.setItem('theme', next); } catch (e) {}
+    };
+    if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) { apply(); return; }
+    const b = themeBtn.getBoundingClientRect();
+    const x = b.left + b.width / 2, y = b.top + b.height / 2;
+    const r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+    const waitMap = mapInView();
+    const t = document.startViewTransition(() => { apply(); return waitMap ? mapRestyled() : undefined; });
+    t.ready.then(() => {
+      root.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] },
+        { duration: 1100, easing: 'cubic-bezier(.45, 0, .2, 1)', pseudoElement: '::view-transition-new(root)' },
+      );
+    }).catch(() => {});
   });
 
   // Nav background + route rail progress
