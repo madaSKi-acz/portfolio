@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=40" />
+  <link rel="stylesheet" href="styles.css?v=41" />
   <script>
     try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
@@ -151,44 +151,52 @@
       <div class="container">
         <p class="label reveal">03 / Experience</p>
         <h2 class="reveal">The route so far</h2>
-        <!-- TODO: your real roles, newest first -->
+        <!-- TODO: your real roles, newest first (schools are in Education below) -->
         <ol class="route">
           <li class="reveal"><span class="route__when mono">20XX — now</span><div><h3>Software Engineer</h3><p>Company Name</p></div></li>
           <li class="reveal"><span class="route__when mono">20XX — 20XX</span><div><h3>Junior Developer</h3><p>Company Name</p></div></li>
-          <!-- TODO: set the years for both schools -->
-          <li class="reveal route__school">
-            <span class="route__when mono">20XX — 20XX</span>
-            <div class="route__body">
-              <img class="route__logo" src="assets/schools/aeu.png" width="127" height="168" alt="Asia Euro University logo" loading="lazy" />
-              <div>
-                <h3>Bachelor's degree</h3>
-                <p>Asia Euro University · DB design for final project</p>
-                <p class="route__links"><a href="https://www.aeu.edu.kh/kh" target="_blank" rel="noopener">aeu.edu.kh ↗</a></p>
-              </div>
-            </div>
-          </li>
-          <li class="reveal route__school">
-            <span class="route__when mono">20XX — 20XX</span>
-            <div class="route__body">
-              <img class="route__logo route__logo--round" src="assets/schools/pn.png" width="128" height="128" alt="Passerelles Numériques logo" loading="lazy" />
-              <div>
-                <h3>IT training program</h3>
-                <p>Passerelles Numériques Cambodia</p>
-                <p class="route__links">
-                  <a href="https://www.passerellesnumeriques.org/what-we-do/cambodia/" target="_blank" rel="noopener">passerellesnumeriques.org ↗</a>
-                  <a href="https://www.facebook.com/passerelles.numeriques.cam/posts/english-below-studenttestimonial-%E1%9E%9F%E1%9E%BB%E1%9E%81-%E1%9E%87%E1%9E%B6%E1%9E%93%E1%9E%B7%E1%9E%9F%E1%9F%92%E1%9E%9F%E1%9E%B7%E1%9E%8F%E1%9E%98%E1%9E%80%E1%9E%96%E1%9E%B8%E1%9E%81%E1%9F%81%E1%9E%8F%E1%9F%92%E1%9E%8F%E1%9E%94%E1%9E%93%E1%9F%92%E1%9E%91%E1%9E%B6%E1%9E%99%E1%9E%98%E1%9E%B6%E1%9E%93%E1%9E%87%E1%9F%90%E1%9E%99-%E1%9E%8A%E1%9F%82%E1%9E%9B%E1%9E%94%E1%9E%B6%E1%9E%93%E1%9E%98%E1%9E%80%E1%9E%9A%E1%9E%9F%E1%9F%8B%E1%9E%93/188685383574370/" target="_blank" rel="noopener">Read my student story ↗</a>
-                </p>
-              </div>
-            </div>
-          </li>
         </ol>
+      </div>
+    </section>
+
+    <!-- EDUCATION -->
+    <section class="section" id="education">
+      <div class="container">
+        <p class="label reveal">04 / Education</p>
+        <h2 class="reveal">Where I learned</h2>
+        <!-- TODO: set the years for both schools -->
+        <div class="schools">
+          <article class="school reveal">
+            <img class="school__logo" src="assets/schools/aeu.png" width="127" height="168" alt="Asia Euro University logo" loading="lazy" />
+            <div class="school__body">
+              <span class="school__when mono">20XX — 20XX</span>
+              <h3>Bachelor's degree</h3>
+              <p>Asia Euro University</p>
+              <p class="school__note">Final project: database design</p>
+              <p class="route__links"><a href="https://www.aeu.edu.kh/kh" target="_blank" rel="noopener">aeu.edu.kh ↗</a></p>
+            </div>
+          </article>
+          <article class="school reveal">
+            <img class="school__logo school__logo--round" src="assets/schools/pn.png" width="128" height="128" alt="Passerelles Numériques logo" loading="lazy" />
+            <div class="school__body">
+              <span class="school__when mono">20XX — 20XX</span>
+              <h3>IT training program</h3>
+              <p>Passerelles Numériques Cambodia</p>
+              <p class="school__note">Featured in PN's student testimonials</p>
+              <p class="route__links">
+                <a href="https://www.passerellesnumeriques.org/what-we-do/cambodia/" target="_blank" rel="noopener">passerellesnumeriques.org ↗</a>
+                <a href="https://www.facebook.com/passerelles.numeriques.cam/posts/english-below-studenttestimonial-%E1%9E%9F%E1%9E%BB%E1%9E%81-%E1%9E%87%E1%9E%B6%E1%9E%93%E1%9E%B7%E1%9E%9F%E1%9F%92%E1%9E%9F%E1%9E%B7%E1%9E%8F%E1%9E%98%E1%9E%80%E1%9E%96%E1%9E%B8%E1%9E%81%E1%9F%81%E1%9E%8F%E1%9F%92%E1%9E%8F%E1%9E%94%E1%9E%93%E1%9F%92%E1%9E%91%E1%9E%B6%E1%9E%99%E1%9E%98%E1%9E%B6%E1%9E%93%E1%9E%87%E1%9F%90%E1%9E%99-%E1%9E%8A%E1%9F%82%E1%9E%9B%E1%9E%94%E1%9E%B6%E1%9E%93%E1%9E%98%E1%9E%80%E1%9E%9A%E1%9E%9F%E1%9F%8B%E1%9E%93/188685383574370/" target="_blank" rel="noopener">Read my student story ↗</a>
+              </p>
+            </div>
+          </article>
+        </div>
       </div>
     </section>
 
     <!-- PROJECTS -->
     <section class="section section--tint" id="projects">
       <div class="container">
-        <p class="label reveal">04 / Projects</p>
+        <p class="label reveal">05 / Projects</p>
         <h2 class="reveal">Selected work</h2>
         <!-- TODO: your real projects + links -->
         <div class="projects">
@@ -217,7 +225,7 @@
     <!-- CONTACT -->
     <section class="section contact" id="contact">
       <div class="container">
-        <p class="label reveal">05 / Contact</p>
+        <p class="label reveal">06 / Contact</p>
         <h2 class="contact__title reveal">Next stop: <em>your problem.</em></h2>
         <!-- TODO: your real email + links -->
         <a class="contact__mail reveal" href="mailto:you@example.com">you@example.com</a>
@@ -237,6 +245,6 @@
     </div>
   </footer>
 
-  <script src="main.js?v=40" defer></script>
+  <script src="main.js?v=41" defer></script>
 </body>
 </html>
