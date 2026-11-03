@@ -350,3 +350,8 @@ li:has(.sm-vis input:not(:checked)) .sm-fly span { text-decoration: line-through
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .001ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; transition-delay: 0ms !important; }
 }
+
+/* ============ Theme sweep (View Transitions) ============ */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-new(root) { z-index: 2; }
+::view-transition-old(root) { z-index: 1; }

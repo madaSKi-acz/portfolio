@@ -136,6 +136,9 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   };
   const lineData = (coords) => ({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: coords.length > 1 ? coords : [] } });
   lmap.on('style.load', addOverlays);
+  // Tell the page when a new (theme) style has been drawn, so the theme sweep can include the map
+  lmap.on('style.load', () => lmap.once('idle', () => document.dispatchEvent(new Event('skillmap:styled'))));
+  map.classList.add('has-map');
 
   // Safety net: if a pin lands on water in the real basemap, walk it toward its district's middle
   const waterLayers = () => lmap.getStyle().layers.filter((l) => l['source-layer'] === 'water' && l.type === 'fill').map((l) => l.id);
