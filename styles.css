@@ -293,6 +293,12 @@ li:has(.sm-vis input:not(:checked)) .sm-fly span { text-decoration: line-through
 .route__when { color: var(--muted); padding-top: 6px; }
 .route h3 { font-size: 1.35rem; margin-bottom: .25rem; }
 .route p { color: var(--muted); }
+.route__body { display: flex; gap: 1rem; align-items: flex-start; }
+.route__logo { flex: none; width: 54px; height: 54px; object-fit: contain; padding: 4px; border-radius: 14px; background: #fff; border: 1px solid var(--rule); box-shadow: 0 8px 18px -12px rgba(0,0,0,.45); }
+.route__logo--round { padding: 0; border-radius: 50%; border-color: transparent; background: #000; }
+.route__links { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .6rem; }
+.route__links a { font-family: var(--mono); font-size: .74rem; color: var(--ink); padding: .3rem .7rem; border: 1px solid var(--rule); border-radius: 999px; transition: background-color .25s, color .25s, border-color .25s; }
+.route__links a:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 
 /* Projects */
 .projects { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
