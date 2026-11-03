@@ -58,11 +58,14 @@
     const clampCam = (c) => {
       const { w, h } = size();
       const s = Math.min(Math.max(c.s, minS), maxS);
-      return { s, tx: Math.min(0, Math.max(w - WW * s, c.tx)), ty: Math.min(0, Math.max(h - WH * s, c.ty)) };
+      // When the city is smaller than the view, keep it centered; otherwise keep it filling the view
+      const tx = WW * s <= w ? (w - WW * s) / 2 : Math.min(0, Math.max(w - WW * s, c.tx));
+      const ty = WH * s <= h ? (h - WH * s) / 2 : Math.min(0, Math.max(h - WH * s, c.ty));
+      return { s, tx, ty };
     };
     const apply = () => {
       world.style.transform = `translate(${cam.tx}px, ${cam.ty}px) scale(${cam.s})`;
-      world.style.setProperty('--inv', (1 / cam.s).toFixed(4));
+      world.style.setProperty('--inv', Math.max(1 / cam.s, 0.85).toFixed(4));
       map.classList.toggle('is-close', cam.s > minS * 1.45);
       placeCard();
     };
@@ -82,8 +85,10 @@
     };
     const fit = () => {
       const { w, h } = size();
-      minS = Math.max(w / WW, h / WH);
-      maxS = minS * 2.6;
+      // Fit the whole city on wide screens; on narrow screens fill the height and let people pan
+      const contain = Math.min(w / WW, h / WH);
+      minS = contain < 0.6 ? Math.max(contain, h / WH) : contain;
+      maxS = Math.max(minS * 2.6, 1.8);
       cam = centerOn(HOME.x, HOME.y - 40, minS);
       apply();
     };
@@ -211,7 +216,7 @@
   const loadWolf = () => {
     if (pet || loading) { if (pet) pet.el.hidden = false; return; }
     loading = true;
-    import('./assets/wolf3d.js?v=10')
+    import('./assets/wolf3d.js?v=12')
       .then((m) => { pet = m.startWolf({ reduceMotion: reduce }); })
       .catch(() => {})
       .finally(() => { loading = false; });
