@@ -158,10 +158,7 @@ svg { display: block; }
 .hero__title { font-size: clamp(2.4rem, 1.4rem + 5vw, 4.6rem); font-weight: 800; letter-spacing: -0.035em; max-width: 14ch; margin-bottom: 1.4rem; }
 .hero__title .accent-text { display: inline; }
 .hero__lead { font-size: clamp(1.02rem, .95rem + .4vw, 1.2rem); color: var(--muted); max-width: 56ch; margin-bottom: 2rem; }
-.hero__cta { display: flex; flex-wrap: wrap; gap: .75rem; margin-bottom: 2.5rem; }
-.hero__meta { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; color: var(--muted); }
-.hero__meta li { display: flex; align-items: center; gap: .5rem; }
-.hero__meta li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.hero__cta { display: flex; flex-wrap: wrap; gap: .75rem; }
 .scroll-cue { position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%); width: 24px; height: 38px; border: 2px solid var(--border); border-radius: 14px; z-index: 1; }
 .scroll-cue span { position: absolute; left: 50%; top: 7px; width: 4px; height: 8px; margin-left: -2px; border-radius: 2px; background: var(--accent); animation: cue 1.8s var(--ease) infinite; }
 @keyframes cue { 0% { transform: translateY(0); opacity: 1; } 70% { transform: translateY(12px); opacity: 0; } 100% { opacity: 0; } }
@@ -195,11 +192,20 @@ svg { display: block; }
 .card__icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
 /* Skills */
-.skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; }
-.skill-group { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; }
-.skill-group h3 { display: flex; align-items: center; gap: .6rem; margin-bottom: 1rem; }
-.skill-group h3 em { font-style: normal; font-family: var(--mono); font-size: .7rem; color: var(--accent); background: var(--accent-soft); padding: .15rem .5rem; border-radius: 999px; margin-left: auto; }
-.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.skills { display: grid; gap: 2rem; }
+.skill-cat h3 { font-family: var(--mono); font-size: .78rem; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: .9rem; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: .75rem; }
+.tile {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .6rem;
+  aspect-ratio: 1 / 0.9; padding: .9rem .5rem; text-align: center; font-size: .85rem; font-weight: 500;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  transition: transform .4s var(--ease), border-color .3s, box-shadow .4s var(--ease);
+}
+.tile img { width: 40px; height: 40px; transition: transform .4s var(--ease); }
+.tile:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); box-shadow: var(--shadow); }
+.tile:hover img, .tile:hover .tile__glyph { transform: scale(1.12) rotate(-4deg); }
+.tile__glyph { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); transition: transform .4s var(--ease); }
+.tile__glyph svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .chips { display: flex; flex-wrap: wrap; gap: .5rem; }
 .chips li {
   font-size: .85rem; padding: .35rem .75rem; border-radius: 999px; border: 1px solid var(--border); background: var(--bg);
@@ -279,7 +285,8 @@ svg { display: block; }
 @media (max-width: 640px) {
   .container { padding: 0 16px; }
   .cards--4, .cards--3 { grid-template-columns: 1fr; }
-  .skills { grid-template-columns: 1fr; }
+  .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .6rem; }
+  .tile { font-size: .78rem; overflow-wrap: anywhere; }
   .timeline::before { left: 5px; }
   .timeline__item { grid-template-columns: 1fr; gap: .35rem; padding-left: 28px; }
   .timeline__item::before { left: 5px; }
