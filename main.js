@@ -38,66 +38,168 @@
     reveals.forEach((el) => io.observe(el));
   }
 
-  // ---------- Departure board (split-flap skills) ----------
-  const board = document.getElementById('board');
-  if (board) {
-    const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.';
-    const rows = [...board.querySelectorAll('.dep')];
-    const flapsOf = (el) => {
-      const text = el.dataset.text;
-      const width = el.classList.contains('flaps--status') ? 5 : 13;
-      el.setAttribute('aria-label', text);
-      el.innerHTML = '';
-      const cells = [];
-      for (let i = 0; i < width; i++) {
-        const c = document.createElement('i');
-        c.setAttribute('aria-hidden', 'true');
-        c.textContent = ' ';
-        if (i >= text.length) c.className = 'pad';
-        el.appendChild(c);
-        cells.push({ c, final: text[i] || ' ' });
-      }
-      return cells;
+  // ---------- Skill city map ----------
+  const map = document.getElementById('skillmap');
+  if (map) {
+    const vp = document.getElementById('smViewport');
+    const world = document.getElementById('smWorld');
+    const route = document.getElementById('smRoute');
+    const card = document.getElementById('smCard');
+    const pins = [...map.querySelectorAll('.pin')];
+    const zones = [...map.querySelectorAll('.sm-zone')];
+    const zoneGroup = ['front', 'back', 'data', 'flow'];
+    zones.forEach((z, i) => { z.dataset.group = zoneGroup[i]; });
+    const WW = 1200, WH = 760, HOME = { x: 600, y: 450 };
+    const pinXY = (p) => ({ x: parseFloat(p.style.getPropertyValue('--x')), y: parseFloat(p.style.getPropertyValue('--y')) });
+    const DIST = { front: 'Front-end Old Town', back: 'Back-end Harbor', data: 'Data Park', flow: 'Automation Hills' };
+
+    let cam = { s: 1, tx: 0, ty: 0 }, minS = 1, maxS = 3, selected = null, anim = 0;
+    const size = () => ({ w: vp.clientWidth, h: vp.clientHeight });
+    const clampCam = (c) => {
+      const { w, h } = size();
+      const s = Math.min(Math.max(c.s, minS), maxS);
+      return { s, tx: Math.min(0, Math.max(w - WW * s, c.tx)), ty: Math.min(0, Math.max(h - WH * s, c.ty)) };
     };
-    const all = rows.map((r) => [...r.querySelectorAll('.flaps')].map(flapsOf)).flat();
-    const settle = (cells, delay) => {
-      cells.forEach(({ c, final }, i) => {
-        if (reduce) { c.textContent = final; return; }
-        let n = final === ' ' ? 2 : 4 + Math.floor(Math.random() * 6) + i;
-        const step = () => {
-          c.classList.remove('is-flip'); void c.offsetWidth; c.classList.add('is-flip');
-          c.textContent = n <= 0 ? final : CHARS[Math.floor(Math.random() * CHARS.length)];
-          if (n-- > 0) setTimeout(step, 55);
-        };
-        setTimeout(step, delay + i * 18);
-      });
+    const apply = () => {
+      world.style.transform = `translate(${cam.tx}px, ${cam.ty}px) scale(${cam.s})`;
+      world.style.setProperty('--inv', (1 / cam.s).toFixed(4));
+      map.classList.toggle('is-close', cam.s > minS * 1.45);
+      placeCard();
     };
-    const run = (visibleRows) => {
-      let k = 0;
-      rows.forEach((r) => {
-        if (!visibleRows.includes(r)) return;
-        r.querySelectorAll('.flaps').forEach((f) => settle(all.find((cells) => cells[0].c.parentElement === f), k * 70));
-        k++;
-      });
+    const centerOn = (x, y, s) => { const { w, h } = size(); return clampCam({ s, tx: w / 2 - x * s, ty: h / 2 - y * s }); };
+    const flyTo = (to, ms = 750) => {
+      cancelAnimationFrame(anim);
+      if (reduce) { cam = to; apply(); return; }
+      const from = { ...cam }, t0 = performance.now();
+      const ease = (t) => 1 - Math.pow(1 - t, 3);
+      const step = (now) => {
+        const k = ease(Math.min((now - t0) / ms, 1));
+        cam = { s: from.s + (to.s - from.s) * k, tx: from.tx + (to.tx - from.tx) * k, ty: from.ty + (to.ty - from.ty) * k };
+        apply();
+        if (k < 1) anim = requestAnimationFrame(step);
+      };
+      anim = requestAnimationFrame(step);
     };
-    // Flip in when the board scrolls into view
-    if ('IntersectionObserver' in window) {
-      const bio = new IntersectionObserver((e) => { if (e[0].isIntersecting) { run(rows); bio.disconnect(); } }, { threshold: 0.2 });
-      bio.observe(board);
-    } else run(rows);
-    // Filter tabs
-    const tabs = [...board.querySelectorAll('.board__tabs button')];
-    tabs.forEach((t) => t.addEventListener('click', () => {
-      tabs.forEach((x) => { x.classList.toggle('is-on', x === t); x.setAttribute('aria-selected', String(x === t)); });
-      const f = t.dataset.filter;
-      const shown = rows.filter((r) => f === 'all' || r.dataset.group === f);
-      rows.forEach((r) => { r.hidden = !shown.includes(r); });
-      run(shown);
+    const fit = () => {
+      const { w, h } = size();
+      minS = Math.max(w / WW, h / WH);
+      maxS = minS * 2.6;
+      cam = centerOn(HOME.x, HOME.y - 40, minS);
+      apply();
+    };
+
+    // Info card
+    const placeCard = () => {
+      if (!selected || card.hidden) return;
+      const { w } = size();
+      if (w < 720) { card.style.left = '10px'; card.style.top = ''; card.style.bottom = '56px'; return; }
+      const p = pinXY(selected);
+      const sx = p.x * cam.s + cam.tx, sy = p.y * cam.s + cam.ty;
+      const cw = card.offsetWidth, ch = card.offsetHeight;
+      let left = Math.min(Math.max(sx - cw / 2, 10), w - cw - 10);
+      let top = sy - 70 - ch;
+      if (top < 60) top = sy + 18;
+      card.style.left = `${left}px`; card.style.top = `${top}px`; card.style.bottom = '';
+    };
+    const select = (pin) => {
+      pins.forEach((p) => p.classList.toggle('is-on', p === pin));
+      selected = pin;
+      if (!pin) { card.hidden = true; route.setAttribute('d', ''); return; }
+      const g = pin.dataset.group;
+      const c = pin.style.getPropertyValue('--c');
+      card.style.setProperty('--c', c);
+      card.querySelector('.sm-card__icon').innerHTML = pin.querySelector('.pin__head').innerHTML;
+      card.querySelector('.sm-card__name').textContent = pin.dataset.name;
+      card.querySelector('.sm-card__where').textContent = DIST[g];
+      card.querySelector('.sm-card__status').textContent = pin.dataset.status === 'Daily' ? 'Daily driver' : 'Ready to ship';
+      card.hidden = false;
+      // Route from "You are here" to the pin
+      const p = pinXY(pin);
+      const mx = (HOME.x + p.x) / 2, my = (HOME.y + p.y) / 2;
+      const dx = p.x - HOME.x, dy = p.y - HOME.y;
+      const len = Math.hypot(dx, dy) || 1;
+      const bend = Math.min(120, len * 0.25);
+      route.setAttribute('d', `M${HOME.x} ${HOME.y} Q ${mx - (dy / len) * bend} ${my + (dx / len) * bend} ${p.x} ${p.y - 6}`);
+      route.style.setProperty('--route', c);
+      route.classList.remove('is-drawing'); void route.getBoundingClientRect(); route.classList.add('is-drawing');
+      // Keep the pin comfortably in view
+      const { w, h } = size();
+      const sx = p.x * cam.s + cam.tx, sy = p.y * cam.s + cam.ty;
+      if (sx < 60 || sx > w - 60 || sy < 110 || sy > h - 40) flyTo(centerOn(p.x, p.y - 60, cam.s), 600);
+      else placeCard();
+    };
+    pins.forEach((pin) => pin.addEventListener('click', (e) => { e.stopPropagation(); select(selected === pin ? null : pin); }));
+    card.querySelector('.sm-card__x').addEventListener('click', () => select(null));
+
+    // District chips: fly the camera there and highlight
+    const chips = [...map.querySelectorAll('[data-fly]')];
+    chips.forEach((chip) => chip.addEventListener('click', () => {
+      chips.forEach((c) => c.classList.toggle('is-on', c === chip));
+      const g = chip.dataset.fly;
+      select(null);
+      map.classList.toggle('is-filtered', g !== 'all');
+      pins.forEach((p) => p.classList.toggle('is-match', p.dataset.group === g));
+      zones.forEach((z) => z.classList.toggle('is-match', z.dataset.group === g));
+      if (g === 'all') { flyTo(centerOn(HOME.x, HOME.y - 40, minS)); return; }
+      const pts = pins.filter((p) => p.dataset.group === g).map(pinXY);
+      const x0 = Math.min(...pts.map((p) => p.x)) - 110, x1 = Math.max(...pts.map((p) => p.x)) + 110;
+      const y0 = Math.min(...pts.map((p) => p.y)) - 140, y1 = Math.max(...pts.map((p) => p.y)) + 70;
+      const { w, h } = size();
+      const sc = Math.min(Math.max(Math.min(w / (x1 - x0), h / (y1 - y0)), minS), maxS);
+      flyTo(centerOn((x0 + x1) / 2, (y0 + y1) / 2, sc));
     }));
-    // Live clock
-    const clock = document.getElementById('boardClock');
-    const tickClock = () => { const d = new Date(); clock.textContent = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; };
-    tickClock(); setInterval(tickClock, 15000);
+
+    // Zoom buttons + ctrl/cmd + wheel (plain wheel keeps scrolling the page)
+    const zoomAt = (factor, cx, cy) => {
+      const s = Math.min(Math.max(cam.s * factor, minS), maxS);
+      const wx = (cx - cam.tx) / cam.s, wy = (cy - cam.ty) / cam.s;
+      return clampCam({ s, tx: cx - wx * s, ty: cy - wy * s });
+    };
+    map.querySelectorAll('[data-zoom]').forEach((b) => b.addEventListener('click', () => {
+      const { w, h } = size();
+      flyTo(zoomAt(b.dataset.zoom === 'in' ? 1.4 : 1 / 1.4, w / 2, h / 2), 400);
+    }));
+    vp.addEventListener('wheel', (e) => {
+      if (!e.ctrlKey && !e.metaKey) return;
+      e.preventDefault();
+      const r = vp.getBoundingClientRect();
+      cancelAnimationFrame(anim);
+      cam = zoomAt(Math.exp(-e.deltaY * 0.0025), e.clientX - r.left, e.clientY - r.top);
+      apply();
+    }, { passive: false });
+
+    // Drag to pan
+    let drag = null, moved = false;
+    vp.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('.pin')) return;
+      cancelAnimationFrame(anim);
+      drag = { x: e.clientX, y: e.clientY, tx: cam.tx, ty: cam.ty, id: e.pointerId };
+      moved = false;
+    });
+    vp.addEventListener('pointermove', (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      if (!moved && Math.hypot(dx, dy) > 4) { moved = true; vp.classList.add('is-dragging'); try { vp.setPointerCapture(e.pointerId); } catch (_) {} }
+      if (!moved) return;
+      cam = clampCam({ s: cam.s, tx: drag.tx + dx, ty: drag.ty + dy });
+      apply();
+    });
+    const endDrag = () => {
+      if (drag && !moved) select(null);   // a plain click on the map closes the card
+      drag = null; vp.classList.remove('is-dragging');
+    };
+    vp.addEventListener('pointerup', endDrag);
+    vp.addEventListener('pointercancel', () => { drag = null; vp.classList.remove('is-dragging'); });
+
+    fit();
+    addEventListener('resize', () => { const keep = cam.s / minS; fit(); if (keep > 1.01) { cam = clampCam({ ...cam, s: minS * keep }); apply(); } });
+
+    // Pins drop in when the map scrolls into view
+    const live = () => { map.classList.add('is-live'); setTimeout(() => map.classList.add('is-settled'), reduce ? 0 : 250 + pins.length * 70 + 850); };
+    if ('IntersectionObserver' in window && !reduce) {
+      const mio = new IntersectionObserver((e) => { if (e[0].isIntersecting) { live(); mio.disconnect(); } }, { threshold: 0.3 });
+      mio.observe(map);
+    } else live();
   }
 
   // ---------- 3D pet wolf (loaded after the page is ready) ----------
@@ -108,7 +210,7 @@
   const loadWolf = () => {
     if (pet || loading) { if (pet) pet.el.hidden = false; return; }
     loading = true;
-    import('./assets/wolf3d.js?v=9')
+    import('./assets/wolf3d.js?v=10')
       .then((m) => { pet = m.startWolf({ reduceMotion: reduce }); })
       .catch(() => {})
       .finally(() => { loading = false; });

@@ -126,7 +126,7 @@ function buildWolf() {
 }
 
 // Text and UI the wolf should never rest on top of
-const AVOID = 'h1, h2, h3, p, .btn, .metro, .board, .facts, .route li, .project, .contact__mail, .socials, .tag, .label, .footer__inner';
+const AVOID = 'h1, h2, h3, p, .btn, .metro, .skillmap, .facts, .route li, .project, .contact__mail, .socials, .tag, .label, .footer__inner';
 
 function greeting() {
   const h = new Date().getHours();
@@ -136,7 +136,7 @@ function greeting() {
   return 'Up late? 🌙';
 }
 const IDLE_LINES = ['*sniff sniff*', 'pet me? 🐾', 'psst… hire this human 👀', '*yawn*', 'I like Vue too', 'nice scroll 😎'];
-const SECTION_LINES = { skills: 'so many skills!', projects: 'check these out 👇', experience: 'what a journey' };
+const SECTION_LINES = { skills: 'tap a pin! 📍', projects: 'check these out 👇', experience: 'what a journey' };
 
 export function startWolf({ reduceMotion = false } = {}) {
   // ---------- DOM ----------
