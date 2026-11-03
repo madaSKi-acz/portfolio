@@ -5,7 +5,8 @@
 import * as THREE from './vendor/three.module.min.js';
 
 const CANVAS_W = 104;
-const CANVAS_H = 85;
+const CANVAS_H = 110;      // taller than the wolf so its reflection fits below the paws
+const VIEW_H = 85;         // the camera frames the wolf as if the canvas were this tall
 
 const rand = (a, b) => a + Math.random() * (b - a);
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -13,7 +14,9 @@ const clamp = (v, a, b) => Math.min(Math.max(v, a), b);
 const wrapAngle = (a) => Math.atan2(Math.sin(a), Math.cos(a));
 
 function buildWolf() {
-  const mat = (color) => new THREE.MeshStandardMaterial({ color, roughness: 0.85, metalness: 0, flatShading: true });
+  const mats = [];
+  // Double sided + transparent so the same meshes can be drawn mirrored as a faint reflection
+  const mat = (color) => { const m = new THREE.MeshStandardMaterial({ color, roughness: 0.85, metalness: 0, flatShading: true, side: THREE.DoubleSide, transparent: true }); mats.push(m); return m; };
   const grey = mat('#8b8795');
   const dark = mat('#56525f');
   const light = mat('#e7e1d6');
@@ -107,7 +110,7 @@ function buildWolf() {
     knee.add(mesh(new THREE.CylinderGeometry(0.095, 0.075, 0.48, 6), upperM, 0, -0.24, 0));
     const paw = mesh(new THREE.BoxGeometry(0.2, 0.08, 0.14), d.z < 0 ? dark : grey, 0.04, -0.5, 0);
     knee.add(paw);
-    legs.push({ ...d, hip, knee });
+    legs.push({ ...d, hip, knee, paw, down: true });
   }
 
   // Soft contact shadow
@@ -122,7 +125,7 @@ function buildWolf() {
   shadow.rotation.x = -Math.PI / 2;
   wolf.add(shadow);
 
-  return { wolf, body, head, tail, legs, eyes, ears, torso };
+  return { wolf, body, head, tail, legs, eyes, ears, torso, shadow, mats };
 }
 
 // Text and UI the wolf should never rest on top of
@@ -170,9 +173,11 @@ export function startWolf({ reduceMotion = false } = {}) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setSize(CANVAS_W, CANVAS_H, false);
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(30, CANVAS_W / CANVAS_H, 0.1, 50);
+  const camera = new THREE.PerspectiveCamera(30, CANVAS_W / VIEW_H, 0.1, 50);
   camera.position.set(0, 4.9, 7.2);
   camera.lookAt(0, 0.85, 0);
+  camera.setViewOffset(CANVAS_W, VIEW_H, 0, 0, CANVAS_W, CANVAS_H);   // extend the view down for the reflection
+  renderer.autoClear = false;
   scene.add(new THREE.HemisphereLight(0xfff4e6, 0x5e5852, 1.7));
   const sun = new THREE.DirectionalLight(0xffffff, 2.3);
   sun.position.set(3, 7, 5);
@@ -181,7 +186,7 @@ export function startWolf({ reduceMotion = false } = {}) {
   scene.add(W.wolf);
 
   // ---------- Page geometry ----------
-  const feet = { x: CANVAS_W / 2, y: CANVAS_H * 0.62 };     // wolf's feet inside the canvas
+  const feet = { x: CANVAS_W / 2, y: VIEW_H * 0.62 };       // wolf's feet inside the canvas
   const FOOT = { w: 56, h: 38 };                            // wolf footprint for overlap tests
   const docW = () => document.documentElement.clientWidth;
   const docH = () => document.documentElement.scrollHeight;
@@ -195,6 +200,75 @@ export function startWolf({ reduceMotion = false } = {}) {
   const overlapsText = (x, y) => {
     const l = x - FOOT.w / 2, r = x + FOOT.w / 2, t = y - FOOT.h, b = y;
     return blocks.some((k) => l < k.r && r > k.l && t < k.b && b > k.t);
+  };
+  // How much of the wolf is over text (0..1), measured on a slightly larger box so the fade starts early
+  const textCover = (x, y) => {
+    const l = x - FOOT.w * 0.8, r = x + FOOT.w * 0.8, t = y - FOOT.h * 1.6, b = y + 6;
+    const area = (r - l) * (b - t);
+    let hitA = 0;
+    for (const k of blocks) {
+      const w = Math.min(r, k.r) - Math.max(l, k.l), h = Math.min(b, k.b) - Math.max(t, k.t);
+      if (w > 0 && h > 0) hitA += w * h;
+    }
+    return Math.min(1, hitA / area);
+  };
+
+  // ---------- Water: ripples where the paws touch the page ----------
+  const water = document.createElement('canvas');
+  water.className = 'pet-water';
+  water.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(water);
+  const wctx = water.getContext('2d');
+  let wDpr = 1, rippleColor = '#3b5bdb';
+  const sizeWater = () => {
+    wDpr = Math.min(window.devicePixelRatio || 1, 2);
+    water.width = Math.round(innerWidth * wDpr); water.height = Math.round(innerHeight * wDpr);
+    rippleColor = getComputedStyle(document.documentElement).getPropertyValue('--ripple').trim() || rippleColor;
+  };
+  sizeWater();
+  addEventListener('resize', sizeWater);
+  new MutationObserver(sizeWater).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  const ripples = [];
+  let waterDirty = false;
+  const ripple = (x, y, size = 1, life = 1300) => {
+    if (reduceMotion || ripples.length > 40) return;
+    ripples.push({ x, y, R: 15 * size + rand(-2, 2), t0: performance.now(), life: life * (0.85 + size * 0.15) });
+  };
+  const drawWater = (now) => {
+    if (!ripples.length && !waterDirty) return;
+    wctx.setTransform(1, 0, 0, 1, 0, 0);
+    wctx.globalAlpha = 1;
+    wctx.clearRect(0, 0, water.width, water.height);
+    wctx.setTransform(wDpr, 0, 0, wDpr, 0, 0);
+    waterDirty = ripples.length > 0;
+    wctx.strokeStyle = rippleColor; wctx.fillStyle = rippleColor;
+    for (let i = ripples.length - 1; i >= 0; i--) {
+      const rp = ripples[i];
+      const k = (now - rp.t0) / rp.life;
+      if (k >= 1) { ripples.splice(i, 1); continue; }
+      const x = rp.x - scrollX, y = rp.y - scrollY;
+      if (y < -60 || y > innerHeight + 60) continue;
+      // two expanding rings, flattened because we look at the water from above at an angle
+      for (const [off, a] of [[0, 0.4], [0.22, 0.24]]) {
+        const kk = k - off;
+        if (kk <= 0) continue;
+        const e = 1 - Math.pow(1 - kk, 3);
+        const r = 2 + rp.R * e;
+        wctx.globalAlpha = a * Math.pow(1 - kk, 1.5);
+        wctx.lineWidth = 0.6 + 1.4 * (1 - kk);
+        wctx.beginPath(); wctx.ellipse(x, y, r, r * 0.36, 0, 0, Math.PI * 2); wctx.stroke();
+      }
+      // a quick bright touch point
+      if (k < 0.25) { wctx.globalAlpha = 0.35 * (1 - k / 0.25); wctx.beginPath(); wctx.ellipse(x, y, 3.5, 1.4, 0, 0, Math.PI * 2); wctx.fill(); }
+    }
+    wctx.globalAlpha = 1;
+  };
+  // Paw position on the page (projected onto the ground)
+  const v3 = new THREE.Vector3();
+  const pawOnPage = (paw) => {
+    paw.getWorldPosition(v3); v3.y = 0; v3.project(camera);
+    const sx = pet.offsetWidth / CANVAS_W;
+    return { x: pos.x - feet.x * sx + (v3.x + 1) / 2 * CANVAS_W * sx, y: pos.y - feet.y * sx + (1 - v3.y) / 2 * CANVAS_H * sx };
   };
   const view = () => ({ top: scrollY + 90, bottom: scrollY + innerHeight - 16 });
   const inView = (y) => y > scrollY + 30 && y < scrollY + innerHeight + 10;
@@ -228,6 +302,8 @@ export function startWolf({ reduceMotion = false } = {}) {
   let offscreenSince = 0;
   let greeted = false;
   let overText = false, opacity = 1;
+  const pawSplash = [];
+  let nextIdleRipple = performance.now() + 3000;
   let nextChatter = performance.now() + rand(35000, 60000);
   const said = new Set();
   const seed = Math.random() * 10;
@@ -338,13 +414,17 @@ export function startWolf({ reduceMotion = false } = {}) {
     pos.y = clamp(pos.y, 100, docH() - 12);
     pet.style.transform = `translate(${(pos.x - feet.x).toFixed(1)}px, ${(pos.y - feet.y).toFixed(1)}px)`;
 
-    // Fade a little while passing over text, so it never blocks reading
-    overText = overlapsText(pos.x, pos.y);
-    opacity = lerp(opacity, overText ? 0.35 : 1, 1 - Math.exp(-dt * 6));
-    pet.style.opacity = opacity.toFixed(2);
+    // Fade gradually with how much text is underneath, so it melts into the page instead of blinking
+    const cover = textCover(pos.x, pos.y);
+    overText = cover > 0.05;
+    opacity = lerp(opacity, 1 - cover * 0.55, 1 - Math.exp(-dt * 2.5));
+    pet.style.opacity = opacity.toFixed(3);
+    drawWater(now);
+    // Hide the layer when there is nothing on it, so a stale frame can never linger
+    water.hidden = pet.hidden || !ripples.length;
 
     // Nothing to draw if it's off screen
-    if (!inView(pos.y) && !inView(pos.y - CANVAS_H)) { requestAnimationFrame(frame); return; }
+    if (pet.hidden || (!inView(pos.y) && !inView(pos.y - CANVAS_H))) { requestAnimationFrame(frame); return; }
 
     W.wolf.rotation.y = -heading;
 
@@ -364,11 +444,25 @@ export function startWolf({ reduceMotion = false } = {}) {
       const lift = Math.max(0, Math.cos(p)) * amp * 1.4;
       leg.hip.rotation.z = lerp(swing, leg.front ? 1.45 : -1.25, sleepT);
       leg.knee.rotation.z = lerp(leg.front ? -lift : lift * 0.9, leg.front ? 0 : 2.2, sleepT);
+      // A paw touches the water when it comes down from its lift
+      const down = Math.cos(p) <= 0;
+      if (down && !leg.down && moving > 0.25 && sleepT < 0.3) pawSplash.push(leg);
+      leg.down = down;
     }
+
+    if (pawSplash.length) {
+      W.wolf.updateMatrixWorld(true);
+      for (const leg of pawSplash) { const q = pawOnPage(leg.paw); ripple(q.x, q.y, lerp(0.8, 1.4, runBlend)); }
+      pawSplash.length = 0;
+    }
+    // Standing still: a slow, gentle ripple now and then
+    if (moving < 0.1 && sleepT < 0.5 && now > nextIdleRipple) { ripple(pos.x, pos.y - 2, 1.6, 2400); nextIdleRipple = now + rand(2600, 4200); }
 
     const bob = lerp(Math.abs(Math.cos(phase)) * 0.06, Math.sin(phase + 1.2) * 0.16, runBlend) * moving;
     const breathe = Math.sin(t * 2.4) * 0.012 * (1 - moving);
+    const wasHop = hopT > 0;
     hopT = Math.max(0, hopT - dt * 2.2);
+    if (wasHop && hopT === 0) { ripple(pos.x, pos.y, 2, 1800); setTimeout(() => ripple(pos.x, pos.y, 1.2, 1500), 160); }
     W.body.position.y = lerp(bob, -0.62, sleepT) + Math.sin(hopT * Math.PI) * 0.7;
     W.body.rotation.z = Math.sin(phase) * 0.12 * runBlend * moving;
     W.torso.scale.y = 0.54 + breathe;
@@ -390,6 +484,16 @@ export function startWolf({ reduceMotion = false } = {}) {
     W.tail.rotation.y = wag + Math.sin(phase) * 0.15 * moving + sleepT * 0.9;
     W.tail.rotation.z = runBlend * moving * -0.7 + Math.sin(phase * 2) * 0.08 * moving - sleepT * 0.25 + howling * -0.2;
 
+    // Reflection: the same wolf mirrored under the water line, faint and slightly wavy
+    renderer.clear();
+    W.shadow.visible = false;
+    W.wolf.scale.set(1, -(1 + Math.sin(t * 5) * 0.03), 1 + Math.sin(t * 3.3) * 0.02);
+    W.mats.forEach((m) => { m.opacity = 0.16; });
+    renderer.render(scene, camera);
+    renderer.clearDepth();
+    W.shadow.visible = true;
+    W.wolf.scale.set(1, 1, 1);
+    W.mats.forEach((m) => { m.opacity = 1; });
     renderer.render(scene, camera);
     requestAnimationFrame(frame);
   };
