@@ -129,7 +129,7 @@ function buildWolf() {
 }
 
 // Text and UI the wolf should never rest on top of
-const AVOID = 'h1, h2, h3, p, .btn, .metro, .skillmap, .facts, .route li, .project, .contact__mail, .socials, .tag, .label, .footer__inner';
+const AVOID = 'h1, h2, h3, p, .btn, .metro, .about__photo, .skillmap, .facts, .route li, .project, .contact__mail, .socials, .tag, .label, .footer__inner';
 
 function greeting() {
   const h = new Date().getHours();

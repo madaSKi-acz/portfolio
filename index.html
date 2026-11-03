@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=38" />
+  <link rel="stylesheet" href="styles.css?v=39" />
   <script>
     try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
@@ -67,9 +67,15 @@
     <section class="section" id="about">
       <div class="container">
         <p class="label reveal">01 / About</p>
-        <p class="statement reveal">
-          Front end by focus, full stack by habit. If a task repeats, I <span class="hl">automate it</span>. I pick up new tools fast and build with <span class="hl hl--blue">AI agents</span>.
-        </p>
+        <div class="about__grid">
+          <p class="statement reveal">
+            Front end by focus, full stack by habit. If a task repeats, I <span class="hl">automate it</span>. I pick up new tools fast and build with <span class="hl hl--blue">AI agents</span>.
+          </p>
+          <figure class="about__photo reveal">
+            <img src="assets/me.webp" width="640" height="800" alt="Portrait of Your Name" loading="lazy" decoding="async" />
+            <figcaption class="mono"><i aria-hidden="true"></i>Phnom Penh · KH</figcaption>
+          </figure>
+        </div>
         <ul class="facts reveal">
           <li><strong>~4</strong><span>years shipping</span></li>
           <li><strong>Vue</strong><span>home stack</span></li>
@@ -206,6 +212,6 @@
     </div>
   </footer>
 
-  <script src="main.js?v=38" defer></script>
+  <script src="main.js?v=39" defer></script>
 </body>
 </html>
