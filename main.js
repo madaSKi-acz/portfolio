@@ -38,97 +38,116 @@
     reveals.forEach((el) => io.observe(el));
   }
 
-  // ---------- Journey road + wolf ----------
-  const road = document.getElementById('trailStops');
+  // ---------- Pet wolf that roams the page ----------
   const wolf = document.getElementById('wolf');
   const bubble = document.getElementById('wolfBubble');
-  const stopsDef = [['top', 'Start'], ['about', 'About'], ['skills', 'Skills'], ['experience', 'Experience'], ['projects', 'Projects'], ['contact', 'Contact']];
-  const stops = stopsDef.map(([id, label]) => {
-    const a = document.createElement('a');
-    a.href = `#${id}`; a.dataset.label = label; a.setAttribute('aria-label', label);
-    road.appendChild(a);
-    return { a, el: document.getElementById(id), frac: 0 };
-  });
-
-  const maxScroll = () => Math.max(document.documentElement.scrollHeight - innerHeight, 1);
-  const layoutStops = () => {
-    const max = maxScroll();
-    stops.forEach((s) => {
-      s.frac = Math.min(Math.max(s.el.offsetTop / max, 0), 1);
-      s.a.style.left = `${s.frac * 100}%`;
-    });
-  };
-  layoutStops();
-  addEventListener('resize', layoutStops);
-  addEventListener('load', layoutStops);
+  const rand = (a, b) => a + Math.random() * (b - a);
 
   let bubbleTimer;
-  const say = (text, ms = 1600) => {
+  const say = (text, ms = 1500) => {
     bubble.textContent = text;
     bubble.classList.add('is-on');
     clearTimeout(bubbleTimer);
     bubbleTimer = setTimeout(() => bubble.classList.remove('is-on'), ms);
   };
 
-  const roadX = (frac) => {
-    const r = road.getBoundingClientRect();
-    return r.left + frac * r.width;
+  const bounds = () => {
+    const w = wolf.offsetWidth, h = wolf.offsetHeight;
+    return { minX: 12, maxX: innerWidth - w - 12, minY: 90, maxY: innerHeight - h - 14 };
   };
-  const progress = () => Math.min(Math.max(scrollY / maxScroll(), 0), 1);
-
-  let x = roadX(progress());
-  let lastMove = performance.now();
-  let state = 'idle';
+  let pos = { x: innerWidth - 120, y: innerHeight - 70 };
+  let target = { ...pos };
+  let mode = 'idle';            // idle | walk | run | sleep
+  let restUntil = performance.now() + 1500;
+  let lastScroll = 0;
   let howled = false;
-  const setState = (next) => {
-    if (state === next) return;
-    if (state === 'sleeping' && next !== 'sleeping') say('!', 700);
-    wolf.classList.toggle('is-running', next === 'running');
-    wolf.classList.toggle('is-sleeping', next === 'sleeping');
-    state = next;
-    if (next === 'sleeping') say('z z z', 2400);
+
+  const setMode = (next) => {
+    if (mode === 'sleep' && next !== 'sleep') say('!', 700);
+    mode = next;
+    wolf.classList.toggle('is-running', next === 'walk' || next === 'run');
+    wolf.classList.toggle('is-sleeping', next === 'sleep');
+    wolf.style.setProperty('--gait', next === 'run' ? '.3s' : '.6s');
+    if (next === 'sleep') say('z z z', 2200);
   };
 
-  const tick = (now) => {
-    const target = roadX(progress());
-    const step = (target - x) * (reduce ? 1 : 0.075);
-    x += step;
-    const speed = Math.abs(step);
-    const w = wolf.offsetWidth;
-    const rr = road.getBoundingClientRect();
-    const cx = Math.min(Math.max(x, rr.left + w * 0.4), rr.right - w * 0.4);
-    wolf.style.transform = `translateX(${cx - w / 2}px)`;
-
-    if (speed > 0.35) {
-      wolf.classList.toggle('is-left', step < 0);
-      wolf.style.setProperty('--gait', `${Math.max(0.24, Math.min(0.62, 0.66 - speed * 0.035)).toFixed(2)}s`);
-      lastMove = now;
-      if (!reduce) setState('running');
-      if (progress() < 0.95) howled = false;
-    } else {
-      const idle = now - lastMove;
-      if (idle > 9000) setState('sleeping');
-      else if (state !== 'sleeping') setState('idle');
-      if (!howled && progress() > 0.97 && idle > 350 && state === 'idle') {
-        howled = true;
-        wolf.classList.add('is-howling');
-        say('Awoooo!', 2000);
-        setTimeout(() => wolf.classList.remove('is-howling'), 2200);
-      }
+  const wander = (run) => {
+    const b = bounds();
+    // Pick a spot not too close to where we are, so the trip is visible
+    for (let i = 0; i < 6; i++) {
+      target = { x: rand(b.minX, b.maxX), y: rand(b.minY, b.maxY) };
+      if (Math.hypot(target.x - pos.x, target.y - pos.y) > 180) break;
     }
-
-    // Stations the wolf has passed light up
-    stops.forEach((s) => s.a.classList.toggle('is-past', roadX(s.frac) <= x + 2));
-    requestAnimationFrame(tick);
+    setMode(run ? 'run' : 'walk');
   };
-  requestAnimationFrame(tick);
+
+  const place = () => { wolf.style.transform = `translate(${pos.x}px, ${pos.y}px)`; };
+  place();
+
+  if (reduce) {
+    // No roaming for reduced motion: the wolf just sits in the corner
+  } else {
+    addEventListener('scroll', () => {
+      const now = performance.now();
+      if (now - lastScroll > 900 && (mode === 'idle' || mode === 'sleep' || mode === 'walk')) wander(true);
+      lastScroll = now;
+    }, { passive: true });
+
+    addEventListener('resize', () => {
+      const b = bounds();
+      pos.x = Math.min(Math.max(pos.x, b.minX), b.maxX);
+      pos.y = Math.min(Math.max(pos.y, b.minY), b.maxY);
+      target = { ...pos }; place();
+    });
+
+    const tick = (now) => {
+      if (mode === 'walk' || mode === 'run') {
+        const dx = target.x - pos.x, dy = target.y - pos.y;
+        const dist = Math.hypot(dx, dy);
+        const speed = mode === 'run' ? 4.2 : 1.3;
+        if (dist <= speed) {
+          pos = { ...target };
+          setMode('idle');
+          restUntil = now + rand(1800, 4500);
+        } else {
+          pos.x += (dx / dist) * speed;
+          pos.y += (dy / dist) * speed;
+          if (Math.abs(dx) > 2) wolf.classList.toggle('is-left', dx < 0);
+        }
+        place();
+      } else if (now > restUntil) {
+        if (mode === 'idle' && Math.random() < 0.22) {
+          setMode('sleep');
+          restUntil = now + rand(7000, 12000);
+        } else {
+          wander(Math.random() < 0.25);
+        }
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+
+    // Howl the first time Contact comes into view
+    const contact = document.getElementById('contact');
+    if (contact && 'IntersectionObserver' in window) {
+      const hio = new IntersectionObserver((entries) => {
+        if (!entries[0].isIntersecting || howled) return;
+        howled = true;
+        setTimeout(() => {
+          wolf.classList.add('is-howling');
+          say('Awoooo!', 2000);
+          setTimeout(() => wolf.classList.remove('is-howling'), 2200);
+        }, 1200);
+      }, { threshold: 0.4 });
+      hio.observe(contact);
+    }
+  }
 
   // Pet the wolf
-  const pets = ['♥', '♥ ♥', 'woof!', '♥'];
+  const pets = ['♥', 'woof!', '♥ ♥'];
   let petCount = 0;
   wolf.addEventListener('click', () => {
-    lastMove = performance.now();
-    setState('idle');
+    if (mode !== 'run') { setMode('idle'); restUntil = performance.now() + 2500; }
     wolf.classList.remove('is-hop'); void wolf.offsetWidth; wolf.classList.add('is-hop');
     say(pets[petCount++ % pets.length], 1100);
   });

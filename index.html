@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=5" />
+  <link rel="stylesheet" href="styles.css?v=6" />
   <script>
     try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
@@ -29,11 +29,8 @@
     </div>
   </header>
 
-  <!-- Journey road: the wolf runs along it as you scroll -->
-  <nav class="trail" id="trail" aria-label="Page journey">
-    <div class="trail__road"></div>
-    <div class="trail__stops" id="trailStops"></div>
-    <button class="wolf" id="wolf" type="button" aria-label="Pet the wolf">
+  <!-- Pet wolf that roams the page -->
+  <button class="wolf" id="wolf" type="button" aria-label="Pet the wolf">
       <span class="wolf__bubble" id="wolfBubble" aria-hidden="true"></span>
       <span class="wolf__flip">
         <svg class="wolf__svg" viewBox="0 0 124 84" aria-hidden="true">
@@ -61,7 +58,6 @@
         </svg>
       </span>
     </button>
-  </nav>
 
   <main id="main">
     <!-- HERO -->
@@ -225,6 +221,6 @@
     </div>
   </footer>
 
-  <script src="main.js?v=5" defer></script>
+  <script src="main.js?v=6" defer></script>
 </body>
 </html>
