@@ -169,6 +169,62 @@
     });
   });
 
+  // ---------- Language (English / Khmer) ----------
+  // English is the HTML itself; Khmer replaces each [data-i18n] element's content.
+  const KM = {
+    skip: 'រំលងទៅមាតិកា',
+    name: 'ញ៉ុក សុខ',
+    contact: 'ទំនាក់ទំនង',
+    tag: '<span class="tag__dot"></span>វិស្វករកម្មវិធី · ~4 ឆ្នាំ',
+    h1: 'ខ្ញុំបំប្លែងដំណើរការដ៏ស្មុគស្មាញ ទៅជា<em>ប្រព័ន្ធដែលដំណើរការបានល្អ។</em>',
+    viewWork: 'មើលស្នាដៃ',
+    sayHello: 'ទាក់ទងមកខ្ញុំ',
+    stAbout: 'អំពីខ្ញុំ', stSkills: 'ជំនាញ', stExperience: 'បទពិសោធន៍', stProjects: 'គម្រោង', stContact: 'ទំនាក់ទំនង',
+    keyFront: '<i class="k-orange"></i>ផ្នែកខាងមុខ (Front end)',
+    keyBack: '<i class="k-blue"></i>ផ្នែកខាងក្រោយ (Back end)',
+    keyData: '<i class="k-green"></i>ទិន្នន័យ និងផែនទី',
+    l1: '01 / អំពីខ្ញុំ',
+    statement: 'ផ្ដោតលើ Front end ហើយធ្វើ Full stack ជាទម្លាប់។ បើកិច្ចការណាត្រូវធ្វើម្ដងហើយម្ដងទៀត ខ្ញុំ<span class="hl">ធ្វើវាឱ្យស្វ័យប្រវត្តិ</span>។ ខ្ញុំរៀនឧបករណ៍ថ្មីៗបានលឿន ហើយបង្កើតការងារជាមួយ <span class="hl hl--blue">AI agents</span>។',
+    photoAlt: 'រូបថតរបស់ ញ៉ុក សុខ',
+    place: '<i aria-hidden="true"></i>ភ្នំពេញ · កម្ពុជា',
+    f1: 'ឆ្នាំនៃការងារជាក់ស្ដែង', f2: 'បច្ចេកវិទ្យាចម្បង', f3: 'កិច្ចការដដែលៗដែលខ្ញុំទុកចោល',
+    l2: '02 / ជំនាញ', skillCity: 'ទីក្រុងជំនាញ',
+    mapHint: 'អូសដើម្បីរុករក · ctrl + រំកិល ដើម្បីពង្រីក',
+    l3: '03 / បទពិសោធន៍', routeTitle: 'ផ្លូវដែលខ្ញុំបានដើរកន្លងមក',
+    dgcWhen: '2023 — បច្ចុប្បន្ន', dgcTitle: 'អ្នកអភិវឌ្ឍន៍គេហទំព័រ', dgcOrg: 'គណៈកម្មាធិការរដ្ឋាភិបាលឌីជីថល (DGC)',
+    z1Title: 'អ្នកអភិវឌ្ឍន៍គេហទំព័រ ផ្នែក Back end', z1Org: 'Z1 Flexible Solution · កម្មសិក្សា 3 ខែ បន្ទាប់មកជាបុគ្គលិក 7 ខែ',
+    l4: '04 / ការសិក្សា', eduTitle: 'កន្លែងដែលខ្ញុំបានសិក្សា',
+    aeuTitle: 'បរិញ្ញាបត្រ', aeuOrg: 'សាកលវិទ្យាល័យ អាស៊ី អឺរ៉ុប · គម្រោងបញ្ចប់ការសិក្សាលើការរចនាមូលដ្ឋានទិន្នន័យ',
+    pnTitle: 'កម្មវិធីបណ្ដុះបណ្ដាលព័ត៌មានវិទ្យា', pnOrg: 'Passerelles Numériques Cambodia · និស្សិតដែលត្រូវបានលើកឡើង',
+    story: 'រឿងរ៉ាវរបស់ខ្ញុំ ↗',
+    l5: '05 / គម្រោង', projTitle: 'ស្នាដៃដែលបានជ្រើសរើស',
+    p1: 'គម្រោងផែនទី', p2: 'ផ្ទាំងគ្រប់គ្រងប្រតិបត្តិការ', p3: 'ប្រព័ន្ធ Full-stack',
+    l6: '06 / ទំនាក់ទំនង', contactTitle: 'ចំណតបន្ទាប់៖ <em>បញ្ហារបស់អ្នក។</em>',
+    resume: 'ប្រវត្តិរូប',
+  };
+  const TITLE = { en: 'Nhok Sok — Software Engineer', km: 'ញ៉ុក សុខ — វិស្វករកម្មវិធី' };
+  const i18nEls = [...document.querySelectorAll('[data-i18n]')];
+  i18nEls.forEach((el) => { el.dataset.en = el.innerHTML; });
+  const altEls = [...document.querySelectorAll('[data-i18n-alt]')];
+  altEls.forEach((el) => { el.dataset.enAlt = el.alt; });
+  const langBtn = document.getElementById('langToggle');
+  const lang = () => (root.lang === 'km' ? 'km' : 'en');
+  window.siteLang = lang;
+  const setLang = (l, save = true) => {
+    root.lang = l;
+    i18nEls.forEach((el) => { el.innerHTML = l === 'km' && KM[el.dataset.i18n] ? KM[el.dataset.i18n] : el.dataset.en; });
+    altEls.forEach((el) => { el.alt = l === 'km' && KM[el.dataset.i18nAlt] ? KM[el.dataset.i18nAlt] : el.dataset.enAlt; });
+    document.title = TITLE[l];
+    // the button offers the other language, written in that language
+    langBtn.textContent = l === 'km' ? 'EN' : 'ខ្មែរ';
+    langBtn.lang = l === 'km' ? 'en' : 'km';
+    langBtn.setAttribute('aria-label', l === 'km' ? 'Switch to English' : 'ប្ដូរទៅភាសាខ្មែរ');
+    if (save) { try { localStorage.setItem('lang', l); } catch (e) {} }
+    document.dispatchEvent(new CustomEvent('lang:change', { detail: l }));
+  };
+  setLang(lang(), false);
+  langBtn.addEventListener('click', () => setLang(lang() === 'km' ? 'en' : 'km'));
+
   // Stars: a random sky over the top of the page, and a few around the toggle, re-scattered for each night
   const scatter = (box, n, area) => {
     let html = '';
@@ -259,7 +315,11 @@
       .catch(() => {})
       .finally(() => { loading = false; });
   };
-  const syncToggle = () => { toggle.textContent = wolfOff ? '🐺 Show wolf' : '🐺 Hide wolf'; };
+  const syncToggle = () => {
+    const km = root.lang === 'km';
+    toggle.textContent = wolfOff ? (km ? '🐺 បង្ហាញចចក' : '🐺 Show wolf') : (km ? '🐺 លាក់ចចក' : '🐺 Hide wolf');
+  };
+  document.addEventListener('lang:change', () => syncToggle());
   syncToggle();
   toggle.addEventListener('click', () => {
     wolfOff = !wolfOff;

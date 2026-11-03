@@ -131,15 +131,23 @@ function buildWolf() {
 // Text and UI the wolf should never rest on top of
 const AVOID = 'h1, h2, h3, p, .btn, .metro, .about__photo, .skillmap, .facts, .route li, .school, .project, .contact__mail, .socials, .tag, .label, .footer__inner';
 
+const km = () => document.documentElement.lang === 'km';
 function greeting() {
   const h = new Date().getHours();
-  if (h >= 5 && h < 12) return 'Good morning! ☀️';
-  if (h >= 12 && h < 17) return 'Good afternoon! 🌤️';
-  if (h >= 17 && h < 22) return 'Good evening! 🌆';
-  return 'Up late? 🌙';
+  if (h >= 5 && h < 12) return km() ? 'អរុណសួស្តី! ☀️' : 'Good morning! ☀️';
+  if (h >= 12 && h < 17) return km() ? 'ទិវាសួស្តី! 🌤️' : 'Good afternoon! 🌤️';
+  if (h >= 17 && h < 22) return km() ? 'សាយ័ណ្ហសួស្តី! 🌆' : 'Good evening! 🌆';
+  return km() ? 'នៅមិនទាន់គេងទៀត? 🌙' : 'Up late? 🌙';
 }
-const IDLE_LINES = ['*sniff sniff*', 'pet me? 🐾', 'psst… hire this human 👀', '*yawn*', 'I like Vue too', 'nice scroll 😎'];
-const SECTION_LINES = { skills: 'tap a pin! 📍', projects: 'check these out 👇', experience: 'what a journey', education: 'school days 🎓' };
+const LINES = {
+  en: { idle: ['*sniff sniff*', 'pet me? 🐾', 'psst… hire this human 👀', '*yawn*', 'I like Vue too', 'nice scroll 😎'],
+    section: { skills: 'tap a pin! 📍', projects: 'check these out 👇', experience: 'what a journey', education: 'school days 🎓' },
+    pets: ['♥', 'woof!', '♥ ♥', 'hehe'], back: 'welcome back! 🐾' },
+  km: { idle: ['*ហិតៗ*', 'អង្អែលខ្ញុំបន្តិច? 🐾', 'ស៊ីស… ជួលមនុស្សម្នាក់នេះទៅ 👀', '*ស្វាវ*', 'ខ្ញុំក៏ចូលចិត្ត Vue ដែរ', 'រំកិលស្អាតណាស់ 😎'],
+    section: { skills: 'ចុចលើម្ជុលមើល! 📍', projects: 'មើលទាំងនេះសិន 👇', experience: 'ដំណើរដ៏វែងឆ្ងាយ', education: 'ថ្ងៃរៀនសូត្រ 🎓' },
+    pets: ['♥', 'វូហ្វ!', '♥ ♥', 'ហិហិ'], back: 'សូមស្វាគមន៍ការត្រឡប់មកវិញ! 🐾' },
+};
+const L = () => LINES[km() ? 'km' : 'en'];
 
 export function startWolf({ reduceMotion = false } = {}) {
   // ---------- DOM ----------
@@ -334,7 +342,7 @@ export function startWolf({ reduceMotion = false } = {}) {
               howlUntil = performance.now() + 2300;
               say('Awoooo!', 2100);
             } else if (performance.now() - lastSaid > 8000) {
-              say(SECTION_LINES[e.target.id], 1800);
+              say(L().section[e.target.id], 1800);
             }
           }, 2600);
         });
@@ -343,13 +351,13 @@ export function startWolf({ reduceMotion = false } = {}) {
     }
   }
 
-  const pets = ['♥', 'woof!', '♥ ♥', 'hehe'];
+
   let petCount = 0;
   hit.addEventListener('click', () => {
     const now = performance.now();
     if (mode !== 'run') { target = { ...pos }; rest(now, 2500, 5000); }
     hopT = 1;
-    say(pets[petCount++ % pets.length], 1100);
+    say(L().pets[petCount++ % L().pets.length], 1100);
   });
 
   // ---------- Loop ----------
@@ -388,10 +396,10 @@ export function startWolf({ reduceMotion = false } = {}) {
         let back = false;
         try { back = !!localStorage.getItem('wolf-seen'); localStorage.setItem('wolf-seen', '1'); } catch (e) {}
         say(greeting(), 2600);
-        if (back) setTimeout(() => say('welcome back! 🐾', 2000), 3000);
+        if (back) setTimeout(() => say(L().back, 2000), 3000);
       }
       if (now > nextChatter && mode === 'idle' && !scrolling && inView(pos.y)) {
-        say(IDLE_LINES[Math.floor(Math.random() * IDLE_LINES.length)], 2000);
+        say(L().idle[Math.floor(Math.random() * L().idle.length)], 2000);
         nextChatter = now + rand(45000, 90000);
       }
     }

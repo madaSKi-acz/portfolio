@@ -14,6 +14,18 @@ const GROUPS = {
   data: { name: 'Data & maps', where: 'Data Park', area: 'Boeung Keng Kang 3', c: '--green', rect: [104.9182, 11.5414, 104.9223, 11.5456] },
   flow: { name: 'Workflow', where: 'Automation Hills', area: 'Boeung Keng Kang 2', c: '--violet', rect: [104.9182, 11.5476, 104.9223, 11.5521] },
 };
+// Khmer text for the map (the page's language switch sets <html lang="km">)
+const KM_GROUPS = {
+  front: { name: 'ផ្នែកខាងមុខ', where: 'សង្កាត់ Front-end', area: 'បឹងកេងកង ១' },
+  back: { name: 'ផ្នែកខាងក្រោយ', where: 'កំពង់ផែ Back-end', area: 'ទន្លេបាសាក់' },
+  data: { name: 'ទិន្នន័យ និងផែនទី', where: 'សួនទិន្នន័យ', area: 'បឹងកេងកង ៣' },
+  flow: { name: 'លំហូរការងារ', where: 'ភ្នំស្វ័យប្រវត្តិកម្ម', area: 'បឹងកេងកង ២' },
+};
+const KM_TEXT = { all: 'ជំនាញទាំងអស់', here: 'អ្នកនៅទីនេះ', daily: 'ប្រើរាល់ថ្ងៃ', ready: 'ត្រៀមរួចជាស្រេច' };
+const EN_TEXT = { all: 'All skills', here: 'You are here', daily: 'Daily driver', ready: 'Ready to ship' };
+const isKm = () => document.documentElement.lang === 'km';
+const G = (g, k) => (isKm() ? KM_GROUPS[g][k] : GROUPS[g][k]);
+const TX = (k) => (isKm() ? KM_TEXT : EN_TEXT)[k];
 const EN_LABEL = ['coalesce', ['get', 'name:en'], ['get', 'name_en'], ['get', 'name:latin'], ['get', 'name']];
 
 export function initSkillMap({ root: map, reduce, isDark }) {
@@ -88,7 +100,7 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     const bounds = new ml.LngLatBounds([w, sth], [e, n]);
     const lab = document.createElement('div');
     lab.className = 'sm-district';
-    lab.innerHTML = `<span>${GROUPS[g].where}<small>${GROUPS[g].area}</small></span>`;
+    lab.innerHTML = `<span>${G(g, 'where')}<small>${G(g, 'area')}</small></span>`;
     const label = new ml.Marker({ element: lab, anchor: 'bottom', offset: [0, -4] }).setLngLat([(w + e) / 2, n]).addTo(lmap);
     layers[g] = { own, poly, bounds, label, on: true };
   });
@@ -101,7 +113,7 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   // "You are here"
   const homeEl = document.createElement('div');
   homeEl.className = 'sm-home';
-  homeEl.innerHTML = '<span></span><b>You are here</b>';
+  homeEl.innerHTML = `<span></span><b>${TX('here')}</b>`;
   new ml.Marker({ element: homeEl, anchor: 'center' }).setLngLat(HOME).addTo(lmap);
 
   // ---------- Our layers on top of the basemap (re-added after a theme/style switch) ----------
@@ -255,8 +267,8 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     card.style.setProperty('--c', `var(${GROUPS[f.g].c})`);
     card.querySelector('.sm-card__icon').innerHTML = f.head;
     card.querySelector('.sm-card__name').textContent = f.name;
-    card.querySelector('.sm-card__where').textContent = `${GROUPS[f.g].where} · ${GROUPS[f.g].area}`;
-    card.querySelector('.sm-card__status').textContent = f.status === 'Daily' ? 'Daily driver' : 'Ready to ship';
+    card.querySelector('.sm-card__where').textContent = `${G(f.g, 'where')} · ${G(f.g, 'area')}`;
+    card.querySelector('.sm-card__status').textContent = f.status === 'Daily' ? TX('daily') : TX('ready');
     card.hidden = false;
     // One route, drawn once: the street route if it answers quickly, otherwise the animated guess.
     // (A late street route is kept for the next tap instead of replacing the line mid-way.)
@@ -325,8 +337,15 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     const box = li.querySelector('input');
     if (box) box.addEventListener('change', (e) => toggleLayer(g, e.target.checked));
   };
-  row('all', 'All skills', feats.length, 'var(--ink)');
-  Object.entries(GROUPS).forEach(([g, d]) => row(g, d.name, layers[g].own.length, `var(${d.c})`));
+  row('all', TX('all'), feats.length, 'var(--ink)');
+  Object.entries(GROUPS).forEach(([g, d]) => row(g, G(g, 'name'), layers[g].own.length, `var(${d.c})`));
+  // Language switch: relabel districts, the list, "You are here" and an open card
+  document.addEventListener('lang:change', () => {
+    Object.keys(GROUPS).forEach((g) => { layers[g].label.getElement().innerHTML = `<span>${G(g, 'where')}<small>${G(g, 'area')}</small></span>`; });
+    list.querySelectorAll('li').forEach((li) => { const g = li.dataset.layer; li.querySelector('.sm-fly span').textContent = g === 'all' ? TX('all') : G(g, 'name'); });
+    homeEl.querySelector('b').textContent = TX('here');
+    if (selected) select(selected);
+  });
   const chips = [...map.querySelectorAll('[data-fly]')];
   const focus = (g) => {
     chips.forEach((c) => c.classList.toggle('is-on', c.dataset.fly === g));

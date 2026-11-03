@@ -12,9 +12,9 @@
   --green: #12a36b;
   --violet: #8a4df0;
   --ease: cubic-bezier(.22, 1, .36, 1);
-  --display: "Bricolage Grotesque", "Inter", system-ui, sans-serif;
-  --body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --display: "Bricolage Grotesque", "Inter", "Kantumruy Pro", system-ui, sans-serif;
+  --body: "Inter", "Kantumruy Pro", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "JetBrains Mono", "Kantumruy Pro", ui-monospace, Menlo, monospace;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
@@ -60,6 +60,9 @@ section[id] { scroll-margin-top: 64px; }
 .brand { display: flex; align-items: center; gap: .6rem; font-family: var(--display); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.02em; }
 .brand__mark { width: 16px; height: 16px; border-radius: 50%; border: 4px solid var(--orange); background: var(--paper); }
 .nav__actions { display: flex; align-items: center; gap: .75rem; }
+.lang-btn { font: 600 .85rem var(--body); color: var(--ink); background: transparent; border: 1.5px solid var(--rule); border-radius: 999px; padding: .4rem .85rem; cursor: pointer; transition: border-color .25s, background-color .25s, color .25s; }
+.lang-btn:hover { border-color: var(--ink); }
+.lang-btn:lang(km) { font-family: "Kantumruy Pro", var(--body); }
 .nav__cta { font-size: .9rem; font-weight: 600; padding: .45rem 1rem; border: 1.5px solid var(--ink); border-radius: 999px; transition: background-color .25s, color .25s; }
 .nav__cta:hover { background: var(--ink); color: var(--paper); }
 .theme-btn { width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid var(--ink); background: transparent; cursor: pointer; display: grid; place-items: center; padding: 0; }
@@ -446,3 +449,12 @@ li:has(.sm-vis input:not(:checked)) .sm-fly span { text-decoration: line-through
   20% { box-shadow: 0 0 0 1.5px rgba(225, 240, 255, .85), 0 0 34px 8px rgba(150, 200, 255, .55); filter: brightness(1.3) saturate(1.1); }
   100% { box-shadow: 0 0 0 0 transparent; filter: brightness(1); }
 }
+
+/* ============ Khmer ============ */
+/* Khmer script stacks vowels and subscripts above and below the line: give it room and no tight tracking */
+:root[lang="km"] body { line-height: 1.75; }
+:root[lang="km"] :is(h1, h2, h3, .statement, .contact__title, .facts strong, .sm-title h2) { letter-spacing: 0; line-height: 1.45; }
+:root[lang="km"] h1 { font-size: clamp(2.1rem, 1.2rem + 3.6vw, 4.2rem); }
+:root[lang="km"] .statement { font-size: clamp(1.4rem, .9rem + 2.1vw, 2.5rem); }
+:root[lang="km"] :is(.label, .mono, .sm-district span, .stn b, .metro__key) { letter-spacing: 0; }
+:root[lang="km"] .sm-district span { text-transform: none; font-family: var(--body); font-weight: 600; }
