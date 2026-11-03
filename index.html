@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=39" />
+  <link rel="stylesheet" href="styles.css?v=40" />
   <script>
     try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
@@ -155,7 +155,32 @@
         <ol class="route">
           <li class="reveal"><span class="route__when mono">20XX — now</span><div><h3>Software Engineer</h3><p>Company Name</p></div></li>
           <li class="reveal"><span class="route__when mono">20XX — 20XX</span><div><h3>Junior Developer</h3><p>Company Name</p></div></li>
-          <li class="reveal"><span class="route__when mono">20XX</span><div><h3>Bachelor's degree</h3><p>University Name · DB design for final project</p></div></li>
+          <!-- TODO: set the years for both schools -->
+          <li class="reveal route__school">
+            <span class="route__when mono">20XX — 20XX</span>
+            <div class="route__body">
+              <img class="route__logo" src="assets/schools/aeu.png" width="127" height="168" alt="Asia Euro University logo" loading="lazy" />
+              <div>
+                <h3>Bachelor's degree</h3>
+                <p>Asia Euro University · DB design for final project</p>
+                <p class="route__links"><a href="https://www.aeu.edu.kh/kh" target="_blank" rel="noopener">aeu.edu.kh ↗</a></p>
+              </div>
+            </div>
+          </li>
+          <li class="reveal route__school">
+            <span class="route__when mono">20XX — 20XX</span>
+            <div class="route__body">
+              <img class="route__logo route__logo--round" src="assets/schools/pn.png" width="128" height="128" alt="Passerelles Numériques logo" loading="lazy" />
+              <div>
+                <h3>IT training program</h3>
+                <p>Passerelles Numériques Cambodia</p>
+                <p class="route__links">
+                  <a href="https://www.passerellesnumeriques.org/what-we-do/cambodia/" target="_blank" rel="noopener">passerellesnumeriques.org ↗</a>
+                  <a href="https://www.facebook.com/passerelles.numeriques.cam/posts/english-below-studenttestimonial-%E1%9E%9F%E1%9E%BB%E1%9E%81-%E1%9E%87%E1%9E%B6%E1%9E%93%E1%9E%B7%E1%9E%9F%E1%9F%92%E1%9E%9F%E1%9E%B7%E1%9E%8F%E1%9E%98%E1%9E%80%E1%9E%96%E1%9E%B8%E1%9E%81%E1%9F%81%E1%9E%8F%E1%9F%92%E1%9E%8F%E1%9E%94%E1%9E%93%E1%9F%92%E1%9E%91%E1%9E%B6%E1%9E%99%E1%9E%98%E1%9E%B6%E1%9E%93%E1%9E%87%E1%9F%90%E1%9E%99-%E1%9E%8A%E1%9F%82%E1%9E%9B%E1%9E%94%E1%9E%B6%E1%9E%93%E1%9E%98%E1%9E%80%E1%9E%9A%E1%9E%9F%E1%9F%8B%E1%9E%93/188685383574370/" target="_blank" rel="noopener">Read my student story ↗</a>
+                </p>
+              </div>
+            </div>
+          </li>
         </ol>
       </div>
     </section>
@@ -212,6 +237,6 @@
     </div>
   </footer>
 
-  <script src="main.js?v=39" defer></script>
+  <script src="main.js?v=40" defer></script>
 </body>
 </html>
