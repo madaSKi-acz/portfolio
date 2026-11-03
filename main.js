@@ -28,6 +28,8 @@
   // Behind the wave the page is already in the new theme (the clip on the new snapshot); the crest
   // is a foam line with spray drawn live on a canvas above it; text lights up as the crest passes.
   const WAVE_MS = 3200;
+  // Phones and touch devices get a lighter wave: no blur, less foam, no filters, map restyles afterwards
+  const isLite = () => matchMedia('(max-width: 720px), (pointer: coarse)').matches;
   const easeWave = (t) => 0.5 - Math.cos(Math.PI * t) / 2;   // gentle in and out, like a swell
   // The foam layer is SVG (paths updated in place each frame), so no stale frames can linger
   let fx = null;
@@ -66,7 +68,7 @@
   const front = (t, G) => -140 + (G.L + 280) * easeWave(t);
   const pt = (G, p, q) => [G.W + G.u.x * p + G.v.x * q, G.u.y * p + G.v.y * q];
   const waveFrames = (G) => {
-    const frames = [], N = 56, S = 40;
+    const lite = isLite(), frames = [], N = lite ? 36 : 56, S = lite ? 22 : 40;
     for (let f = 0; f <= N; f++) {
       const t = f / N, s = front(t, G), pts = [];
       for (let i = 0; i <= S; i++) {
@@ -79,7 +81,7 @@
     return frames;
   };
   const f1 = (n) => n.toFixed(1);
-  const drawFoam = (G, t, toDark) => {
+  const drawFoam = (G, t, toDark, lite) => {
     fx.c.setAttribute('viewBox', `0 0 ${G.W} ${G.H}`);
     if (t >= 1) { fx.all.setAttribute('opacity', 0); return; }
     const s = front(t, G);
@@ -88,10 +90,11 @@
     for (let q = G.q0; q <= G.q1; q += 14) { const [x, y] = pt(G, s + crest(q, t), q); line += `${line ? 'L' : 'M'}${f1(x)} ${f1(y)}`; }
     // soft light (or shadow) moving with the crest
     fx.glow.setAttribute('stroke', toDark ? 'rgba(120,170,255,.12)' : 'rgba(255,248,230,.16)');
-    for (const el of [fx.glow, fx.c1, fx.c2, fx.c3]) el.setAttribute('d', line);
+    for (const el of [fx.c1, fx.c2, fx.c3]) el.setAttribute('d', line);
+    fx.glow.setAttribute('d', lite ? '' : line);   // the blurred glow is the costliest part: desktop only
     // spray streaks trailing behind the crest, pointing the way the wave moves
     let a1 = '', a2 = '';
-    for (let i = 0; i < 90; i++) {
+    for (let i = 0, n = lite ? 30 : 90; i < n; i++) {
       const q = G.q0 + rnd(i) * (G.q1 - G.q0);
       const back = 8 + rnd(i + 0.5) * 130 * (0.4 + rnd(i + 0.9));
       const p = s + crest(q, t) - back, len = 10 + rnd(i + 0.3) * 46;
@@ -102,7 +105,7 @@
     fx.s1.setAttribute('d', a1); fx.s2.setAttribute('d', a2);
     // foam clumps along the crest
     let fm = '';
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0, n = lite ? 18 : 50; i < n; i++) {
       const q = G.q0 + rnd(i + 50) * (G.q1 - G.q0);
       const [x, y] = pt(G, s + crest(q, t) - rnd(i + 51) * 22, q);
       const r = 1 + rnd(i + 53) * 3;
@@ -114,7 +117,9 @@
   // The objects should read more than the wave itself.
   const LIT_TEXT = 'h1, h2, h3, .statement, .label, .tag, .metro__key span, .facts strong, .facts span, .route__when, .contact__mail, .sm-district span, .footer__inner';
   const LIT_BOX = '.about__photo img, .route__logo, .school, .route__links a, .btn, .nav__cta, .theme-btn, .stn i, .stn b, .project, .route li, .socials a, .sm-data, .sm-card, .sm-zoom button, .pin__head, .pin__label, .sm-home span';
-  const lightText = (G, startAt) => {
+  const LIT_TEXT_LITE = 'h1, h2, .label, .contact__mail';
+  const LIT_BOX_LITE = '.btn, .pin__head, .school, .route__logo, .about__photo img';
+  const lightText = (G, startAt, lite) => {
     const hit = (el, cls) => {
       const r = el.getBoundingClientRect();
       if (r.bottom < 0 || r.top > G.H || r.width === 0) return;
@@ -126,8 +131,8 @@
       setTimeout(() => { el.classList.remove(cls); void el.getBoundingClientRect(); el.classList.add(cls); }, Math.max(0, at - 80));
       setTimeout(() => el.classList.remove(cls), Math.max(0, at + 1700));
     };
-    document.querySelectorAll(LIT_TEXT).forEach((el) => hit(el, 'wave-lit'));
-    document.querySelectorAll(LIT_BOX).forEach((el) => hit(el, 'wave-lit-box'));
+    document.querySelectorAll(lite ? LIT_TEXT_LITE : LIT_TEXT).forEach((el) => hit(el, lite ? 'wave-lit-lite' : 'wave-lit'));
+    document.querySelectorAll(lite ? LIT_BOX_LITE : LIT_BOX).forEach((el) => hit(el, lite ? 'wave-lit-box-lite' : 'wave-lit-box'));
   };
   themeBtn.addEventListener('click', () => {
     const next = isDark() ? 'light' : 'dark';
@@ -138,7 +143,9 @@
     if (!document.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) { apply(); return; }
     const G = geometry();
     const { c } = waveCanvas();
-    const waitMap = mapInView();
+    const lite = isLite();
+    const waitMap = !lite && mapInView();   // on phones the map switches style after the wave instead
+    root.classList.toggle('theme-defer-map', lite);
     const t = document.startViewTransition(() => {
       apply();
       c.classList.add('is-on');                  // the foam layer joins the new view as its own layer
@@ -147,16 +154,42 @@
     t.ready.then(() => {
       root.animate({ clipPath: waveFrames(G) }, { duration: WAVE_MS, easing: 'linear', pseudoElement: '::view-transition-new(root)' });
       const t0 = performance.now();
-      lightText(G, t0);
+      lightText(G, t0, lite);
       const tick = (now) => {
         const k = Math.min((now - t0) / WAVE_MS, 1);
-        drawFoam(G, k, next === 'dark');
+        drawFoam(G, k, next === 'dark', lite);
         if (k < 1) requestAnimationFrame(tick);
       };
       requestAnimationFrame(tick);
     }).catch(() => {});
-    t.finished.finally(() => { c.classList.remove('is-on'); fx.all.setAttribute('opacity', 0); });
+    t.finished.finally(() => {
+      c.classList.remove('is-on'); fx.all.setAttribute('opacity', 0);
+      root.classList.remove('theme-defer-map');
+      document.dispatchEvent(new Event('theme:wave-done'));
+    });
   });
+
+  // Stars: a random sky over the top of the page, and a few around the toggle, re-scattered for each night
+  const scatter = (box, n, area) => {
+    let html = '';
+    for (let i = 0; i < n; i++) {
+      const big = Math.random() < (area ? 0.18 : 0.35);
+      const [x, y] = area ? area() : [Math.random() * 100, Math.random() * 100];
+      html += `<i class="${big ? 'sparkle' : ''}" style="left:${x.toFixed(1)}%;top:${y.toFixed(1)}%;--s:${(big ? 5 + Math.random() * 4 : 1.2 + Math.random() * 1.8).toFixed(1)}px;--t:${(2 + Math.random() * 3).toFixed(1)}s;--d:${(-Math.random() * 4).toFixed(1)}s"></i>`;
+    }
+    box.innerHTML = html;
+  };
+  const sky = document.querySelector('.night-sky'), btnStars = themeBtn.querySelector('.theme-btn__stars');
+  // around the button: on a ring just outside it, never on the icon
+  const ring = () => { const a = Math.random() * Math.PI * 2, r = 40 + Math.random() * 12; return [50 + Math.cos(a) * r, 50 + Math.sin(a) * r]; };
+  const starsFor = () => {
+    if (!isDark()) return;
+    scatter(sky, innerWidth < 720 ? 16 : 38);
+    scatter(btnStars, 6, ring);
+  };
+  starsFor();
+  new MutationObserver(starsFor).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', starsFor);
 
   // Nav background + route rail progress
   const nav = document.getElementById('nav');

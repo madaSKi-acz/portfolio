@@ -164,6 +164,11 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   // Follow the site theme
   let darkNow = isDark();
   const syncTheme = () => {
+    // Phones: wait until the theme wave has finished, so the map's heavy restyle doesn't stutter it
+    if (document.documentElement.classList.contains('theme-defer-map')) {
+      document.addEventListener('theme:wave-done', syncTheme, { once: true });
+      return;
+    }
     if (isDark() === darkNow) { restyle(); return; }
     darkNow = isDark();
     lmap.setStyle(darkNow ? STYLES.dark : STYLES.light, { diff: false });
