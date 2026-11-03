@@ -49,7 +49,7 @@
       link.rel = 'stylesheet';
       link.href = 'assets/vendor/maplibre/maplibre-gl.css?v=6.11.2';
       document.head.append(link);
-      import('./assets/skillmap.js?v=21')
+      import('./assets/skillmap.js?v=23')
         .then((m) => m.initSkillMap({ root: map, reduce, isDark }))
         .catch((err) => { console.error(err); map.classList.add('is-nomap'); });
     };
