@@ -113,7 +113,7 @@
   // What the crest lights up as it passes: text glows, objects (cards, pins, buttons, map panels) get a halo.
   // The objects should read more than the wave itself.
   const LIT_TEXT = 'h1, h2, h3, .statement, .label, .tag, .metro__key span, .facts strong, .facts span, .route__when, .contact__mail, .sm-district span, .footer__inner';
-  const LIT_BOX = '.about__photo img, .route__logo, .route__links a, .btn, .nav__cta, .theme-btn, .stn i, .stn b, .project, .route li, .socials a, .sm-data, .sm-card, .sm-zoom button, .pin__head, .pin__label, .sm-home span';
+  const LIT_BOX = '.about__photo img, .school, .route__links a, .btn, .nav__cta, .theme-btn, .stn i, .stn b, .project, .route li, .socials a, .sm-data, .sm-card, .sm-zoom button, .pin__head, .pin__label, .sm-home span';
   const lightText = (G, startAt) => {
     const hit = (el, cls) => {
       const r = el.getBoundingClientRect();
