@@ -304,7 +304,7 @@
   const loadWolf = () => {
     if (pet || loading) { if (pet) pet.el.hidden = false; return; }
     loading = true;
-    import('./assets/wolf3d.js?v=12')
+    import('./assets/wolf3d.js?v=14')
       .then((m) => { pet = m.startWolf({ reduceMotion: reduce }); })
       .catch(() => {})
       .finally(() => { loading = false; });
