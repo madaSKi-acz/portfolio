@@ -23,6 +23,26 @@
     document.addEventListener('skillmap:styled', done, { once: true });
     setTimeout(done, 450);
   });
+  // Keyframes for a wavy, rippling front (like water spreading) instead of a perfect circle.
+  // Each frame is a polygon around (x, y): two travelling waves bend its edge, the waves calm
+  // as the water settles, and the growth eases in and out.
+  const waterFrames = (x, y, R) => {
+    const FRAMES = 48, POINTS = 96, frames = [];
+    const ease = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    for (let f = 0; f <= FRAMES; f++) {
+      const t = f / FRAMES, rad = R * ease(t);
+      const amp = Math.min(34, 10 + rad * 0.035) * (1 - t * 0.7);
+      const pts = [];
+      for (let i = 0; i < POINTS; i++) {
+        const a = (i / POINTS) * Math.PI * 2;
+        const wave = Math.sin(a * 7 + t * 9) * 0.6 + Math.sin(a * 13 - t * 14) * 0.3 + Math.sin(a * 3 + t * 5) * 0.4;
+        const d = Math.max(0, rad + wave * amp * Math.min(1, rad / 60));
+        pts.push(`${(x + Math.cos(a) * d).toFixed(1)}px ${(y + Math.sin(a) * d).toFixed(1)}px`);
+      }
+      frames.push(`polygon(${pts.join(',')})`);
+    }
+    return frames;
+  };
   themeBtn.addEventListener('click', () => {
     const next = isDark() ? 'light' : 'dark';
     const apply = () => {
@@ -36,10 +56,7 @@
     const waitMap = mapInView();
     const t = document.startViewTransition(() => { apply(); return waitMap ? mapRestyled() : undefined; });
     t.ready.then(() => {
-      root.animate(
-        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] },
-        { duration: 1100, easing: 'cubic-bezier(.45, 0, .2, 1)', pseudoElement: '::view-transition-new(root)' },
-      );
+      root.animate({ clipPath: waterFrames(x, y, r * 1.08) }, { duration: 1700, easing: 'linear', pseudoElement: '::view-transition-new(root)' });
     }).catch(() => {});
   });
 
