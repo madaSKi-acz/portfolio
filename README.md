@@ -8,14 +8,16 @@ A one-page personal portfolio built with plain HTML, CSS and JavaScript. It has 
 | --- | --- |
 | `index.html` | All the content. Look for `TODO` comments and "Your Name". |
 | `styles.css` | Design tokens (colors, fonts) at the top, then the styles for each section. |
-| `main.js` | Theme toggle, scroll reveal animations, and the pet wolf that roams the page. |
+| `main.js` | Theme toggle and scroll reveal animations. Loads the wolf after the page is ready. |
+| `assets/wolf3d.js` | The 3D pet wolf: low-poly model, trot/gallop/idle/sleep/howl animation, and curved roaming. |
+| `assets/vendor/three.module.min.js` | [Three.js](https://threejs.org) r160 (MIT, see `three.LICENSE`), bundled locally. |
 | `.nojekyll` | Tells GitHub Pages to serve the files without running Jekyll. |
 
 To change the colors, edit `--orange`, `--blue`, `--green` and `--violet` (the metro line colors) at the top of `styles.css`. There is one set of values for light mode and one for dark mode.
 
 ## Run locally
 
-Open `index.html` in a browser, or start a local server:
+Start a local server (the 3D wolf is an ES module, so it won't load from a plain `file://` path):
 
 ```bash
 python3 -m http.server 8000
