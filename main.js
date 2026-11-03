@@ -66,12 +66,9 @@
       zoomControl: false, attributionControl: false, scrollWheelZoom: false, worldCopyJump: false,
     });
 
-    // Basemap follows the site theme
-    const tileUrl = (dark) => `https://{s}.basemaps.cartocdn.com/${dark ? 'dark_all' : 'rastertiles/voyager'}/{z}/{x}/{y}{r}.png`;
-    const makeTiles = () => L.tileLayer(tileUrl(isDark()), { subdomains: 'abcd', maxZoom: 20, className: 'sm-tiles' }).addTo(lmap);
-    let tiles = makeTiles();
-    // A new layer (not setUrl) so tiles load at whole zoom levels
-    const syncTheme = () => { const old = tiles; tiles = makeTiles(); tiles.once('load', () => lmap.removeLayer(old)); setTimeout(() => lmap.hasLayer(old) && lmap.removeLayer(old), 4000); restyle(); };
+    // OpenStreetMap tiles (no API key). The colors are tuned to the site theme in CSS.
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, className: 'sm-tiles' }).addTo(lmap);
+    const syncTheme = () => restyle();
     new MutationObserver(syncTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', syncTheme);
 
