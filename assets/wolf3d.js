@@ -1,10 +1,11 @@
-// A low-poly 3D wolf that roams the page.
-// Movement is in screen space; the page is treated as the ground plane
-// seen from the front and above, so heading up the screen = walking away.
+// A low-poly 3D wolf that lives on the page.
+// It moves in page (document) coordinates, so it scrolls with the content.
+// The page is treated as the ground seen from the front and above, so
+// heading up the page = walking away from you.
 import * as THREE from './vendor/three.module.min.js';
 
-const CANVAS_W = 210;
-const CANVAS_H = 170;
+const CANVAS_W = 140;
+const CANVAS_H = 114;
 
 const rand = (a, b) => a + Math.random() * (b - a);
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -124,6 +125,19 @@ function buildWolf() {
   return { wolf, body, head, tail, legs, eyes, ears, torso };
 }
 
+// Text and UI the wolf should never rest on top of
+const AVOID = 'h1, h2, h3, p, .btn, .metro, .line, .facts, .route li, .project, .contact__mail, .socials, .tag, .label, .footer__inner';
+
+function greeting() {
+  const h = new Date().getHours();
+  if (h >= 5 && h < 12) return 'Good morning! ☀️';
+  if (h >= 12 && h < 17) return 'Good afternoon! 🌤️';
+  if (h >= 17 && h < 22) return 'Good evening! 🌆';
+  return 'Up late? 🌙';
+}
+const IDLE_LINES = ['*sniff sniff*', 'pet me? 🐾', 'psst… hire this human 👀', '*yawn*', 'I like Vue too', 'nice scroll 😎'];
+const SECTION_LINES = { skills: 'so many skills!', projects: 'check these out 👇', experience: 'what a journey' };
+
 export function startWolf({ reduceMotion = false } = {}) {
   // ---------- DOM ----------
   const pet = document.createElement('div');
@@ -136,10 +150,11 @@ export function startWolf({ reduceMotion = false } = {}) {
   const bubble = pet.querySelector('.pet__bubble');
   const hit = pet.querySelector('.pet__hit');
 
-  let bubbleTimer;
-  const say = (text, ms = 1500) => {
+  let bubbleTimer, lastSaid = 0;
+  const say = (text, ms = 2200) => {
     bubble.textContent = text;
     bubble.classList.add('is-on');
+    lastSaid = performance.now();
     clearTimeout(bubbleTimer);
     bubbleTimer = setTimeout(() => bubble.classList.remove('is-on'), ms);
   };
@@ -150,7 +165,7 @@ export function startWolf({ reduceMotion = false } = {}) {
     renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   } catch (e) {
     pet.remove();
-    return;
+    return null;
   }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.setSize(CANVAS_W, CANVAS_H, false);
@@ -162,77 +177,103 @@ export function startWolf({ reduceMotion = false } = {}) {
   const sun = new THREE.DirectionalLight(0xffffff, 2.3);
   sun.position.set(3, 7, 5);
   scene.add(sun);
-
   const W = buildWolf();
   scene.add(W.wolf);
 
+  // ---------- Page geometry ----------
+  const feet = { x: CANVAS_W / 2, y: CANVAS_H * 0.62 };     // wolf's feet inside the canvas
+  const FOOT = { w: 74, h: 50 };                            // wolf footprint for overlap tests
+  const docW = () => document.documentElement.clientWidth;
+  const docH = () => document.documentElement.scrollHeight;
+  let blocks = [];
+  const measure = () => {
+    blocks = [...document.querySelectorAll(AVOID)].map((el) => {
+      const r = el.getBoundingClientRect();
+      return { l: r.left + scrollX - 10, t: r.top + scrollY - 10, r: r.right + scrollX + 10, b: r.bottom + scrollY + 10 };
+    }).filter((b) => b.r > b.l && b.b > b.t);
+  };
+  const overlapsText = (x, y) => {
+    const l = x - FOOT.w / 2, r = x + FOOT.w / 2, t = y - FOOT.h, b = y;
+    return blocks.some((k) => l < k.r && r > k.l && t < k.b && b > k.t);
+  };
+  const view = () => ({ top: scrollY + 90, bottom: scrollY + innerHeight - 16 });
+  const inView = (y) => y > scrollY + 30 && y < scrollY + innerHeight + 10;
+
+  // Find an empty spot (no text under it) inside the current viewport
+  const freeSpot = () => {
+    const v = view();
+    const minX = FOOT.w / 2 + 8, maxX = docW() - FOOT.w / 2 - 8;
+    for (let i = 0; i < 60; i++) {
+      const x = rand(minX, maxX), y = rand(v.top + FOOT.h, v.bottom);
+      if (!overlapsText(x, y)) return { x, y };
+    }
+    // fall back to the side margins
+    return { x: Math.random() < 0.5 ? minX : maxX, y: rand(v.top + FOOT.h, v.bottom) };
+  };
+
   // ---------- State ----------
-  const half = { x: CANVAS_W / 2, y: CANVAS_H * 0.62 };   // wolf's feet within the canvas
-  const bounds = () => ({ minX: 40, maxX: innerWidth - 40, minY: 120, maxY: innerHeight - 20 });
-  const pos = { x: innerWidth - 140, y: innerHeight - 50 };
-  let heading = Math.PI;                 // screen-space radians, 0 = right, +y = down
-  let speed = 0;                         // px / s
-  let target = { ...pos };
-  let mode = 'idle';                     // idle | walk | run | sleep
-  let restUntil = performance.now() + 1500;
-  let phase = 0;
-  let runBlend = 0;
-  let sleepT = 0;
-  let howlUntil = 0;
-  let hopT = 0;
+  measure();
+  const start = freeSpot();
+  const enterLeft = Math.random() < 0.5;
+  const pos = { x: enterLeft ? -60 : docW() + 60, y: start.y };   // trots in from the side
+  let heading = enterLeft ? 0 : Math.PI;
+  let speed = 0;
+  let target = start;
+  let mode = reduceMotion ? 'idle' : 'run';      // idle | walk | run | sleep
+  if (reduceMotion) { pos.x = start.x; pos.y = start.y; }
+  let restUntil = 0;
+  let phase = 0, runBlend = 0, sleepT = 0, howlUntil = 0, hopT = 0;
   let headYaw = 0, headYawTarget = 0, nextLook = 0;
-  let lastScroll = 0;
+  let lastScroll = performance.now();
+  let offscreenSince = 0;
+  let greeted = false;
+  let overText = false, opacity = 1;
+  let nextChatter = performance.now() + rand(35000, 60000);
+  const said = new Set();
   const seed = Math.random() * 10;
 
   const setMode = (next) => {
     if (mode === 'sleep' && next !== 'sleep') say('!', 700);
     mode = next;
-    if (next === 'sleep') say('z z z', 2200);
+    if (next === 'sleep') say('z z z', 2400);
   };
+  const rest = (now, a = 4000, b = 10000) => { setMode('idle'); restUntil = now + rand(a, b); };
 
-  const wander = (run) => {
-    const b = bounds();
-    for (let i = 0; i < 8; i++) {
-      target = { x: rand(b.minX, b.maxX), y: rand(b.minY, b.maxY) };
-      if (Math.hypot(target.x - pos.x, target.y - pos.y) > 220) break;
-    }
-    setMode(run ? 'run' : 'walk');
-  };
+  addEventListener('resize', measure);
+  addEventListener('load', measure);
+  setTimeout(measure, 1500);   // after fonts / reveal animations settle
 
   if (!reduceMotion) {
-    addEventListener('scroll', () => {
-      const now = performance.now();
-      if (now - lastScroll > 900 && mode !== 'run') wander(true);
-      lastScroll = now;
-    }, { passive: true });
+    addEventListener('scroll', () => { lastScroll = performance.now(); }, { passive: true });
 
-    const contact = document.getElementById('contact');
-    if (contact && 'IntersectionObserver' in window) {
-      let howled = false;
-      new IntersectionObserver((entries) => {
-        if (!entries[0].isIntersecting || howled) return;
-        howled = true;
-        setTimeout(() => {
-          target = { ...pos }; setMode('idle'); restUntil = performance.now() + 3200;
-          howlUntil = performance.now() + 2300;
-          say('Awoooo!', 2100);
-        }, 1400);
-      }, { threshold: 0.4 }).observe(contact);
+    // Comment once on a few sections, and howl at Contact
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (!e.isIntersecting || said.has(e.target.id)) return;
+          said.add(e.target.id);
+          setTimeout(() => {
+            if (!inView(pos.y)) return;
+            if (e.target.id === 'contact') {
+              howlUntil = performance.now() + 2300;
+              say('Awoooo!', 2100);
+            } else if (performance.now() - lastSaid > 8000) {
+              say(SECTION_LINES[e.target.id], 1800);
+            }
+          }, 2600);
+        });
+      }, { threshold: 0.45 });
+      ['skills', 'experience', 'projects', 'contact'].forEach((id) => { const el = document.getElementById(id); if (el) io.observe(el); });
     }
   }
 
-  const pets = ['♥', 'woof!', '♥ ♥'];
+  const pets = ['♥', 'woof!', '♥ ♥', 'hehe'];
   let petCount = 0;
   hit.addEventListener('click', () => {
-    if (mode !== 'run') { setMode('idle'); target = { ...pos }; restUntil = performance.now() + 2500; }
+    const now = performance.now();
+    if (mode !== 'run') { target = { ...pos }; rest(now, 2500, 5000); }
     hopT = 1;
     say(pets[petCount++ % pets.length], 1100);
-  });
-
-  addEventListener('resize', () => {
-    const b = bounds();
-    pos.x = clamp(pos.x, b.minX, b.maxX);
-    pos.y = clamp(pos.y, b.minY, b.maxY);
   });
 
   // ---------- Loop ----------
@@ -241,39 +282,76 @@ export function startWolf({ reduceMotion = false } = {}) {
     const dt = Math.min((now - last) / 1000, 0.05);
     last = now;
     const t = now / 1000;
+    const scrolling = now - lastScroll < 400;
 
-    // --- steering (curved paths) ---
+    // --- decide what to do ---
+    if (!reduceMotion) {
+      // Left behind after a scroll? Run back into view.
+      if (!inView(pos.y)) {
+        if (!offscreenSince) offscreenSince = now;
+        if (!scrolling && now - offscreenSince > 1200 && mode !== 'run') {
+          target = freeSpot();
+          // Don't make the trip absurdly long: start just outside the viewport edge
+          const above = pos.y < scrollY;
+          if (Math.abs(target.y - pos.y) > innerHeight) pos.y = above ? scrollY - 40 : scrollY + innerHeight + 40;
+          heading = Math.atan2(target.y - pos.y, target.x - pos.x);
+          setMode('run');
+        }
+      } else {
+        offscreenSince = 0;
+      }
+
+      if ((mode === 'idle' || mode === 'sleep') && now > restUntil && inView(pos.y)) {
+        if (mode === 'idle' && Math.random() < 0.3 && !scrolling) { setMode('sleep'); restUntil = now + rand(9000, 15000); }
+        else { target = freeSpot(); setMode(Math.random() < 0.2 ? 'run' : 'walk'); }
+      }
+
+      // Greeting once it has arrived; occasional chatter (rare, never while scrolling)
+      if (!greeted && mode === 'idle') {
+        greeted = true;
+        let back = false;
+        try { back = !!localStorage.getItem('wolf-seen'); localStorage.setItem('wolf-seen', '1'); } catch (e) {}
+        say(greeting(), 2600);
+        if (back) setTimeout(() => say('welcome back! 🐾', 2000), 3000);
+      }
+      if (now > nextChatter && mode === 'idle' && !scrolling && inView(pos.y)) {
+        say(IDLE_LINES[Math.floor(Math.random() * IDLE_LINES.length)], 2000);
+        nextChatter = now + rand(45000, 90000);
+      }
+    }
+
+    // --- steering: turn gradually so paths curve ---
     let wantSpeed = 0;
     if (mode === 'walk' || mode === 'run') {
       const dx = target.x - pos.x, dy = target.y - pos.y;
       const dist = Math.hypot(dx, dy);
       const diff = wrapAngle(Math.atan2(dy, dx) - heading);
       const maxTurn = (mode === 'run' ? 2.4 : 1.5) * dt;
-      heading += clamp(diff, -maxTurn, maxTurn) + Math.sin(t * 0.9 + seed) * 0.5 * dt;   // gentle meander
-      const cruise = mode === 'run' ? 240 : 72;
-      wantSpeed = cruise * Math.max(0.3, Math.cos(diff)) * clamp(dist / 90, 0.25, 1);
-      if (dist < 14) { setMode('idle'); restUntil = now + rand(1800, 4500); }
-    } else if (mode !== 'sleep' && now > restUntil && !reduceMotion) {
-      if (Math.random() < 0.22) { setMode('sleep'); restUntil = now + rand(8000, 13000); }
-      else wander(Math.random() < 0.25);
-    } else if (mode === 'sleep' && now > restUntil) {
-      wander(false);
+      heading += clamp(diff, -maxTurn, maxTurn) + Math.sin(t * 0.9 + seed) * 0.45 * dt;
+      const cruise = mode === 'run' ? 230 : 62;
+      wantSpeed = cruise * Math.max(0.3, Math.cos(diff)) * clamp(dist / 80, 0.25, 1);
+      if (dist < 12) rest(now);
     }
     speed = lerp(speed, wantSpeed, 1 - Math.exp(-dt * 4));
     pos.x += Math.cos(heading) * speed * dt;
     pos.y += Math.sin(heading) * speed * dt;
-    const b = bounds();
-    pos.x = clamp(pos.x, b.minX, b.maxX);
-    pos.y = clamp(pos.y, b.minY, b.maxY);
-    pet.style.transform = `translate(${(pos.x - half.x).toFixed(1)}px, ${(pos.y - half.y).toFixed(1)}px)`;
+    pos.y = clamp(pos.y, 100, docH() - 12);
+    pet.style.transform = `translate(${(pos.x - feet.x).toFixed(1)}px, ${(pos.y - feet.y).toFixed(1)}px)`;
 
-    // --- facing: screen heading -> yaw ---
+    // Fade a little while passing over text, so it never blocks reading
+    overText = overlapsText(pos.x, pos.y);
+    opacity = lerp(opacity, overText ? 0.35 : 1, 1 - Math.exp(-dt * 6));
+    pet.style.opacity = opacity.toFixed(2);
+
+    // Nothing to draw if it's off screen
+    if (!inView(pos.y) && !inView(pos.y - CANVAS_H)) { requestAnimationFrame(frame); return; }
+
     W.wolf.rotation.y = -heading;
 
     // --- gait ---
     runBlend = lerp(runBlend, clamp((speed - 70) / 140, 0, 1), 1 - Math.exp(-dt * 5));
-    const moving = clamp(speed / 50, 0, 1);
-    const freq = lerp(1.6, 3.1, runBlend) * clamp(speed / 60, 0.4, 1.4);
+    const moving = clamp(speed / 45, 0, 1);
+    const freq = lerp(1.6, 3.1, runBlend) * clamp(speed / 55, 0.4, 1.4);
     phase += freq * Math.PI * 2 * dt;
     const amp = lerp(0.42, 0.85, runBlend) * moving;
     const trot = { FL: 0, BR: 0, FR: Math.PI, BL: Math.PI };
@@ -284,27 +362,17 @@ export function startWolf({ reduceMotion = false } = {}) {
       const p = phase + lerp(trot[leg.key], gallop[leg.key], runBlend);
       const swing = Math.sin(p) * amp;
       const lift = Math.max(0, Math.cos(p)) * amp * 1.4;
-      const walkHip = swing;
-      const walkKnee = leg.front ? -lift : lift * 0.9;
-      // lying-down pose
-      const sleepHip = leg.front ? 1.45 : -1.25;
-      const sleepKnee = leg.front ? 0 : 2.2;
-      leg.hip.rotation.z = lerp(walkHip, sleepHip, sleepT);
-      leg.knee.rotation.z = lerp(walkKnee, sleepKnee, sleepT);
+      leg.hip.rotation.z = lerp(swing, leg.front ? 1.45 : -1.25, sleepT);
+      leg.knee.rotation.z = lerp(leg.front ? -lift : lift * 0.9, leg.front ? 0 : 2.2, sleepT);
     }
 
-    // body bob / pitch
-    const bobTrot = Math.abs(Math.cos(phase)) * 0.06;
-    const bobGallop = Math.sin(phase + 1.2) * 0.16;
-    const bob = lerp(bobTrot, bobGallop, runBlend) * moving;
+    const bob = lerp(Math.abs(Math.cos(phase)) * 0.06, Math.sin(phase + 1.2) * 0.16, runBlend) * moving;
     const breathe = Math.sin(t * 2.4) * 0.012 * (1 - moving);
     hopT = Math.max(0, hopT - dt * 2.2);
-    const hop = Math.sin(hopT * Math.PI) * 0.7;
-    W.body.position.y = lerp(bob, -0.62, sleepT) + hop;
+    W.body.position.y = lerp(bob, -0.62, sleepT) + Math.sin(hopT * Math.PI) * 0.7;
     W.body.rotation.z = Math.sin(phase) * 0.12 * runBlend * moving;
-    W.torso.scale.y = 0.5 + breathe;
+    W.torso.scale.y = 0.54 + breathe;
 
-    // head: counter-bob while moving, look around while idle, howl, rest when sleeping
     if (now > nextLook) { headYawTarget = rand(-0.6, 0.6) * (1 - moving); nextLook = now + rand(1200, 3500); }
     headYaw = lerp(headYaw, moving > 0.3 ? 0 : headYawTarget, 1 - Math.exp(-dt * 3));
     const howling = now < howlUntil ? 1 : 0;
@@ -312,14 +380,12 @@ export function startWolf({ reduceMotion = false } = {}) {
     W.head.rotation.set(0, headYaw * (1 - sleepT), lerp(W.head.rotation.z, headPitch, 1 - Math.exp(-dt * 6)));
     W.head.position.y = 1.45 - sleepT * 0.18;
 
-    // ears twitch, eyes blink / close
-    const twitch = (Math.sin(t * 0.7 + seed) > 0.985 ? 0.4 : 0);
+    const twitch = Math.sin(t * 0.7 + seed) > 0.985 ? 0.4 : 0;
     W.ears.forEach((e, i) => { e.rotation.z = 0.18 - twitch * (i ? 1 : 0.4) + runBlend * 0.35 * moving; });
     const blink = (t % 4.3) < 0.12 ? 0.15 : 1;
     const eyeScale = Math.min(blink, 1 - sleepT * 0.85, 1 - howling * 0.8);
     W.eyes.forEach((e) => { e.scale.y = eyeScale; });
 
-    // tail: wag when idle, stream behind when running, tuck when sleeping
     const wag = Math.sin(t * 9) * 0.45 * (1 - moving) * (1 - sleepT);
     W.tail.rotation.y = wag + Math.sin(phase) * 0.15 * moving + sleepT * 0.9;
     W.tail.rotation.z = runBlend * moving * -0.7 + Math.sin(phase * 2) * 0.08 * moving - sleepT * 0.25 + howling * -0.2;
@@ -328,4 +394,6 @@ export function startWolf({ reduceMotion = false } = {}) {
     requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
+
+  return { el: pet };
 }
