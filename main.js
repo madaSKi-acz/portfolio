@@ -27,7 +27,7 @@
   // A breaking wave sweeps diagonally from the toggle's corner (top right) to the bottom left.
   // Behind the wave the page is already in the new theme (the clip on the new snapshot); the crest
   // is a foam line with spray drawn live on a canvas above it; text lights up as the crest passes.
-  const WAVE_MS = 1900;
+  const WAVE_MS = 3200;
   const easeWave = (t) => 0.5 - Math.cos(Math.PI * t) / 2;   // gentle in and out, like a swell
   // The foam layer is SVG (paths updated in place each frame), so no stale frames can linger
   let fx = null;
