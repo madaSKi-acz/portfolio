@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=11" />
+  <link rel="stylesheet" href="styles.css?v=12" />
   <script>
     try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
@@ -80,13 +80,9 @@
 
     <!-- SKILLS as metro lines -->
     <section class="section section--tint section--map" id="skills">
-      <div class="container">
-        <p class="label reveal">02 / Skills</p>
-        <h2 class="reveal">Skill city</h2>
-      </div>
-
       <div class="skillmap" id="skillmap">
           <div class="sm-bar">
+            <div class="sm-title"><p class="label">02 / Skills</p><h2>Skill city</h2></div>
             <div class="sm-chips" role="group" aria-label="Fly to district">
             <button data-fly="all" class="is-on">All</button>
             <button data-fly="front" style="--c: var(--orange)">Front end</button>
@@ -98,8 +94,8 @@
           </div>
           <div class="sm-viewport" id="smViewport">
             <div class="sm-world" id="smWorld">
-              <svg class="sm-art" viewBox="0 0 1200 760" width="1200" height="760" aria-hidden="true">
-                <rect class="sm-land" width="1200" height="760"/>
+              <svg class="sm-art" viewBox="0 0 1200 760" width="1200" height="760" overflow="visible" aria-hidden="true">
+                <rect class="sm-land" x="-800" y="-400" width="2800" height="1560"/>
                 <!-- districts -->
                 <path class="sm-zone" style="--c: var(--orange)" d="M60 90 C 200 50 420 60 530 120 C 560 200 540 330 500 410 C 380 440 200 430 90 380 C 40 300 30 170 60 90 Z"/>
                 <path class="sm-zone" style="--c: var(--blue)" d="M760 110 C 880 80 1060 100 1140 160 C 1160 260 1130 360 1080 400 C 960 420 820 410 750 380 C 730 300 730 180 760 110 Z"/>
@@ -111,14 +107,14 @@
                 <!-- hills -->
                 <path class="sm-hill" d="M870 650 q 40 -60 80 0 M990 690 q 35 -50 70 0 M1080 600 q 25 -35 50 0"/>
                 <!-- river -->
-                <path class="sm-river" d="M650 -20 C 600 120 700 200 650 330 C 610 430 700 470 760 500 C 830 535 860 600 820 700 C 805 735 800 760 800 790"/>
+                <path class="sm-river" d="M660 -400 C 655 -200 660 -80 650 -20 C 600 120 700 200 650 330 C 610 430 700 470 760 500 C 830 535 860 600 820 700 C 805 735 800 760 800 790 C 800 900 805 1000 810 1160"/>
                 <!-- roads -->
                 <g class="sm-road">
-                  <path d="M-20 430 C 200 460 420 420 620 440 S 1000 470 1220 450"/>
+                  <path d="M-600 425 C -300 430 -100 425 -20 430 C 200 460 420 420 620 440 S 1000 470 1220 450 C 1400 445 1600 450 1800 450"/>
                   <path d="M530 -20 C 540 150 520 300 560 440 S 600 650 580 780"/>
-                  <path d="M560 440 C 700 400 760 300 900 280 S 1100 260 1220 230"/>
-                  <path d="M560 440 C 650 520 800 560 1000 600 S 1150 660 1220 680"/>
-                  <path d="M-20 200 C 150 220 350 190 530 200"/>
+                  <path d="M560 440 C 700 400 760 300 900 280 S 1100 260 1220 230 C 1400 200 1600 190 1800 185"/>
+                  <path d="M560 440 C 650 520 800 560 1000 600 S 1150 660 1220 680 C 1400 730 1600 760 1800 780"/>
+                  <path d="M-600 195 C -300 198 -100 196 -20 200 C 150 220 350 190 530 200"/>
                 </g>
                 <g class="sm-street">
                   <path d="M150 120 V 400 M260 100 V 420 M370 90 V 420 M90 300 H 520 M100 140 H 510"/>
@@ -244,6 +240,6 @@
     </div>
   </footer>
 
-  <script src="main.js?v=11" defer></script>
+  <script src="main.js?v=12" defer></script>
 </body>
 </html>
