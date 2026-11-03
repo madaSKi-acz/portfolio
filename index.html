@@ -11,12 +11,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=43" />
+  <link rel="stylesheet" href="styles.css?v=44" />
   <script>
     try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
 </head>
 <body>
+  <div class="night-sky" aria-hidden="true"></div>
   <a class="skip" href="#main">Skip to content</a>
 
   <header class="nav" id="nav">
@@ -24,7 +25,11 @@
       <a href="#top" class="brand"><span class="brand__mark" aria-hidden="true"></span>Your Name</a>
       <div class="nav__actions">
         <a href="#contact" class="nav__cta">Contact</a>
-        <button class="theme-btn" id="themeToggle" aria-label="Toggle color theme"><span></span></button>
+        <button class="theme-btn" id="themeToggle" aria-label="Toggle color theme">
+          <svg class="theme-btn__sun" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></g></svg>
+          <svg class="theme-btn__moon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1Z" fill="currentColor"/></svg>
+          <span class="theme-btn__stars" aria-hidden="true"></span>
+        </button>
       </div>
     </div>
   </header>
@@ -255,6 +260,6 @@
     </div>
   </footer>
 
-  <script src="main.js?v=43" defer></script>
+  <script src="main.js?v=44" defer></script>
 </body>
 </html>

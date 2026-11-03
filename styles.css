@@ -63,9 +63,29 @@ section[id] { scroll-margin-top: 64px; }
 .nav__cta { font-size: .9rem; font-weight: 600; padding: .45rem 1rem; border: 1.5px solid var(--ink); border-radius: 999px; transition: background-color .25s, color .25s; }
 .nav__cta:hover { background: var(--ink); color: var(--paper); }
 .theme-btn { width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid var(--ink); background: transparent; cursor: pointer; display: grid; place-items: center; padding: 0; }
-.theme-btn span { width: 16px; height: 16px; border-radius: 50%; background: linear-gradient(90deg, var(--ink) 50%, transparent 50%); border: 1.5px solid var(--ink); transition: transform .5s var(--ease); }
-:root[data-theme="dark"] .theme-btn span { transform: rotate(180deg); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .theme-btn span { transform: rotate(180deg); } }
+.theme-btn { position: relative; color: var(--ink); overflow: visible; }
+.theme-btn svg { position: absolute; transition: transform .6s cubic-bezier(.3, 1.4, .5, 1), opacity .35s; }
+.theme-btn__sun { color: #f2a325; }
+.theme-btn__moon { color: #f4e3a1; opacity: 0; transform: rotate(-70deg) scale(.4); }
+/* night: the moon rises, the sun sets */
+:root[data-theme="dark"] .theme-btn__sun { opacity: 0; transform: rotate(90deg) scale(.4); }
+:root[data-theme="dark"] .theme-btn__moon { opacity: 1; transform: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-btn__sun { opacity: 0; transform: rotate(90deg) scale(.4); }
+  :root:not([data-theme="light"]) .theme-btn__moon { opacity: 1; transform: none; }
+}
+.theme-btn:hover .theme-btn__sun { transform: rotate(45deg); }
+/* twinkling stars around the toggle (night only), placed randomly by main.js */
+.theme-btn__stars { position: absolute; inset: -14px; pointer-events: none; opacity: 0; transition: opacity .6s; }
+.theme-btn__stars i, .night-sky i { position: absolute; width: var(--s); height: var(--s); border-radius: 50%; background: #fff6d8; box-shadow: 0 0 6px 1px rgba(255, 246, 216, .55); animation: twinkle var(--t) ease-in-out var(--d) infinite; }
+.theme-btn__stars i.sparkle, .night-sky i.sparkle { border-radius: 0; background: none; box-shadow: none; }
+.theme-btn__stars i.sparkle::before, .night-sky i.sparkle::before { content: "✦"; position: absolute; inset: 0; display: grid; place-items: center; font-size: calc(var(--s) * 1.6); line-height: 1; color: #fff6d8; text-shadow: 0 0 6px rgba(255, 246, 216, .7); }
+@keyframes twinkle { 0%, 100% { opacity: .25; transform: scale(.7); } 50% { opacity: 1; transform: scale(1); } }
+/* a sky of stars over the top of the page at night */
+.night-sky { position: absolute; left: 0; top: 0; width: 100%; height: 100svh; z-index: -1; pointer-events: none; opacity: 0; transition: opacity .9s; overflow: hidden; }
+:root[data-theme="dark"] .night-sky, :root[data-theme="dark"] .theme-btn__stars { opacity: 1; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .night-sky, :root:not([data-theme="light"]) .theme-btn__stars { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .theme-btn__stars i, .night-sky i { animation: none; opacity: .7; } }
 
 /* ============ Buttons ============ */
 .btn { display: inline-flex; align-items: center; padding: .85rem 1.5rem; border-radius: 999px; font-weight: 600; font-size: .95rem; transition: transform .3s var(--ease), background-color .3s, color .3s; }
@@ -415,6 +435,11 @@ li:has(.sm-vis input:not(:checked)) .sm-fly span { text-decoration: line-through
   20% { text-shadow: 0 0 22px rgba(190, 225, 255, .95), 0 0 6px rgba(255, 255, 255, .85); filter: brightness(1.5) saturate(1.15); }
   100% { text-shadow: 0 0 0 transparent; filter: brightness(1); }
 }
+/* phones: the same idea without filters (much cheaper to paint) */
+.wave-lit-lite { animation: waveLitLite 1.4s ease-out; }
+@keyframes waveLitLite { 20% { text-shadow: 0 0 16px rgba(190, 225, 255, .9); } }
+.wave-lit-box-lite { animation: waveLitBoxLite 1.4s ease-out; }
+@keyframes waveLitBoxLite { 20% { box-shadow: 0 0 0 1.5px rgba(225, 240, 255, .8), 0 0 22px 4px rgba(150, 200, 255, .45); } }
 .wave-lit-box { animation: waveLitBox 1.6s cubic-bezier(.2, .7, .2, 1); }
 @keyframes waveLitBox {
   0% { box-shadow: 0 0 0 0 transparent; filter: brightness(1); }
