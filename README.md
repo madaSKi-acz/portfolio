@@ -19,7 +19,7 @@ To change the colors, edit `--orange`, `--blue`, `--green` and `--violet` (the m
 
 ## Skill map
 
-The skills section is a real street map. Plain scrolling over it scrolls the page; zoom with ctrl/⌘ + scroll, the +/− buttons or two fingers on a phone. To center it on your own city, change `data-center="lat,lng"` on `#smMap` in `index.html`. The pins keep their layout (their `--x`/`--y` values) and are placed around that point. When someone taps a pin, the route from "You are here" follows real streets from the public [OSRM](https://project-osrm.org) demo router. If the router doesn't answer, the route is drawn as a curve. The panel in the bottom right shows the skills as a dataset: you can turn each layer on and off, and it shows the cursor coordinates, the zoom level and the map attribution.
+The skills section is a real street map. Plain scrolling over it scrolls the page; zoom with ctrl/⌘ + scroll, the +/− buttons or two fingers on a phone. To center it on your own city, change `data-center="lat,lng"` on `#smMap` in `index.html`. Each district is a real neighbourhood block, set in `GROUPS` at the top of `assets/skillmap.js` (`rect: [west, south, east, north]`). Pins are spread evenly inside their block, keep clear of "You are here", and are moved off water if the basemap shows any under them. When someone taps a pin, the route from "You are here" follows real streets from the public [OSRM](https://project-osrm.org) demo router. If the router doesn't answer, the route is drawn as a curve. The panel in the bottom right shows the skills as a dataset: you can turn each layer on and off, and it shows the cursor coordinates, the zoom level and the map attribution.
 
 ## Run locally
 
