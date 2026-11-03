@@ -3,28 +3,28 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- TODO: replace "Your Name" everywhere in this file -->
-  <title>Your Name — Software Engineer</title>
+  <title>Nhok Sok — Software Engineer</title>
   <meta name="description" content="Software engineer. Vue front ends, full-stack systems, maps and AI-assisted development." />
   <meta name="theme-color" content="#f3f0e8" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%2316151a'/><circle cx='16' cy='16' r='7' fill='none' stroke='%23f2542d' stroke-width='4'/></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=44" />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=45" />
   <script>
-    try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+    try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; if (localStorage.getItem('lang') === 'km') document.documentElement.lang = 'km'; } catch (e) {}
   </script>
 </head>
 <body>
   <div class="night-sky" aria-hidden="true"></div>
-  <a class="skip" href="#main">Skip to content</a>
+  <a class="skip" href="#main" data-i18n="skip">Skip to content</a>
 
   <header class="nav" id="nav">
     <div class="container nav__inner">
-      <a href="#top" class="brand"><span class="brand__mark" aria-hidden="true"></span>Your Name</a>
+      <a href="#top" class="brand"><span class="brand__mark" aria-hidden="true"></span><span data-i18n="name">Nhok Sok</span></a>
       <div class="nav__actions">
-        <a href="#contact" class="nav__cta">Contact</a>
+        <button class="lang-btn" id="langToggle" type="button" lang="km" aria-label="ប្ដូរទៅភាសាខ្មែរ">ខ្មែរ</button>
+        <a href="#contact" class="nav__cta" data-i18n="contact">Contact</a>
         <button class="theme-btn" id="themeToggle" aria-label="Toggle color theme">
           <svg class="theme-btn__sun" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></g></svg>
           <svg class="theme-btn__moon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1Z" fill="currentColor"/></svg>
@@ -40,11 +40,11 @@
     <section class="hero" id="top">
       <div class="container hero__grid">
         <div class="hero__text">
-          <p class="tag reveal"><span class="tag__dot"></span>Software Engineer · ~4 yrs</p>
-          <h1 class="reveal">I turn messy processes into <em>systems that work.</em></h1>
+          <p class="tag reveal" data-i18n="tag"><span class="tag__dot"></span>Software Engineer · ~4 yrs</p>
+          <h1 class="reveal" data-i18n="h1">I turn messy processes into <em>systems that work.</em></h1>
           <div class="hero__cta reveal">
-            <a href="#projects" class="btn btn--ink">View work</a>
-            <a href="#contact" class="btn btn--line">Say hello</a>
+            <a href="#projects" class="btn btn--ink" data-i18n="viewWork">View work</a>
+            <a href="#contact" class="btn btn--line" data-i18n="sayHello">Say hello</a>
           </div>
         </div>
 
@@ -54,15 +54,15 @@
             <path class="m-line m-green"  pathLength="1" d="M30 130 H140 L330 320 L450 440 H570"/>
             <path class="m-line m-orange" pathLength="1" d="M30 440 H200 L320 320 H570"/>
           </svg>
-          <a class="stn" href="#about"             style="--x:33.3%;--y:78.6%;--d:1.3s"><i></i><b>About</b></a>
-          <a class="stn stn--x" href="#skills"     style="--x:70%;--y:57.1%;--d:1.5s"><i></i><b>Skills</b></a>
-          <a class="stn stn--l" href="#experience" style="--x:50%;--y:19.6%;--d:1.7s"><i></i><b>Experience</b></a>
-          <a class="stn stn--up" href="#projects"          style="--x:86.6%;--y:78.6%;--d:1.9s"><i></i><b>Projects</b></a>
-          <a class="stn stn--l" href="#contact"    style="--x:70%;--y:91%;--d:2.1s"><i></i><b>Contact</b></a>
+          <a class="stn" href="#about"             style="--x:33.3%;--y:78.6%;--d:1.3s"><i></i><b data-i18n="stAbout">About</b></a>
+          <a class="stn stn--x" href="#skills"     style="--x:70%;--y:57.1%;--d:1.5s"><i></i><b data-i18n="stSkills">Skills</b></a>
+          <a class="stn stn--l" href="#experience" style="--x:50%;--y:19.6%;--d:1.7s"><i></i><b data-i18n="stExperience">Experience</b></a>
+          <a class="stn stn--up" href="#projects"          style="--x:86.6%;--y:78.6%;--d:1.9s"><i></i><b data-i18n="stProjects">Projects</b></a>
+          <a class="stn stn--l" href="#contact"    style="--x:70%;--y:91%;--d:2.1s"><i></i><b data-i18n="stContact">Contact</b></a>
           <figcaption class="metro__key mono">
-            <span><i class="k-orange"></i>Front end</span>
-            <span><i class="k-blue"></i>Back end</span>
-            <span><i class="k-green"></i>Data &amp; maps</span>
+            <span data-i18n="keyFront"><i class="k-orange"></i>Front end</span>
+            <span data-i18n="keyBack"><i class="k-blue"></i>Back end</span>
+            <span data-i18n="keyData"><i class="k-green"></i>Data &amp; maps</span>
           </figcaption>
         </figure>
       </div>
@@ -71,20 +71,20 @@
     <!-- ABOUT -->
     <section class="section" id="about">
       <div class="container">
-        <p class="label reveal">01 / About</p>
+        <p class="label reveal" data-i18n="l1">01 / About</p>
         <div class="about__grid">
-          <p class="statement reveal">
+          <p class="statement reveal" data-i18n="statement">
             Front end by focus, full stack by habit. If a task repeats, I <span class="hl">automate it</span>. I pick up new tools fast and build with <span class="hl hl--blue">AI agents</span>.
           </p>
           <figure class="about__photo reveal">
-            <img src="assets/me.webp" width="640" height="800" alt="Portrait of Your Name" loading="lazy" decoding="async" />
-            <figcaption class="mono"><i aria-hidden="true"></i>Phnom Penh · KH</figcaption>
+            <img src="assets/me.webp" width="640" height="800" alt="Portrait of Nhok Sok" data-i18n-alt="photoAlt" loading="lazy" decoding="async" />
+            <figcaption class="mono" data-i18n="place"><i aria-hidden="true"></i>Phnom Penh · KH</figcaption>
           </figure>
         </div>
         <ul class="facts reveal">
-          <li><strong>~4</strong><span>years shipping</span></li>
-          <li><strong>Vue</strong><span>home stack</span></li>
-          <li><strong>0</strong><span>repeat tasks tolerated</span></li>
+          <li><strong>~4</strong><span data-i18n="f1">years shipping</span></li>
+          <li><strong>Vue</strong><span data-i18n="f2">home stack</span></li>
+          <li><strong>0</strong><span data-i18n="f3">repeat tasks tolerated</span></li>
         </ul>
       </div>
     </section>
@@ -93,8 +93,8 @@
     <section class="section section--tint section--map" id="skills">
       <div class="skillmap" id="skillmap">
           <div class="sm-bar">
-            <div class="sm-title"><p class="label">02 / Skills</p><h2>Skill city</h2></div>
-            <p class="sm-hint mono">Drag to explore · ctrl + scroll to zoom</p>
+            <div class="sm-title"><p class="label" data-i18n="l2">02 / Skills</p><h2 data-i18n="skillCity">Skill city</h2></div>
+            <p class="sm-hint mono" data-i18n="mapHint">Drag to explore · ctrl + scroll to zoom</p>
           </div>
           <div class="sm-viewport" id="smViewport">
             <!-- Centered on Boeung Keng Kang 1, Phnom Penh (11.5463° N, 104.9268° E); zoom 15.2 shows a 200 m scale. Change data-center (lat,lng) to move the map; the skill districts are laid out around it. -->
@@ -154,22 +154,22 @@
     <!-- EXPERIENCE -->
     <section class="section section--compact" id="experience">
       <div class="container">
-        <p class="label reveal">03 / Experience</p>
-        <h2 class="reveal">The route so far</h2>
+        <p class="label reveal" data-i18n="l3">03 / Experience</p>
+        <h2 class="reveal" data-i18n="routeTitle">The route so far</h2>
         <!-- Work, newest first (schools are in Education below) -->
         <ol class="route">
           <li class="reveal">
-            <span class="route__when mono">2023 — now</span>
+            <span class="route__when mono" data-i18n="dgcWhen">2023 — now</span>
             <div class="route__job">
               <img class="route__logo" src="assets/work/dgc.png" width="128" height="128" alt="Digital Government Committee logo" loading="lazy" />
-              <div><h3>Web Developer</h3><p>Digital Government Committee (DGC)</p></div>
+              <div><h3 data-i18n="dgcTitle">Web Developer</h3><p data-i18n="dgcOrg">Digital Government Committee (DGC)</p></div>
             </div>
           </li>
           <li class="reveal">
             <span class="route__when mono">2022 — 2023</span>
             <div class="route__job">
               <span class="route__logo route__logo--icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2.5"/><path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7M3 12.5h18M10.5 12.5v1.5h3v-1.5"/></svg></span>
-              <div><h3>Back-end Web Developer</h3><p>Z1 Flexible Solution · 3-month internship, then 7 months on staff</p></div>
+              <div><h3 data-i18n="z1Title">Back-end Web Developer</h3><p data-i18n="z1Org">Z1 Flexible Solution · 3-month internship, then 7 months on staff</p></div>
             </div>
           </li>
         </ol>
@@ -179,16 +179,16 @@
     <!-- EDUCATION -->
     <section class="section section--compact" id="education">
       <div class="container">
-        <p class="label reveal">04 / Education</p>
-        <h2 class="reveal">Where I learned</h2>
+        <p class="label reveal" data-i18n="l4">04 / Education</p>
+        <h2 class="reveal" data-i18n="eduTitle">Where I learned</h2>
         <!-- TODO: set the years for both schools -->
         <div class="schools">
           <article class="school reveal">
             <img class="school__logo" src="assets/schools/aeu.png" width="127" height="168" alt="Asia Euro University logo" loading="lazy" />
             <div class="school__body">
               <span class="school__when mono">20XX — 20XX</span>
-              <h3>Bachelor's degree</h3>
-              <p>Asia Euro University · final project in database design</p>
+              <h3 data-i18n="aeuTitle">Bachelor's degree</h3>
+              <p data-i18n="aeuOrg">Asia Euro University · final project in database design</p>
               <p class="route__links"><a href="https://www.aeu.edu.kh/kh" target="_blank" rel="noopener">aeu.edu.kh ↗</a></p>
             </div>
           </article>
@@ -196,11 +196,11 @@
             <img class="school__logo school__logo--round" src="assets/schools/pn.png" width="128" height="128" alt="Passerelles Numériques logo" loading="lazy" />
             <div class="school__body">
               <span class="school__when mono">20XX — 20XX</span>
-              <h3>IT training program</h3>
-              <p>Passerelles Numériques Cambodia · featured student</p>
+              <h3 data-i18n="pnTitle">IT training program</h3>
+              <p data-i18n="pnOrg">Passerelles Numériques Cambodia · featured student</p>
               <p class="route__links">
                 <a href="https://www.passerellesnumeriques.org/what-we-do/cambodia/" target="_blank" rel="noopener">pn.org ↗</a>
-                <a href="https://www.facebook.com/passerelles.numeriques.cam/posts/english-below-studenttestimonial-%E1%9E%9F%E1%9E%BB%E1%9E%81-%E1%9E%87%E1%9E%B6%E1%9E%93%E1%9E%B7%E1%9E%9F%E1%9F%92%E1%9E%9F%E1%9E%B7%E1%9E%8F%E1%9E%98%E1%9E%80%E1%9E%96%E1%9E%B8%E1%9E%81%E1%9F%81%E1%9E%8F%E1%9F%92%E1%9E%8F%E1%9E%94%E1%9E%93%E1%9F%92%E1%9E%91%E1%9E%B6%E1%9E%99%E1%9E%98%E1%9E%B6%E1%9E%93%E1%9E%87%E1%9F%90%E1%9E%99-%E1%9E%8A%E1%9F%82%E1%9E%9B%E1%9E%94%E1%9E%B6%E1%9E%93%E1%9E%98%E1%9E%80%E1%9E%9A%E1%9E%9F%E1%9F%8B%E1%9E%93/188685383574370/" target="_blank" rel="noopener">My student story ↗</a>
+                <a href="https://www.facebook.com/passerelles.numeriques.cam/posts/english-below-studenttestimonial-%E1%9E%9F%E1%9E%BB%E1%9E%81-%E1%9E%87%E1%9E%B6%E1%9E%93%E1%9E%B7%E1%9E%9F%E1%9F%92%E1%9E%9F%E1%9E%B7%E1%9E%8F%E1%9E%98%E1%9E%80%E1%9E%96%E1%9E%B8%E1%9E%81%E1%9F%81%E1%9E%8F%E1%9F%92%E1%9E%8F%E1%9E%94%E1%9E%93%E1%9F%92%E1%9E%91%E1%9E%B6%E1%9E%99%E1%9E%98%E1%9E%B6%E1%9E%93%E1%9E%87%E1%9F%90%E1%9E%99-%E1%9E%8A%E1%9F%82%E1%9E%9B%E1%9E%94%E1%9E%B6%E1%9E%93%E1%9E%98%E1%9E%80%E1%9E%9A%E1%9E%9F%E1%9F%8B%E1%9E%93/188685383574370/" target="_blank" rel="noopener" data-i18n="story">My student story ↗</a>
               </p>
             </div>
           </article>
@@ -211,25 +211,25 @@
     <!-- PROJECTS -->
     <section class="section section--tint" id="projects">
       <div class="container">
-        <p class="label reveal">05 / Projects</p>
-        <h2 class="reveal">Selected work</h2>
+        <p class="label reveal" data-i18n="l5">05 / Projects</p>
+        <h2 class="reveal" data-i18n="projTitle">Selected work</h2>
         <!-- TODO: your real projects + links -->
         <div class="projects">
           <a class="project reveal" href="#" style="--c: var(--green)">
             <span class="project__no mono">01</span>
-            <h3>Mapping project</h3>
+            <h3 data-i18n="p1">Mapping project</h3>
             <p>OSM · Google Maps</p>
             <span class="project__go" aria-hidden="true">→</span>
           </a>
           <a class="project reveal" href="#" style="--c: var(--orange)">
             <span class="project__no mono">02</span>
-            <h3>Ops dashboard</h3>
+            <h3 data-i18n="p2">Ops dashboard</h3>
             <p>Vue · Pinia</p>
             <span class="project__go" aria-hidden="true">→</span>
           </a>
           <a class="project reveal" href="#" style="--c: var(--blue)">
             <span class="project__no mono">03</span>
-            <h3>Full-stack system</h3>
+            <h3 data-i18n="p3">Full-stack system</h3>
             <p>Laravel · Vue · SQL</p>
             <span class="project__go" aria-hidden="true">→</span>
           </a>
@@ -240,14 +240,14 @@
     <!-- CONTACT -->
     <section class="section contact" id="contact">
       <div class="container">
-        <p class="label reveal">06 / Contact</p>
-        <h2 class="contact__title reveal">Next stop: <em>your problem.</em></h2>
+        <p class="label reveal" data-i18n="l6">06 / Contact</p>
+        <h2 class="contact__title reveal" data-i18n="contactTitle">Next stop: <em>your problem.</em></h2>
         <!-- TODO: your real email + links -->
         <a class="contact__mail reveal" href="mailto:you@example.com">you@example.com</a>
         <ul class="socials reveal">
           <li><a href="https://github.com/madaSKi-acz" target="_blank" rel="noopener">GitHub</a></li>
           <li><a href="#" target="_blank" rel="noopener">LinkedIn</a></li>
-          <li><a href="#" target="_blank" rel="noopener">Résumé</a></li>
+          <li><a href="#" target="_blank" rel="noopener" data-i18n="resume">Résumé</a></li>
         </ul>
       </div>
     </section>
@@ -255,11 +255,11 @@
 
   <footer class="footer">
     <div class="container footer__inner mono">
-      <span>© <span id="year"></span> Your Name</span>
+      <span>© <span id="year"></span> <span data-i18n="name">Nhok Sok</span></span>
       <button class="wolf-toggle" id="wolfToggle" type="button">🐺 Hide wolf</button>
     </div>
   </footer>
 
-  <script src="main.js?v=44" defer></script>
+  <script src="main.js?v=45" defer></script>
 </body>
 </html>

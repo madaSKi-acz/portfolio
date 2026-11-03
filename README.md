@@ -6,7 +6,7 @@ A one-page personal portfolio built with plain HTML, CSS and JavaScript. It has 
 
 | File | What it is |
 | --- | --- |
-| `index.html` | All the content. Look for `TODO` comments and "Your Name". |
+| `index.html` | All the content (English). Look for `TODO` comments. |
 | `styles.css` | Design tokens (colors, fonts) at the top, then the styles for each section. |
 | `main.js` | Theme toggle and scroll reveal animations. Loads the skill map when it comes near the screen and the wolf after the page is ready. |
 | `assets/wolf3d.js` | The 3D pet wolf: low-poly model, trot/gallop/idle/sleep/howl animation, curved roaming in page space, time-of-day greeting. It walks on the page as if it were water: each paw leaves a ripple where it touches down, and a faint reflection follows under it. It rests only on empty space and fades gradually the more text it passes over. Visitors can hide it from the footer. |
@@ -16,6 +16,10 @@ A one-page personal portfolio built with plain HTML, CSS and JavaScript. It has 
 | `.nojekyll` | Tells GitHub Pages to serve the files without running Jekyll. |
 
 To change the colors, edit `--orange`, `--blue`, `--green` and `--violet` (the metro line colors) at the top of `styles.css`. There is one set of values for light mode and one for dark mode.
+
+## Khmer version
+
+The **ខ្មែរ / EN** button in the top bar switches the whole page between English and Khmer, and remembers the choice. English text is the HTML itself; each element with a `data-i18n="key"` attribute gets its Khmer text from the `KM` table near the top of `main.js` (map labels are in `KM_GROUPS` / `KM_TEXT` in `assets/skillmap.js`, the wolf's lines in `LINES` in `assets/wolf3d.js`). To change a Khmer sentence, edit its entry in that table. Khmer uses the Kantumruy Pro font from Google Fonts.
 
 ## Skill map
 
