@@ -134,9 +134,12 @@ section[id] { scroll-margin-top: 64px; }
 .sm-title h2 { margin: 0; font-size: clamp(1.4rem, 1.1rem + 1vw, 1.9rem); }
 .skillmap { position: relative; overflow: hidden; background: var(--paper); }
 /* feather the map into the page instead of hard edges */
-.sm-viewport::before, .sm-viewport::after { content: ""; position: absolute; left: 0; right: 0; height: clamp(40px, 8vh, 90px); z-index: 3; pointer-events: none; }
-.sm-viewport::before { top: 0; background: linear-gradient(var(--paper), color-mix(in srgb, var(--paper) 0%, transparent)); }
-.sm-viewport::after { bottom: 0; background: linear-gradient(color-mix(in srgb, var(--paper) 0%, transparent), var(--paper)); }
+/* feather the map into the page: only the map image fades out (eased), pins and controls stay crisp */
+.sm-map { --f: clamp(70px, 12vh, 130px); }
+.sm-map .maplibregl-canvas {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, rgba(0,0,0,.06) calc(var(--f) * .2), rgba(0,0,0,.25) calc(var(--f) * .4), rgba(0,0,0,.55) calc(var(--f) * .6), rgba(0,0,0,.85) calc(var(--f) * .8), #000 var(--f), #000 calc(100% - var(--f)), rgba(0,0,0,.85) calc(100% - var(--f) * .8), rgba(0,0,0,.55) calc(100% - var(--f) * .6), rgba(0,0,0,.25) calc(100% - var(--f) * .4), rgba(0,0,0,.06) calc(100% - var(--f) * .2), transparent 100%);
+          mask-image: linear-gradient(to bottom, transparent 0, rgba(0,0,0,.06) calc(var(--f) * .2), rgba(0,0,0,.25) calc(var(--f) * .4), rgba(0,0,0,.55) calc(var(--f) * .6), rgba(0,0,0,.85) calc(var(--f) * .8), #000 var(--f), #000 calc(100% - var(--f)), rgba(0,0,0,.85) calc(100% - var(--f) * .8), rgba(0,0,0,.55) calc(100% - var(--f) * .6), rgba(0,0,0,.25) calc(100% - var(--f) * .4), rgba(0,0,0,.06) calc(100% - var(--f) * .2), transparent 100%);
+}
 .sm-viewport { position: relative; height: clamp(480px, 78vh, 800px); overflow: hidden; }
 .sm-map { position: absolute; inset: 0; background: var(--paper); font: inherit; z-index: 0; }
 .sm-map.maplibregl-map { position: absolute; inset: 0; }   /* MapLibre's CSS sets position: relative */
@@ -144,10 +147,11 @@ section[id] { scroll-margin-top: 64px; }
 .sm-marker { width: 0; height: 0; }
 .skillmap.is-nomap .sm-map::after { content: "The map needs WebGL to show."; position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font: .85rem var(--mono); }
 .sm-district span { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; font: 600 12px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); padding: 3px 8px; border-radius: 6px; background: color-mix(in srgb, var(--card) 82%, transparent); box-shadow: 0 2px 8px -4px rgba(0,0,0,.3); }
-.sm-map .maplibregl-ctrl-bottom-left .maplibregl-ctrl { margin: 0 0 16px max(16px, calc((100vw - 1140px) / 2 + 24px)); }
+.sm-map .maplibregl-ctrl-bottom-left .maplibregl-ctrl { margin: 0 0 18px max(16px, calc((100vw - 1140px) / 2 + 24px)); }
 .sm-map .maplibregl-ctrl-scale { font: 500 10px var(--mono); color: var(--ink); background: color-mix(in srgb, var(--card) 85%, transparent); border-color: var(--ink); }
 /* "Use ctrl + scroll to zoom" hint shown over the map */
-.sm-map .maplibregl-cooperative-gesture-screen { background: color-mix(in srgb, var(--ink) 45%, transparent); color: var(--paper); font: 500 .95rem var(--body); padding: 1rem; z-index: 5; }
+.sm-map .maplibregl-cooperative-gesture-screen { background: none; padding: 0; z-index: 5; }
+.sm-map .maplibregl-cooperative-gesture-screen > div { font: 500 .8rem var(--body); color: var(--paper); background: color-mix(in srgb, var(--ink) 82%, transparent); padding: .5rem 1rem; border-radius: 999px; box-shadow: 0 10px 24px -12px rgba(0,0,0,.45); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
 
 /* "You are here" */
 .sm-home { pointer-events: none; }

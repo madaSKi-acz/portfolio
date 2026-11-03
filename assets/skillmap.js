@@ -235,7 +235,7 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   const padding = () => {
     if (vp.clientWidth < 720) return { top: 70, bottom: 60, left: 20, right: 20 };
     const side = Math.max(16, (vp.clientWidth - 1140) / 2 + 24);
-    return { top: 90, bottom: 40, left: side + 40, right: side + 290 };
+    return { top: 60, bottom: 20, left: side + 10, right: side + 270 };
   };
   const camera = (bounds) => {
     if (vp.clientWidth >= 720) return lmap.cameraForBounds(bounds, { padding: padding(), maxZoom: Z + 1 });
@@ -245,8 +245,10 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     const cam = lmap.cameraForBounds(tall, { padding: { top: 70, bottom: 60, left: 0, right: 0 }, maxZoom: Z + 1 });
     return cam && { ...cam, center: c };
   };
-  const fly = (bounds) => { const cam = camera(bounds); if (cam) lmap.flyTo({ ...cam, duration: reduce ? 0 : 1100, curve: 1.3, essential: true }); };
-  const showAll = () => { const cam = camera(allBounds()); if (cam) lmap.jumpTo(cam); };
+  // The overview sits a little closer than a strict fit; the edges fade out anyway
+  const ALL_BOOST = 0.3;
+  const fly = (bounds, boost = 0) => { const cam = camera(bounds); if (cam) lmap.flyTo({ ...cam, zoom: cam.zoom + boost, duration: reduce ? 0 : 1100, curve: 1.3, essential: true }); };
+  const showAll = () => { const cam = camera(allBounds()); if (cam) lmap.jumpTo({ ...cam, zoom: cam.zoom + (vp.clientWidth >= 720 ? ALL_BOOST : 0) }); };
 
   // ---------- District list (bottom-right panel) ----------
   const list = document.getElementById('smLayers');
@@ -280,7 +282,7 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     map.classList.toggle('is-filtered', g !== 'all');
     feats.forEach((f) => f.pin.classList.toggle('is-match', f.g === g));
     restyle();
-    if (g === 'all') return fly(allBounds());
+    if (g === 'all') return fly(allBounds(), vp.clientWidth >= 720 ? ALL_BOOST : 0);
     if (!layers[g].on) toggleLayer(g, true);
     fly(layers[g].bounds);
   };
