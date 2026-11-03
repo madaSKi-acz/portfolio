@@ -38,7 +38,6 @@ html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 body {
   margin: 0; background: var(--paper); color: var(--ink); font-family: var(--body);
   font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased;
-  padding-bottom: 48px;
   transition: background-color .4s var(--ease), color .4s var(--ease);
 }
 h1, h2, h3 { font-family: var(--display); line-height: 1.05; letter-spacing: -0.03em; margin: 0; font-weight: 700; }
@@ -231,18 +230,8 @@ section[id] { scroll-margin-top: 64px; }
 }
 
 
-/* ============ Journey road + wolf ============ */
-.trail { position: fixed; left: 0; right: 0; bottom: 0; height: 48px; z-index: 45; background: color-mix(in srgb, var(--paper) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid var(--rule); }
-.trail__road { position: absolute; left: 20px; right: 20px; bottom: 14px; height: 8px; border-radius: 8px; background: var(--ink);
-  background-image: repeating-linear-gradient(90deg, transparent 0 14px, color-mix(in srgb, var(--paper) 75%, transparent) 14px 26px); background-size: 100% 2px; background-position: 0 3px; background-repeat: no-repeat; }
-.trail__stops { position: absolute; left: 20px; right: 20px; bottom: 14px; height: 8px; }
-.trail__stops a { position: absolute; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--paper); border: 3px solid var(--ink); transition: border-color .3s, transform .3s var(--ease); }
-.trail__stops a.is-past { border-color: var(--orange); }
-.trail__stops a::after { content: attr(data-label); position: absolute; bottom: 18px; left: 50%; transform: translate(-50%, 4px); white-space: nowrap; font-family: var(--mono); font-size: .68rem; padding: .1rem .45rem; border-radius: 5px; background: var(--ink); color: var(--paper); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s var(--ease); }
-.trail__stops a:hover { transform: scale(1.25); }
-.trail__stops a:hover::after { opacity: 1; transform: translate(-50%, 0); }
-
-.wolf { position: absolute; left: 0; bottom: 19px; width: 96px; height: 65px; padding: 0; border: 0; background: none; cursor: pointer; will-change: transform; z-index: 2; -webkit-tap-highlight-color: transparent; }
+/* ============ Pet wolf ============ */
+.wolf { position: fixed; left: 0; top: 0; width: 58px; height: 39px; padding: 0; border: 0; background: none; cursor: pointer; will-change: transform; z-index: 45; -webkit-tap-highlight-color: transparent; }
 .wolf__flip { display: block; width: 100%; height: 100%; transition: transform .25s var(--ease); }
 .wolf.is-left .wolf__flip { transform: scaleX(-1); }
 .wolf__svg { width: 100%; height: 100%; overflow: visible; }
@@ -300,16 +289,13 @@ section[id] { scroll-margin-top: 64px; }
 
 /* Hop on click */
 .wolf.is-hop .wolf__flip { animation: hop .55s var(--ease); }
-@keyframes hop { 0%, 100% { translate: 0 0; } 40% { translate: 0 -22px; } }
+@keyframes hop { 0%, 100% { translate: 0 0; } 40% { translate: 0 -14px; } }
 
-.wolf__bubble { position: absolute; left: 50%; bottom: calc(100% + 4px); transform: translate(-50%, 6px) scale(.8); white-space: nowrap; font-family: var(--mono); font-size: .72rem; padding: .15rem .5rem; border-radius: 8px; background: var(--ink); color: var(--paper); opacity: 0; pointer-events: none; transition: opacity .25s, transform .3s var(--ease); }
+.wolf__bubble { position: absolute; left: 50%; bottom: calc(100% + 2px); transform: translate(-50%, 6px) scale(.8); white-space: nowrap; font-family: var(--mono); font-size: .65rem; padding: .1rem .4rem; border-radius: 6px; background: var(--ink); color: var(--paper); opacity: 0; pointer-events: none; transition: opacity .25s, transform .3s var(--ease); }
 .wolf__bubble::after { content: ""; position: absolute; left: 50%; top: 100%; margin-left: -4px; border: 4px solid transparent; border-top-color: var(--ink); }
 .wolf__bubble.is-on { opacity: 1; transform: translate(-50%, 0) scale(1); }
 
-@media (max-width: 640px) {
-  .wolf { width: 68px; height: 46px; bottom: 19px; }
-  .trail__road, .trail__stops { left: 12px; right: 12px; }
-}
+@media (max-width: 640px) { .wolf { width: 48px; height: 32px; } }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
