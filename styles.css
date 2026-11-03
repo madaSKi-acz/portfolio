@@ -293,6 +293,9 @@ li:has(.sm-vis input:not(:checked)) .sm-fly span { text-decoration: line-through
 .route__when { color: var(--muted); padding-top: 6px; }
 .route h3 { font-size: 1.35rem; margin-bottom: .25rem; }
 .route p { color: var(--muted); }
+.route__job { display: flex; gap: .9rem; align-items: center; }
+.route__logo { flex: none; width: 48px; height: 48px; border-radius: 50%; background: #fff; border: 1px solid var(--rule); object-fit: contain; box-shadow: 0 8px 18px -12px rgba(0,0,0,.4); }
+.route__logo--icon { display: grid; place-items: center; background: color-mix(in srgb, var(--orange) 12%, var(--card)); color: var(--orange); border-color: color-mix(in srgb, var(--orange) 35%, transparent); }
 .section--compact { padding: clamp(40px, 6vw, 80px) 0; }
 .section--compact h2 { margin-bottom: 1.5rem; }
 .schools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .9rem; max-width: 920px; }
