@@ -378,10 +378,16 @@ li:has(.sm-vis input:not(:checked)) .sm-fly span { text-decoration: line-through
 .wave-fx.is-on { display: block; view-transition-name: wave-fx; }
 ::view-transition-group(wave-fx), ::view-transition-new(wave-fx), ::view-transition-old(wave-fx) { animation: none; }
 ::view-transition-group(wave-fx) { z-index: 3; }
-/* text lights up as the crest passes, then settles into the new theme */
-.wave-lit { animation: waveLit 1.1s cubic-bezier(.2, .7, .2, 1); }
+/* what the crest touches lights up, then settles into the new theme */
+.wave-lit { animation: waveLit 1.6s cubic-bezier(.2, .7, .2, 1); }
 @keyframes waveLit {
   0% { text-shadow: 0 0 0 transparent; filter: brightness(1); }
-  22% { text-shadow: 0 0 14px rgba(190, 225, 255, .95), 0 0 3px rgba(255, 255, 255, .9); filter: brightness(1.35); }
+  20% { text-shadow: 0 0 22px rgba(190, 225, 255, .95), 0 0 6px rgba(255, 255, 255, .85); filter: brightness(1.5) saturate(1.15); }
   100% { text-shadow: 0 0 0 transparent; filter: brightness(1); }
+}
+.wave-lit-box { animation: waveLitBox 1.6s cubic-bezier(.2, .7, .2, 1); }
+@keyframes waveLitBox {
+  0% { box-shadow: 0 0 0 0 transparent; filter: brightness(1); }
+  20% { box-shadow: 0 0 0 1.5px rgba(225, 240, 255, .85), 0 0 34px 8px rgba(150, 200, 255, .55); filter: brightness(1.3) saturate(1.1); }
+  100% { box-shadow: 0 0 0 0 transparent; filter: brightness(1); }
 }
