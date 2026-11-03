@@ -6,11 +6,13 @@ const STYLES = {
   light: 'https://tiles.openfreemap.org/styles/liberty',
   dark: 'https://tiles.openfreemap.org/styles/dark',
 };
+// Each district is a real Phnom Penh neighbourhood (sangkat), as a block aligned with the street grid.
+// rect: [west, south, east, north]. All of them are on land, away from the Bassac river.
 const GROUPS = {
-  front: { name: 'Front end', where: 'Front-end Old Town', c: '--orange' },
-  back: { name: 'Back end', where: 'Back-end Harbor', c: '--blue' },
-  data: { name: 'Data & maps', where: 'Data Park', c: '--green' },
-  flow: { name: 'Workflow', where: 'Automation Hills', c: '--violet' },
+  front: { name: 'Front end', where: 'Front-end Old Town', area: 'Boeung Keng Kang 1', c: '--orange', rect: [104.9233, 11.5418, 104.9279, 11.5521] },
+  back: { name: 'Back end', where: 'Back-end Harbor', area: 'Tonle Bassac', c: '--blue', rect: [104.9287, 11.5458, 104.9332, 11.5521] },
+  data: { name: 'Data & maps', where: 'Data Park', area: 'Boeung Keng Kang 3', c: '--green', rect: [104.9182, 11.5414, 104.9223, 11.5456] },
+  flow: { name: 'Workflow', where: 'Automation Hills', area: 'Boeung Keng Kang 2', c: '--violet', rect: [104.9182, 11.5476, 104.9223, 11.5521] },
 };
 const EN_LABEL = ['coalesce', ['get', 'name:en'], ['get', 'name_en'], ['get', 'name:latin'], ['get', 'name']];
 
@@ -22,12 +24,8 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   const Z = Number(el.dataset.zoom) || 14;
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 
-  // Pins are laid out in a 1200 × 760 sketch (their --x/--y). Map that sketch onto real
-  // streets around the center, at about 1 sketch pixel = 1 screen pixel at the default zoom.
-  const pxDeg = (512 * 2 ** Z) / 360;
+  const HOME = [clng, clat];
   const cosLat = Math.cos((clat * Math.PI) / 180);
-  const toLngLat = (x, y) => [clng + (x - 600) / pxDeg, clat - ((y - 450) / pxDeg) * cosLat];
-  const HOME = toLngLat(600, 450);
 
   // ---------- Map ----------
   const lmap = new ml.Map({
@@ -43,69 +41,62 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   lmap.keyboard.disableRotation();
   lmap.addControl(new ml.ScaleControl({ maxWidth: 110, unit: 'metric' }), 'bottom-left');
 
-  // ---------- Skills as point features ----------
+  // ---------- Skills as point features, spread evenly inside their real district ----------
   const pinEls = [...map.querySelectorAll('.sm-pins .pin')];
-  // Pull each district toward "You are here" (PULL) and tighten pins inside it a little (TIGHT)
-  const PULL = 0.72, TIGHT = 0.85;
-  const raw = pinEls.map((p) => ({ g: p.dataset.group, x: parseFloat(p.style.getPropertyValue('--x')), y: parseFloat(p.style.getPropertyValue('--y')) }));
-  const centroid = {};
-  raw.forEach((r) => { const c = (centroid[r.g] ||= { x: 0, y: 0, n: 0 }); c.x += r.x; c.y += r.y; c.n++; });
-  const placed = raw.map((r) => {
-    const c = centroid[r.g], cx = c.x / c.n, cy = c.y / c.n;
-    return { x: 600 + (cx - 600) * PULL + (r.x - cx) * TIGHT, y: 450 + (cy - 450) * PULL + (r.y - cy) * TIGHT };
+  const byGroup = {};
+  pinEls.forEach((p) => (byGroup[p.dataset.group] ||= []).push(p));
+  const spot = {};
+  const metres = (a, b) => Math.hypot((a[0] - b[0]) * 111320 * cosLat, (a[1] - b[1]) * 110540);
+  Object.entries(byGroup).forEach(([g, list]) => {
+    const [w, sth, e, n] = GROUPS[g].rect;
+    // keep pins off the edges; pins point down at their spot, so leave more room at the top
+    // margins in metres: pins rise ~140 m above their spot at the default zoom, so the top needs the most room
+    const mLat = (m) => m / 110540;
+    const x0 = w + (e - w) * 0.2, x1 = e - (e - w) * 0.2, y0 = sth + mLat(45), y1 = n - mLat(150);
+    // one column per ~180 m of usable width (a pin and its label need about that at the default zoom)
+    const cols = Math.max(1, Math.min(list.length, 1 + Math.floor(metres([x0, y0], [x1, y0]) / 180)));
+    // Lay out a grid with spare cells, skip any cell that would sit on "You are here", keep the first ones
+    const homeInside = HOME[0] > w && HOME[0] < e && HOME[1] > sth && HOME[1] < n;
+    const rows = Math.ceil(list.length / cols) + (homeInside ? 1 : 0);
+    const cells = [];
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      cells.push([x0 + (x1 - x0) * (cols === 1 ? 0.5 : c / (cols - 1)), y1 - (y1 - y0) * (rows === 1 ? 0.5 : r / (rows - 1))]);
+    }
+    let free = cells.filter((cell) => metres(cell, HOME) > 140);
+    if (free.length < list.length) free = cells;
+    // center a short last row under the others
+    const use = free.slice(0, list.length);
+    const lastY = use[use.length - 1][1], last = use.filter((u) => u[1] === lastY);
+    if (last.length < cols && last.length === 1 && cols > 1) last[0][0] = (x0 + x1) / 2;
+    list.forEach((p, k) => { spot[p.dataset.name] = use[k]; });
   });
   const feats = pinEls.map((p, i) => {
-    const { x, y } = placed[i];
     const wrap = document.createElement('div');
     wrap.className = 'sm-marker';
     wrap.append(p);
-    const ll = toLngLat(x, y);
+    const ll = spot[p.dataset.name];
     const marker = new ml.Marker({ element: wrap, anchor: 'center' }).setLngLat(ll).addTo(lmap);
-    return { i, x, y, ll, g: p.dataset.group, name: p.dataset.name, status: p.dataset.status, head: p.querySelector('.pin__head').innerHTML, pin: p, wrap, marker };
+    return { i, ll, g: p.dataset.group, name: p.dataset.name, status: p.dataset.status, head: p.querySelector('.pin__head').innerHTML, pin: p, wrap, marker, checked: false };
   });
   map.querySelector('.sm-pins').remove();
 
-  // District polygons: a soft hull around each group's pins
-  const hull = (pts) => {
-    pts = [...pts].sort((a, b) => a[0] - b[0] || a[1] - b[1]);
-    const cross = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
-    const lo = [], up = [];
-    for (const p of pts) { while (lo.length > 1 && cross(lo[lo.length - 2], lo[lo.length - 1], p) <= 0) lo.pop(); lo.push(p); }
-    for (const p of pts.slice().reverse()) { while (up.length > 1 && cross(up[up.length - 2], up[up.length - 1], p) <= 0) up.pop(); up.push(p); }
-    return lo.slice(0, -1).concat(up.slice(0, -1));
-  };
   const layers = {};
   Object.keys(GROUPS).forEach((g) => {
     const own = feats.filter((f) => f.g === g);
-    const ring = [];
-    own.forEach((f) => { for (let a = 0; a < 16; a++) ring.push([f.x + Math.cos((a / 16) * 2 * Math.PI) * 58, f.y - 30 + Math.sin((a / 16) * 2 * Math.PI) * 58]); });
-    const poly = hull(ring).map(([x, y]) => toLngLat(x, y));
-    poly.push(poly[0]);
-    const bounds = poly.reduce((b, p) => b.extend(p), new ml.LngLatBounds(poly[0], poly[0]));
-    const cx = own.reduce((s, f) => s + f.x, 0) / own.length;
+    const [w, sth, e, n] = GROUPS[g].rect;
+    const poly = [[w, sth], [e, sth], [e, n], [w, n], [w, sth]];
+    const bounds = new ml.LngLatBounds([w, sth], [e, n]);
     const lab = document.createElement('div');
     lab.className = 'sm-district';
-    lab.innerHTML = `<span>${GROUPS[g].where}</span>`;
-    const label = new ml.Marker({ element: lab, anchor: 'center' }).setLngLat(toLngLat(cx, g === 'data' ? Math.max(...own.map((f) => f.y)) + 62 : Math.min(...own.map((f) => f.y)) - 104)).addTo(lmap);
+    lab.innerHTML = `<span>${GROUPS[g].where}<small>${GROUPS[g].area}</small></span>`;
+    const label = new ml.Marker({ element: lab, anchor: 'bottom', offset: [0, -4] }).setLngLat([(w + e) / 2, n]).addTo(lmap);
     layers[g] = { own, poly, bounds, label, on: true };
   });
-  // Districts are drawn as a soft glow around their pins (a heatmap per district), so they blend
-  // into the streets instead of sitting on top as hard outlines
-  const pointData = () => ({
+
+  const districtData = () => ({
     type: 'FeatureCollection',
-    features: feats.map((f) => ({ type: 'Feature', properties: { g: f.g }, geometry: { type: 'Point', coordinates: f.ll } })),
+    features: Object.entries(layers).map(([g, l]) => ({ type: 'Feature', properties: { g, color: css(GROUPS[g].c) }, geometry: { type: 'Polygon', coordinates: [l.poly] } })),
   });
-  const rgba = (hex, a) => {
-    const h = hex.replace('#', '');
-    const n = parseInt(h.length === 3 ? h.split('').map((c) => c + c).join('') : h, 16);
-    return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
-  };
-  const glowColor = (g) => {
-    const c = css(GROUPS[g].c) || '#888', k = isDark() ? 1.25 : 1;
-    return ['interpolate', ['linear'], ['heatmap-density'],
-      0, rgba(c, 0), 0.04, rgba(c, 0.07 * k), 0.15, rgba(c, 0.15 * k), 0.35, rgba(c, 0.22 * k), 0.7, rgba(c, 0.27 * k), 1, rgba(c, 0.3 * k)];
-  };
-  const GLOW = 105;   // glow radius in px at the default zoom; it scales with the map
 
   // "You are here"
   const homeEl = document.createElement('div');
@@ -116,13 +107,15 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   // ---------- Our layers on top of the basemap (re-added after a theme/style switch) ----------
   let focusGroup = 'all', routeLine = [], routeColor = '#000';
   const restyle = () => {
-    Object.keys(GROUPS).forEach((g) => {
-      const id = `sm-glow-${g}`;
-      if (!lmap.getLayer(id)) return;
-      lmap.setLayoutProperty(id, 'visibility', layers[g].on ? 'visible' : 'none');
-      lmap.setPaintProperty(id, 'heatmap-color', glowColor(g));
-      lmap.setPaintProperty(id, 'heatmap-opacity', focusGroup === 'all' || focusGroup === g ? 1 : 0.3);
-    });
+    if (!lmap.getLayer('sm-district-fill')) return;
+    const on = Object.keys(layers).filter((g) => layers[g].on);
+    const filter = ['in', ['get', 'g'], ['literal', on]];
+    const op = (a, dim) => (focusGroup === 'all' ? a : ['case', ['==', ['get', 'g'], focusGroup], a, dim]);
+    lmap.getSource('sm-districts').setData(districtData());
+    lmap.setFilter('sm-district-fill', filter);
+    lmap.setFilter('sm-district-line', filter);
+    lmap.setPaintProperty('sm-district-fill', 'fill-opacity', op(isDark() ? 0.16 : 0.11, 0.04));
+    lmap.setPaintProperty('sm-district-line', 'line-opacity', op(0.75, 0.25));
   };
   const addOverlays = () => {
     const style = lmap.getStyle();
@@ -133,16 +126,9 @@ export function initSkillMap({ root: map, reduce, isDark }) {
       }
     }
     const beforeId = style.layers.find((l) => l.type === 'symbol')?.id;
-    lmap.addSource('sm-skills', { type: 'geojson', data: pointData() });
-    Object.keys(GROUPS).forEach((g) => lmap.addLayer({
-      id: `sm-glow-${g}`, type: 'heatmap', source: 'sm-skills', filter: ['==', ['get', 'g'], g],
-      paint: {
-        'heatmap-radius': ['interpolate', ['exponential', 2], ['zoom'], Z - 4, GLOW / 16, Z + 4, GLOW * 16],
-        'heatmap-intensity': 1.8,
-        'heatmap-color': glowColor(g),
-        'heatmap-opacity-transition': { duration: 400 },
-      },
-    }, beforeId));
+    lmap.addSource('sm-districts', { type: 'geojson', data: districtData() });
+    lmap.addLayer({ id: 'sm-district-fill', type: 'fill', source: 'sm-districts', paint: { 'fill-color': ['get', 'color'], 'fill-opacity': 0.11, 'fill-opacity-transition': { duration: 400 } } }, beforeId);
+    lmap.addLayer({ id: 'sm-district-line', type: 'line', source: 'sm-districts', layout: { 'line-join': 'round' }, paint: { 'line-color': ['get', 'color'], 'line-width': ['interpolate', ['linear'], ['zoom'], 13, 1, 17, 2.5], 'line-opacity': 0.75 } }, beforeId);
     lmap.addSource('sm-route', { type: 'geojson', data: lineData(routeLine) });
     lmap.addLayer({ id: 'sm-route-halo', type: 'line', source: 'sm-route', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': css('--card') || '#fff', 'line-width': 9, 'line-opacity': 0.85 } });
     lmap.addLayer({ id: 'sm-route', type: 'line', source: 'sm-route', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': routeColor, 'line-width': 5 } });
@@ -150,6 +136,27 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   };
   const lineData = (coords) => ({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates: coords.length > 1 ? coords : [] } });
   lmap.on('style.load', addOverlays);
+
+  // Safety net: if a pin lands on water in the real basemap, walk it toward its district's middle
+  const waterLayers = () => lmap.getStyle().layers.filter((l) => l['source-layer'] === 'water' && l.type === 'fill').map((l) => l.id);
+  const keepOnLand = () => {
+    const ids = waterLayers();
+    if (!ids.length) return;
+    const w = vp.clientWidth, h = vp.clientHeight;
+    for (const f of feats) {
+      if (f.checked) continue;
+      const pt = lmap.project(f.ll);
+      if (pt.x < 0 || pt.y < 0 || pt.x > w || pt.y > h) continue;   // only what is on screen can be tested
+      f.checked = true;
+      const [ww, ss, ee, nn] = GROUPS[f.g].rect, mid = [(ww + ee) / 2, (ss + nn) / 2];
+      for (let step = 0; step < 8 && lmap.queryRenderedFeatures(lmap.project(f.ll), { layers: ids }).length; step++) {
+        f.ll = [f.ll[0] + (mid[0] - f.ll[0]) * 0.3, f.ll[1] + (mid[1] - f.ll[1]) * 0.3];
+        f.marker.setLngLat(f.ll);
+      }
+    }
+  };
+  lmap.on('idle', keepOnLand);
+  lmap.on('style.load', () => feats.forEach((f) => { f.checked = false; }));
 
   // Follow the site theme
   let darkNow = isDark();
@@ -239,7 +246,7 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     card.style.setProperty('--c', `var(${GROUPS[f.g].c})`);
     card.querySelector('.sm-card__icon').innerHTML = f.head;
     card.querySelector('.sm-card__name').textContent = f.name;
-    card.querySelector('.sm-card__where').textContent = GROUPS[f.g].where;
+    card.querySelector('.sm-card__where').textContent = `${GROUPS[f.g].where} · ${GROUPS[f.g].area}`;
     card.querySelector('.sm-card__status').textContent = f.status === 'Daily' ? 'Daily driver' : 'Ready to ship';
     card.hidden = false;
     // One route, drawn once: the street route if it answers quickly, otherwise the animated guess.
@@ -282,9 +289,8 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     return cam && { ...cam, center: c };
   };
   // The overview sits a little closer than a strict fit; the edges fade out anyway
-  const ALL_BOOST = 0.2;
   const fly = (bounds, boost = 0) => { const cam = camera(bounds); if (cam) lmap.flyTo({ ...cam, zoom: cam.zoom + boost, duration: reduce ? 0 : 1100, curve: 1.3, essential: true }); };
-  const showAll = () => { const cam = camera(allBounds()); if (cam) lmap.jumpTo({ ...cam, zoom: cam.zoom + (vp.clientWidth >= 720 ? ALL_BOOST : 0) }); };
+  const showAll = () => lmap.jumpTo({ center: HOME, zoom: Z });
 
   // ---------- District list (bottom-right panel) ----------
   const list = document.getElementById('smLayers');
@@ -318,7 +324,7 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     map.classList.toggle('is-filtered', g !== 'all');
     feats.forEach((f) => f.pin.classList.toggle('is-match', f.g === g));
     restyle();
-    if (g === 'all') return fly(allBounds(), vp.clientWidth >= 720 ? ALL_BOOST : 0);
+    if (g === 'all') return lmap.flyTo({ center: HOME, zoom: Z, duration: reduce ? 0 : 1100, curve: 1.3, essential: true });
     if (!layers[g].on) toggleLayer(g, true);
     fly(layers[g].bounds);
   };

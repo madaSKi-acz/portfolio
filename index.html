@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=19" />
+  <link rel="stylesheet" href="styles.css?v=24" />
   <script>
     try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
@@ -86,8 +86,8 @@
             <p class="sm-hint mono">Drag to explore · ctrl + scroll to zoom</p>
           </div>
           <div class="sm-viewport" id="smViewport">
-            <!-- Centered on Koh Pich / Bassac riverside, Phnom Penh (Independence Monument to Koh Norea). Change data-center (lat,lng) to move the map; the skill districts are laid out around it. -->
-            <div class="sm-map" id="smMap" data-center="11.5510,104.9365" data-zoom="14"></div>
+            <!-- Centered on Boeung Keng Kang 1, Phnom Penh (11.5463° N, 104.9268° E); zoom 15.2 shows a 200 m scale. Change data-center (lat,lng) to move the map; the skill districts are laid out around it. -->
+            <div class="sm-map" id="smMap" data-center="11.5463,104.9268" data-zoom="15.2"></div>
             <div class="sm-pins" hidden>
               <button class="pin" type="button" data-group="front" data-name="Vue" data-status="Daily" style="--x:250px;--y:175px;--c:var(--orange);--i:0" aria-label="Vue, Front-end Old Town"><span class="pin__body"><span class="pin__head"><img src="assets/icons/vuejs.svg" alt="" width="22" height="22" /></span><span class="pin__label">Vue</span></span></button>
               <button class="pin" type="button" data-group="front" data-name="Pinia" data-status="Daily" style="--x:360px;--y:140px;--c:var(--orange);--i:1" aria-label="Pinia, Front-end Old Town"><span class="pin__body"><span class="pin__head"><img src="assets/icons/pinia.svg" alt="" width="22" height="22" /></span><span class="pin__label">Pinia</span></span></button>
