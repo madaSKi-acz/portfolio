@@ -254,8 +254,20 @@ li:has(.sm-vis input:not(:checked)) .sm-fly span { text-decoration: line-through
   .sm-viewport { height: 66vh; min-height: 460px; }
   .sm-bar { flex-direction: column; align-items: stretch; gap: .5rem; padding: 10px 12px; }
   .sm-title h2 { font-size: 1.3rem; }
-    .sm-zoom { right: 10px; top: 10px; }
-  .sm-card { min-width: 0; width: calc(100% - 20px); }
+  /* zoom buttons move to a row in the bottom-left on phones, so they never cover pins */
+  .sm-zoom { top: auto; right: auto; left: 10px; bottom: 44px; flex-direction: row; gap: .3rem; }
+  .sm-zoom button { width: 32px; height: 32px; font-size: 1rem; background: color-mix(in srgb, var(--card) 92%, transparent); }
+  /* smaller pins so a phone screen shows more of the map */
+  .sm-marker .pin { transform: translate(-50%, -100%) scale(.72); }
+  /* compact info card on one line; the dataset panel steps aside while it is open */
+  .sm-card { min-width: 0; width: calc(100% - 20px); gap: .6rem; padding: .55rem 1.9rem .55rem .55rem; border-radius: 12px; }
+  .sm-card > div { flex: 1; min-width: 0; }
+  .sm-card__icon { width: 34px; height: 34px; }
+  .sm-card__icon img, .sm-card__icon svg { width: 19px; height: 19px; }
+  .sm-card strong { font-size: .95rem; }
+  .sm-card__where { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: .66rem; }
+  .sm-card__status { white-space: nowrap; font-size: .62rem; flex: none; }
+  .skillmap.has-card .sm-data { display: none; }
   .sm-data { right: 10px; bottom: 10px; width: min(230px, calc(100% - 20px)); }
   .sm-data__meta, .sm-data__read { display: none; }
   .sm-map .maplibregl-ctrl-bottom-left .maplibregl-ctrl { margin: 0 0 12px 10px; }
@@ -350,6 +362,12 @@ li:has(.sm-vis input:not(:checked)) .sm-fly span { text-decoration: line-through
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .001ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; transition-delay: 0ms !important; }
 }
+
+/* Zoomed out: only the tapped pin shows its name; district labels get compact */
+.skillmap.is-far .pin:not(.is-on):not(:hover):not(:focus-visible) .pin__label { opacity: 0; }
+.skillmap.is-far .sm-district small { display: none; }
+.skillmap.is-far .sm-district span { font-size: 10px; letter-spacing: .08em; padding: 2px 6px; }
+.pin__label { transition: opacity .2s, background-color .2s, color .2s; }
 
 /* ============ Theme sweep (View Transitions) ============ */
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
