@@ -11,8 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/vendor/leaflet.css?v=1.9.4" />
-  <link rel="stylesheet" href="styles.css?v=16" />
+  <link rel="stylesheet" href="styles.css?v=17" />
   <script>
     try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
   </script>
@@ -84,11 +83,11 @@
       <div class="skillmap" id="skillmap">
           <div class="sm-bar">
             <div class="sm-title"><p class="label">02 / Skills</p><h2>Skill city</h2></div>
-            <p class="sm-hint mono">Drag · ctrl+scroll to zoom · tap a pin or a district</p>
+            <p class="sm-hint mono">Drag to explore · ctrl + scroll to zoom</p>
           </div>
           <div class="sm-viewport" id="smViewport">
             <!-- Centered on Koh Pich / Bassac riverside, Phnom Penh (Independence Monument to Koh Norea). Change data-center (lat,lng) to move the map; the skill districts are laid out around it. -->
-            <div class="sm-map" id="smMap" data-center="11.5510,104.9365" data-zoom="15"></div>
+            <div class="sm-map" id="smMap" data-center="11.5510,104.9365" data-zoom="14"></div>
             <div class="sm-pins" hidden>
               <button class="pin" type="button" data-group="front" data-name="Vue" data-status="Daily" style="--x:250px;--y:175px;--c:var(--orange);--i:0" aria-label="Vue, Front-end Old Town"><span class="pin__body"><span class="pin__head"><img src="assets/icons/vuejs.svg" alt="" width="22" height="22" /></span><span class="pin__label">Vue</span></span></button>
               <button class="pin" type="button" data-group="front" data-name="Pinia" data-status="Daily" style="--x:360px;--y:140px;--c:var(--orange);--i:1" aria-label="Pinia, Front-end Old Town"><span class="pin__body"><span class="pin__head"><img src="assets/icons/pinia.svg" alt="" width="22" height="22" /></span><span class="pin__label">Pinia</span></span></button>
@@ -126,7 +125,7 @@
                   <div><dt>Cursor</dt><dd id="smCursor">—</dd></div>
                   <div><dt>Zoom</dt><dd id="smZoomLvl">—</dd></div>
                 </dl>
-                <p class="sm-data__attr mono">Basemap © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors</p>
+                <p class="sm-data__attr mono">Basemap <a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> © <a href="https://www.openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a> · Data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors</p>
               </div>
             </aside>
           </div>
@@ -207,7 +206,6 @@
     </div>
   </footer>
 
-  <script src="assets/vendor/leaflet.js?v=1.9.4" defer></script>
-  <script src="main.js?v=16" defer></script>
+  <script src="main.js?v=17" defer></script>
 </body>
 </html>

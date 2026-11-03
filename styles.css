@@ -139,16 +139,15 @@ section[id] { scroll-margin-top: 64px; }
 .sm-viewport::after { bottom: 0; background: linear-gradient(color-mix(in srgb, var(--paper) 0%, transparent), var(--paper)); }
 .sm-viewport { position: relative; height: clamp(480px, 78vh, 800px); overflow: hidden; }
 .sm-map { position: absolute; inset: 0; background: var(--paper); font: inherit; z-index: 0; }
-.sm-map.leaflet-container { background: var(--paper); font-family: var(--body); }
-.sm-map .leaflet-tile-pane { filter: saturate(.45) sepia(.18) brightness(1.03) contrast(.92); }
-:root[data-theme="dark"] .sm-map .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) saturate(.35) brightness(.85) contrast(.9); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .sm-map .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) saturate(.35) brightness(.85) contrast(.9); } }
-.sm-area { transition: opacity .4s; }
-.skillmap.is-filtered .sm-area:not(.is-match) { opacity: .35; }
+.sm-map.maplibregl-map { position: absolute; inset: 0; }   /* MapLibre's CSS sets position: relative */
+.sm-map .maplibregl-canvas { outline: none; }
+.sm-marker { width: 0; height: 0; }
+.skillmap.is-nomap .sm-map::after { content: "The map needs WebGL to show."; position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font: .85rem var(--mono); }
 .sm-district span { position: absolute; transform: translate(-50%, -50%); white-space: nowrap; font: 600 12px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); padding: 3px 8px; border-radius: 6px; background: color-mix(in srgb, var(--card) 82%, transparent); box-shadow: 0 2px 8px -4px rgba(0,0,0,.3); }
-.sm-route { stroke: var(--route, var(--ink)); fill: none; filter: drop-shadow(0 1px 1px rgba(0,0,0,.25)); }
-.sm-map .leaflet-control-scale { margin: 0 0 16px max(16px, calc((100vw - 1140px) / 2 + 24px)); }
-.sm-map .leaflet-control-scale-line { font: 500 10px var(--mono); color: var(--ink); background: color-mix(in srgb, var(--card) 85%, transparent); border-color: var(--ink); }
+.sm-map .maplibregl-ctrl-bottom-left .maplibregl-ctrl { margin: 0 0 16px max(16px, calc((100vw - 1140px) / 2 + 24px)); }
+.sm-map .maplibregl-ctrl-scale { font: 500 10px var(--mono); color: var(--ink); background: color-mix(in srgb, var(--card) 85%, transparent); border-color: var(--ink); }
+/* "Use ctrl + scroll to zoom" hint shown over the map */
+.sm-map .maplibregl-cooperative-gesture-screen { background: color-mix(in srgb, var(--ink) 45%, transparent); color: var(--paper); font: 500 .95rem var(--body); padding: 1rem; z-index: 5; }
 
 /* "You are here" */
 .sm-home { pointer-events: none; }
@@ -254,7 +253,7 @@ li:has(.sm-vis input:not(:checked)) .sm-fly span { text-decoration: line-through
   .sm-card { min-width: 0; width: calc(100% - 20px); }
   .sm-data { right: 10px; bottom: 10px; width: min(230px, calc(100% - 20px)); }
   .sm-data__meta, .sm-data__read { display: none; }
-  .sm-map .leaflet-control-scale { margin: 0 0 12px 10px; }
+  .sm-map .maplibregl-ctrl-bottom-left .maplibregl-ctrl { margin: 0 0 12px 10px; }
   .sm-zoom button { box-shadow: 0 4px 12px -8px rgba(0,0,0,.4); }
 }
 
