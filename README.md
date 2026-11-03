@@ -8,10 +8,10 @@ A one-page personal portfolio built with plain HTML, CSS and JavaScript. It has 
 | --- | --- |
 | `index.html` | All the content. Look for `TODO` comments and "Your Name". |
 | `styles.css` | Design tokens (colors, fonts) at the top, then the styles for each section. |
-| `main.js` | Theme toggle, mobile menu, scroll reveal animations, active nav link and count-up stats. |
+| `main.js` | Theme toggle, scroll reveal animations and the route rail that tracks your position on the page. |
 | `.nojekyll` | Tells GitHub Pages to serve the files without running Jekyll. |
 
-To change the accent color, edit `--accent` / `--accent-2` in `styles.css`. There is one set of values for light mode and one for dark mode.
+To change the colors, edit `--orange`, `--blue`, `--green` and `--violet` (the metro line colors) at the top of `styles.css`. There is one set of values for light mode and one for dark mode.
 
 ## Run locally
 
