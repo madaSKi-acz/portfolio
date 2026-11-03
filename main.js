@@ -92,13 +92,14 @@
     const placeCard = () => {
       if (!selected || card.hidden) return;
       const { w } = size();
-      if (w < 720) { card.style.left = '10px'; card.style.top = ''; card.style.bottom = '56px'; return; }
+      if (w < 720) { card.style.left = '10px'; card.style.top = ''; card.style.bottom = '10px'; return; }
       const p = pinXY(selected);
       const sx = p.x * cam.s + cam.tx, sy = p.y * cam.s + cam.ty;
       const cw = card.offsetWidth, ch = card.offsetHeight;
       let left = Math.min(Math.max(sx - cw / 2, 10), w - cw - 10);
-      let top = sy - 70 - ch;
-      if (top < 60) top = sy + 18;
+      const barH = vp.offsetTop;
+      let top = barH + sy - 70 - ch;
+      if (top < barH + 10) top = barH + sy + 18;
       card.style.left = `${left}px`; card.style.top = `${top}px`; card.style.bottom = '';
     };
     const select = (pin) => {

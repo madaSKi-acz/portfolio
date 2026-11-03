@@ -85,6 +85,16 @@
         <h2 class="reveal">Skill city</h2>
 
         <div class="skillmap reveal" id="skillmap">
+          <div class="sm-bar">
+            <div class="sm-chips" role="group" aria-label="Fly to district">
+            <button data-fly="all" class="is-on">All</button>
+            <button data-fly="front" style="--c: var(--orange)">Front end</button>
+            <button data-fly="back" style="--c: var(--blue)">Back end</button>
+            <button data-fly="data" style="--c: var(--green)">Data &amp; maps</button>
+            <button data-fly="flow" style="--c: var(--violet)">Workflow</button>
+            </div>
+            <p class="sm-hint mono">Drag to explore · tap a pin</p>
+          </div>
           <div class="sm-viewport" id="smViewport">
             <div class="sm-world" id="smWorld">
               <svg class="sm-art" viewBox="0 0 1200 760" width="1200" height="760" aria-hidden="true">
@@ -151,20 +161,12 @@
               <button class="pin" type="button" data-group="flow" data-name="AI agents" data-status="Daily" style="--x:930px;--y:580px;--c:var(--violet);--i:15" aria-label="AI agents, Automation Hills"><span class="pin__body"><span class="pin__head"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M12 3v4M9 12h.01M15 12h.01M9 16h6"/></svg></span><span class="pin__label">AI agents</span></span></button>
               <button class="pin" type="button" data-group="flow" data-name="Automation" data-status="Ready" style="--x:1060px;--y:640px;--c:var(--violet);--i:16" aria-label="Automation, Automation Hills"><span class="pin__body"><span class="pin__head"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5"/></svg></span><span class="pin__label">Automation</span></span></button>
             </div>
-          </div>
-
-          <div class="sm-chips" role="group" aria-label="Fly to district">
-            <button data-fly="all" class="is-on">All</button>
-            <button data-fly="front" style="--c: var(--orange)">Front end</button>
-            <button data-fly="back" style="--c: var(--blue)">Back end</button>
-            <button data-fly="data" style="--c: var(--green)">Data &amp; maps</button>
-            <button data-fly="flow" style="--c: var(--violet)">Workflow</button>
-          </div>
-          <div class="sm-zoom">
+            <div class="sm-zoom">
             <button data-zoom="in" aria-label="Zoom in">+</button>
             <button data-zoom="out" aria-label="Zoom out">−</button>
+            </div>
           </div>
-          <p class="sm-hint mono">Drag to explore · tap a pin</p>
+
 
           <div class="sm-card" id="smCard" role="dialog" aria-live="polite" hidden>
             <button class="sm-card__x" aria-label="Close">×</button>
