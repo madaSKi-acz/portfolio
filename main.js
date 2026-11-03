@@ -1,4 +1,7 @@
 (() => {
+  // Version from this script's own URL (main.js?v=N in index.html), passed on to the modules it loads,
+  // so bumping that one number refreshes everything for returning visitors
+  const V = ((document.currentScript && document.currentScript.src.match(/[?&]v=([^&]+)/)) || [])[1] || '1';
   const root = document.documentElement;
   root.classList.add('js');
   document.getElementById('year').textContent = new Date().getFullYear();
@@ -49,7 +52,7 @@
       link.rel = 'stylesheet';
       link.href = 'assets/vendor/maplibre/maplibre-gl.css?v=6.11.2';
       document.head.append(link);
-      import('./assets/skillmap.js?v=27')
+      import(`./assets/skillmap.js?v=${V}`)
         .then((m) => m.initSkillMap({ root: map, reduce, isDark }))
         .catch((err) => { console.error(err); map.classList.add('is-nomap'); });
     };
@@ -75,7 +78,7 @@
   const loadWolf = () => {
     if (pet || loading) { if (pet) pet.el.hidden = false; return; }
     loading = true;
-    import('./assets/wolf3d.js?v=14')
+    import(`./assets/wolf3d.js?v=${V}`)
       .then((m) => { pet = m.startWolf({ reduceMotion: reduce }); })
       .catch(() => {})
       .finally(() => { loading = false; });

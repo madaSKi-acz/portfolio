@@ -277,7 +277,7 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   // Leave room for the dataset panel (bottom right) and the zoom buttons
   const padding = () => {
     if (vp.clientWidth < 720) return { top: 70, bottom: 60, left: 20, right: 20 };
-    const side = Math.max(16, (vp.clientWidth - 1140) / 2 + 24);
+    const side = 16;   // controls and the dataset panel sit at the map's right edge
     return { top: 60, bottom: 20, left: side + 10, right: side + 270 };
   };
   const camera = (bounds) => {
