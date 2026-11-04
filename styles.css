@@ -411,6 +411,8 @@ li:has(.sm-vis input:not(:checked)) .sm-fly span { text-decoration: line-through
   border-bottom: 3px solid var(--rule);
 }
 .contact__mail:hover { background-size: 100% 3px; }
+.contact__phone { display: block; width: fit-content; margin-top: 1rem; font-size: clamp(1rem, 2.2vw, 1.3rem); color: var(--muted); letter-spacing: .04em; transition: color .25s; }
+.contact__phone:hover { color: var(--ink); }
 .socials { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2.5rem; }
 .socials a { display: inline-block; font-family: var(--mono); font-size: .82rem; padding: .5rem 1rem; border: 1px solid var(--rule); border-radius: 999px; transition: border-color .25s, background-color .25s, color .25s; }
 .socials a:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
