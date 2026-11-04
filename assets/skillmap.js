@@ -21,11 +21,39 @@ const KM_GROUPS = {
   data: { name: 'ទិន្នន័យ និងផែនទី', where: 'សួនទិន្នន័យ', area: 'បឹងកេងកង ៣' },
   flow: { name: 'លំហូរការងារ', where: 'ភ្នំស្វ័យប្រវត្តិកម្ម', area: 'បឹងកេងកង ២' },
 };
-const KM_TEXT = { all: 'ជំនាញទាំងអស់', here: 'អ្នកនៅទីនេះ', daily: 'ប្រើរាល់ថ្ងៃ', ready: 'ត្រៀមរួចជាស្រេច' };
-const EN_TEXT = { all: 'All skills', here: 'You are here', daily: 'Daily driver', ready: 'Ready to ship' };
+const KM_TEXT = {
+  all: 'ជំនាញទាំងអស់', here: 'អ្នកនៅទីនេះ', daily: 'ប្រើរាល់ថ្ងៃ', ready: 'ត្រៀមរួចជាស្រេច',
+  overview: 'ទិដ្ឋភាពទូទៅ', about: 'អំពី', route: 'ផ្លូវ', nearby: 'ជិតៗ', docs: 'ឯកសារ', share: 'ចែករំលែក', usedFor: 'ប្រើសម្រាប់',
+  selfRated: 'វាយតម្លៃខ្លួនឯង', dailyNote: 'ប្រើស្ទើររាល់ថ្ងៃ', readyNote: 'បានប្រើក្នុងគម្រោងពិត', walk: 'ដើរ', fromHere: 'ពីទីនេះ', copied: 'បានចម្លងតំណ',
+};
+const EN_TEXT = {
+  all: 'All skills', here: 'You are here', daily: 'Daily driver', ready: 'Ready to ship',
+  overview: 'Overview', about: 'About', route: 'Directions', nearby: 'Nearby', docs: 'Docs', share: 'Share', usedFor: 'Used for',
+  selfRated: 'self-rated', dailyNote: 'Used almost every day', readyNote: 'Used in real projects', walk: 'walk', fromHere: 'from “You are here”', copied: 'Link copied',
+};
 const isKm = () => document.documentElement.lang === 'km';
 const G = (g, k) => (isKm() ? KM_GROUPS[g][k] : GROUPS[g][k]);
 const TX = (k) => (isKm() ? KM_TEXT : EN_TEXT)[k];
+// Side-panel details for each skill (key = the pin's data-name). level is a self-rating out of 5: edit freely.
+const SKILLS = {
+  Vue: { level: 4.8, url: 'https://vuejs.org', about: 'My home framework: single-file components, the Composition API and Vite.', uses: ['Admin dashboards', 'Government web apps', 'Reusable components'] },
+  Pinia: { level: 4.6, url: 'https://pinia.vuejs.org', about: 'State management for Vue apps, kept small and typed.', uses: ['App-wide state', 'Auth and session', 'Caching API data'] },
+  Tailwind: { level: 4.6, url: 'https://tailwindcss.com', about: 'Utility-first CSS for building layouts quickly and keeping them consistent.', uses: ['Responsive layouts', 'Design systems', 'Dark mode'] },
+  JavaScript: { level: 4.7, url: 'https://developer.mozilla.org/docs/Web/JavaScript', about: 'Modern ES modules, async code and the browser APIs underneath every framework.', uses: ['Interactive UI', 'Maps and charts', 'Tooling scripts'] },
+  HTML: { level: 4.9, url: 'https://developer.mozilla.org/docs/Web/HTML', about: 'Semantic, accessible markup as the base of every page.', uses: ['Accessible pages', 'Forms', 'SEO-friendly structure'] },
+  CSS: { level: 4.7, url: 'https://developer.mozilla.org/docs/Web/CSS', about: 'Grid, flexbox, custom properties and animation, like the ones on this page.', uses: ['Layouts', 'Theming', 'Animation'] },
+  Bootstrap: { level: 4.5, url: 'https://getbootstrap.com', about: 'A dependable component kit for shipping admin screens fast.', uses: ['Admin panels', 'Forms and tables', 'Quick prototypes'] },
+  Laravel: { level: 4.4, url: 'https://laravel.com', about: 'PHP framework for APIs and server-rendered apps: Eloquent, queues and auth.', uses: ['REST back ends', 'Admin systems', 'Scheduled jobs'] },
+  PHP: { level: 4.3, url: 'https://www.php.net', about: 'The language under Laravel, used for back-end services and integrations.', uses: ['Web services', 'Integrations', 'Legacy upkeep'] },
+  'Node.js': { level: 4.1, url: 'https://nodejs.org', about: 'JavaScript on the server, for small services, scripts and build tooling.', uses: ['Small APIs', 'Build tools', 'Automation scripts'] },
+  Python: { level: 4.0, url: 'https://www.python.org', about: 'Scripts and data work: cleaning, converting and moving data around.', uses: ['Data scripts', 'Scraping', 'Automation'] },
+  'REST APIs': { level: 4.6, url: 'https://developer.mozilla.org/docs/Web/HTTP', about: 'Designing and consuming clean HTTP APIs between front end and back end.', uses: ['API design', 'Auth tokens', 'Third-party integrations'] },
+  'DB design': { level: 4.3, url: 'https://www.postgresql.org/docs/', about: 'Relational schemas, indexes and migrations that keep data tidy as apps grow.', uses: ['Schema design', 'Migrations', 'Query tuning'] },
+  OpenStreetMap: { level: 4.2, url: 'https://www.openstreetmap.org', about: 'Open map data and vector tiles, the base of this very map.', uses: ['Vector maps', 'Geocoding', 'Custom map styles'] },
+  'Google Maps': { level: 4.3, url: 'https://developers.google.com/maps', about: 'Maps JavaScript API for markers, places and directions.', uses: ['Store locators', 'Place search', 'Directions'] },
+  'AI agents': { level: 4.5, url: 'https://docs.anthropic.com', about: 'Working with AI coding agents every day to plan, write and review code faster.', uses: ['Code review', 'Refactoring', 'Docs and tests'] },
+  Automation: { level: 4.4, url: 'https://docs.github.com/actions', about: 'Removing repeat work with CI pipelines, scripts and scheduled jobs.', uses: ['CI/CD', 'Deploy scripts', 'Report generation'] },
+};
 const EN_LABEL = ['coalesce', ['get', 'name:en'], ['get', 'name_en'], ['get', 'name:latin'], ['get', 'name']];
 
 export function initSkillMap({ root: map, reduce, isDark }) {
@@ -244,53 +272,98 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   };
   const clearRoute = () => { cancelAnimationFrame(routeAnim); routeLine = []; const s = lmap.getSource('sm-route'); if (s) s.setData(lineData([])); };
 
-  // ---------- Info card ----------
-  let selected = null, routeToken = null;
+  // ---------- Detail side panel (left on wide screens, bottom sheet on phones) ----------
+  let selected = null, routeToken = null, routeLen = 0;
   const ROUTE_WAIT = 900;
-  const placeCard = () => {
-    if (!selected || card.hidden) return;
-    const w = vp.clientWidth;
-    if (w < 720) { card.style.left = '10px'; card.style.top = ''; card.style.bottom = '10px'; return; }
-    const pt = lmap.project(selected.ll);
-    const cw = card.offsetWidth, ch = card.offsetHeight, barH = vp.offsetTop;
-    const left = Math.min(Math.max(pt.x - cw / 2, 10), w - cw - 10);
-    let top = barH + pt.y - 76 - ch;
-    if (top < barH + 10) top = barH + pt.y + 22;
-    card.style.left = `${left}px`; card.style.top = `${top}px`; card.style.bottom = '';
+  const $ = (q) => card.querySelector(q);
+  const wide = () => vp.clientWidth >= 720;
+  const panelPad = () => (wide() ? { left: card.offsetWidth + 40, right: 80, top: 140, bottom: 50 } : { top: 130, bottom: card.offsetHeight + 30, left: 30, right: 30 });
+  const fmtLL = (ll) => `${Math.abs(ll[1]).toFixed(5)}° ${ll[1] >= 0 ? 'N' : 'S'}, ${Math.abs(ll[0]).toFixed(5)}° ${ll[0] >= 0 ? 'E' : 'W'}`;
+  const pathLen = (pts) => pts.slice(1).reduce((m, p, k) => m + metres(pts[k], p), 0);
+  const showDist = (m) => {
+    routeLen = m;
+    const mins = Math.max(1, Math.round(m / 80));
+    $('.sm-panel__dist').textContent = `${m < 1000 ? `${Math.round(m / 10) * 10} m` : `${(m / 1000).toFixed(1)} km`} · ${mins} min ${TX('walk')} ${TX('fromHere')}`;
   };
-  const select = (f) => {
-    feats.forEach((o) => o.pin.classList.toggle('is-on', o === f));
-    selected = f;
-    map.classList.toggle('has-card', !!f);
-    if (!f) { card.hidden = true; clearRoute(); return; }
-    const c = css(GROUPS[f.g].c);
+  const setTab = (t) => {
+    card.querySelectorAll('[data-tab]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
+    card.querySelectorAll('[data-pane]').forEach((p) => { p.hidden = p.dataset.pane !== t; });
+  };
+  const relabel = () => card.querySelectorAll('[data-t]').forEach((n) => { n.textContent = TX(n.dataset.t); });
+  const fill = (f) => {
+    const d = SKILLS[f.name] || { level: 4, url: '', about: '', uses: [] };
     card.style.setProperty('--c', `var(${GROUPS[f.g].c})`);
-    card.querySelector('.sm-card__icon').innerHTML = f.head;
-    card.querySelector('.sm-card__name').textContent = f.name;
-    card.querySelector('.sm-card__where').textContent = `${G(f.g, 'where')} · ${G(f.g, 'area')}`;
-    card.querySelector('.sm-card__status').textContent = f.status === 'Daily' ? TX('daily') : TX('ready');
-    card.hidden = false;
-    // One route, drawn once: the street route if it answers quickly, otherwise the animated guess.
-    // (A late street route is kept for the next tap instead of replacing the line mid-way.)
+    $('.sm-panel__icon').innerHTML = f.head;
+    $('.sm-panel__name').textContent = f.name;
+    $('.sm-panel__score').textContent = d.level.toFixed(1);
+    const full = Math.round(d.level);
+    $('.sm-panel__stars').innerHTML = [1, 2, 3, 4, 5].map((k) => `<i class="${k <= full ? 'on' : ''}">★</i>`).join('');
+    $('.sm-panel__since').textContent = `· ${TX('selfRated')}`;
+    $('.sm-panel__cat').textContent = G(f.g, 'name');
+    $('.sm-panel__where').textContent = `${G(f.g, 'where')}, ${G(f.g, 'area')}, Phnom Penh`;
+    $('.sm-panel__status').textContent = f.status === 'Daily' ? TX('daily') : TX('ready');
+    $('.sm-panel__statusnote').textContent = f.status === 'Daily' ? TX('dailyNote') : TX('readyNote');
+    $('.sm-panel__ll').textContent = fmtLL(f.ll);
+    const site = $('.sm-panel__site');
+    site.textContent = d.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+    site.href = d.url; site.parentElement.hidden = !d.url;
+    const docs = card.querySelector('[data-act="docs"]');
+    docs.href = d.url; docs.hidden = !d.url;
+    $('.sm-panel__blurb').textContent = d.about;
+    $('.sm-panel__tags').innerHTML = d.uses.map((u) => `<li>${u}</li>`).join('');
+    relabel();
+    showDist(routeLen || metres(HOME, f.ll) * 1.3);
+  };
+  const route = (f) => {
     clearRoute();
     const token = (routeToken = {});
     const wait = new Promise((r) => setTimeout(() => r(null), ROUTE_WAIT));
     Promise.race([roadRoute(f), wait]).then((pts) => {
       if (selected !== f || routeToken !== token) return;
-      drawRoute(pts || curve(HOME, f.ll), c);
+      const line = pts || curve(HOME, f.ll);
+      if (pts) showDist(pathLen(pts));
+      drawRoute(line, css(GROUPS[f.g].c));
     });
-    const pt = lmap.project(f.ll);
-    const w = vp.clientWidth, h = vp.clientHeight;
-    if (pt.x < 60 || pt.x > w - 60 || pt.y < 120 || pt.y > h - 40) lmap.easeTo({ center: f.ll, duration: reduce ? 0 : 600 });
-    placeCard();
+  };
+  const select = (f) => {
+    feats.forEach((o) => o.pin.classList.toggle('is-on', o === f));
+    const was = selected;
+    selected = f;
+    map.classList.toggle('has-card', !!f);
+    if (!f) { card.hidden = true; clearRoute(); return; }
+    routeLen = 0;
+    fill(f);
+    if (!was) setTab('overview');
+    card.hidden = false;
+    card.querySelector('.sm-panel__scroll').scrollTop = 0;
+    route(f);
+    // Keep the pin in view next to the panel, like map apps do
+    const off = wide() ? [card.offsetWidth / 2 + 8, 30] : [0, -card.offsetHeight / 2 + 20];
+    lmap.easeTo({ center: f.ll, offset: off, duration: reduce ? 0 : 600 });
   };
   feats.forEach((f) => {
     f.pin.addEventListener('click', (e) => { e.stopPropagation(); select(selected === f ? null : f); });
     f.wrap.addEventListener('mousedown', (e) => e.stopPropagation());
   });
   lmap.on('click', () => select(null));
-  lmap.on('move', placeCard);
-  card.querySelector('.sm-card__x').addEventListener('click', () => select(null));
+  $('.sm-panel__x').addEventListener('click', () => select(null));
+  card.addEventListener('keydown', (e) => { if (e.key === 'Escape') select(null); });
+  card.querySelectorAll('[data-tab]').forEach((b) => b.addEventListener('click', () => setTab(b.dataset.tab)));
+  card.querySelector('[data-act="route"]').addEventListener('click', () => {
+    if (!selected) return;
+    route(selected);
+    const b = new ml.LngLatBounds(HOME, HOME).extend(selected.ll);
+    lmap.fitBounds(b, { padding: panelPad(), maxZoom: Z + 1.6, duration: reduce ? 0 : 900, essential: true });
+  });
+  card.querySelector('[data-act="share"]').addEventListener('click', async (e) => {
+    if (!selected) return;
+    const url = `${location.origin}${location.pathname}#skills`;
+    const text = `${selected.name} · ${G(selected.g, 'where')}`;
+    try {
+      if (navigator.share) await navigator.share({ title: text, url });
+      else { await navigator.clipboard.writeText(url); const s = e.currentTarget.querySelector('span'); s.textContent = TX('copied'); setTimeout(relabel, 1600); }
+    } catch { /* cancelled */ }
+  });
 
   // ---------- Camera ----------
   // Fit the district outlines (not just the pins), so no district is cut at the edge
@@ -344,7 +417,8 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     Object.keys(GROUPS).forEach((g) => { layers[g].label.getElement().innerHTML = `<span>${G(g, 'where')}<small>${G(g, 'area')}</small></span>`; });
     list.querySelectorAll('li').forEach((li) => { const g = li.dataset.layer; li.querySelector('.sm-fly span').textContent = g === 'all' ? TX('all') : G(g, 'name'); });
     homeEl.querySelector('b').textContent = TX('here');
-    if (selected) select(selected);
+    if (selected) { const keep = routeLen; fill(selected); if (keep) showDist(keep); }
+    relabel();
   });
   const chips = [...map.querySelectorAll('[data-fly]')];
   const focus = (g) => {
@@ -359,6 +433,7 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     fly(layers[g].bounds);
   };
   chips.forEach((chip) => chip.addEventListener('click', () => focus(chip.dataset.fly)));
+  card.querySelector('[data-act="nearby"]').addEventListener('click', () => { if (selected) focus(selected.g); });
 
   // Zoom buttons
   map.querySelectorAll('[data-zoom]').forEach((b) => b.addEventListener('click', () => {
@@ -389,7 +464,7 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   showZoom();
   syncFar();
   let rz;
-  addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { if (!selected && focusGroup === 'all') showAll(); placeCard(); }, 150); });
+  addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { if (!selected && focusGroup === 'all') showAll(); }, 150); });
 
   return { map: lmap, feats };
 }
