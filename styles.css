@@ -261,6 +261,12 @@ li:has(.sm-vis input:not(:checked)) .sm-fly span { text-decoration: line-through
 .js .skillmap.is-live .pin__body { animation: drop .8s cubic-bezier(.3, 1.4, .5, 1) both; animation-delay: calc(var(--i) * 70ms + 250ms); }
 .js .skillmap.is-live.is-settled .pin__body { animation: none; opacity: 1; transform: none; }
 .js .skillmap.is-live.is-settled.is-filtered .pin:not(.is-match) .pin__body { opacity: .25; }
+/* a pin is selected: the others go into low focus (hover brings one back a little) */
+.js .skillmap.is-live.is-settled.has-card .pin:not(.is-on) .pin__body { opacity: .28; filter: grayscale(.7); }
+.js .skillmap.is-live.is-settled.has-card .pin:not(.is-on):hover .pin__body { opacity: .7; filter: none; }
+.pin__body { transition: transform .3s var(--ease), opacity .4s, filter .4s; }
+.sm-district { transition: opacity .4s; }
+.sm-district.is-dim { opacity: .3; }
 .js .skillmap.is-live.is-settled .pin:hover .pin__body, .js .skillmap.is-live.is-settled .pin.is-on .pin__body { transform: translateY(-6px); }
 @keyframes drop { 0% { opacity: 0; transform: translateY(-140px); } 60% { opacity: 1; transform: translateY(4px); } 80% { transform: translateY(-6px); } 100% { opacity: 1; transform: none; } }
 

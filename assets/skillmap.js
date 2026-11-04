@@ -145,12 +145,13 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   new ml.Marker({ element: homeEl, anchor: 'center' }).setLngLat(HOME).addTo(lmap);
 
   // ---------- Our layers on top of the basemap (re-added after a theme/style switch) ----------
-  let focusGroup = 'all', routeLine = [], routeColor = '#000';
+  let focusGroup = 'all', pickGroup = null, routeLine = [], routeColor = '#000';
   const restyle = () => {
     if (!lmap.getLayer('sm-district-fill')) return;
     const on = Object.keys(layers).filter((g) => layers[g].on);
     const filter = ['in', ['get', 'g'], ['literal', on]];
-    const op = (a, dim) => (focusGroup === 'all' ? a : ['case', ['==', ['get', 'g'], focusGroup], a, dim]);
+    const lit = focusGroup !== 'all' ? focusGroup : pickGroup;   // a filter or a selected pin keeps one district bright
+    const op = (a, dim) => (!lit ? a : ['case', ['==', ['get', 'g'], lit], a, dim]);
     lmap.getSource('sm-districts').setData(districtData());
     lmap.setFilter('sm-district-fill', filter);
     lmap.setFilter('sm-district-line', filter);
@@ -330,6 +331,11 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     const was = selected;
     selected = f;
     map.classList.toggle('has-card', !!f);
+    // Low-focus mode: everything but the chosen pin (and its district) fades back
+    f?.wrap.parentElement?.append(f.wrap);   // draw the chosen pin above its neighbours
+    pickGroup = f ? f.g : null;
+    Object.entries(layers).forEach(([g, l]) => l.label.getElement().classList.toggle('is-dim', !!f && g !== f.g));
+    restyle();
     if (!f) { card.hidden = true; clearRoute(); return; }
     routeLen = 0;
     fill(f);
