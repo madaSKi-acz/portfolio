@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=45" />
+  <link rel="stylesheet" href="styles.css?v=46" />
   <script>
     try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; if (localStorage.getItem('lang') === 'km') document.documentElement.lang = 'km'; } catch (e) {}
   </script>
@@ -139,15 +139,43 @@
                 <p class="sm-data__attr mono">Basemap <a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> © <a href="https://www.openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a> · Data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors</p>
               </div>
             </aside>
+            <aside class="sm-panel" id="smCard" aria-label="Skill details" hidden>
+              <div class="sm-panel__hero"><span class="sm-panel__icon"></span><button class="sm-panel__x" type="button" aria-label="Close">×</button></div>
+              <div class="sm-panel__scroll">
+                <header class="sm-panel__head">
+                  <h3 class="sm-panel__name"></h3>
+                  <p class="sm-panel__rate"><span class="sm-panel__score"></span> <span class="sm-panel__stars" aria-hidden="true"></span> <span class="sm-panel__since mono"></span></p>
+                  <p class="sm-panel__cat"></p>
+                </header>
+                <div class="sm-panel__tabs" role="tablist">
+                  <button type="button" role="tab" data-tab="overview" aria-selected="true" data-t="overview">Overview</button>
+                  <button type="button" role="tab" data-tab="about" aria-selected="false" data-t="about">About</button>
+                </div>
+                <div class="sm-panel__pane" data-pane="overview">
+                  <div class="sm-panel__acts">
+                    <button type="button" data-act="route" class="is-main"><i><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M21.7 11.3 12.7 2.3a1 1 0 0 0-1.4 0l-9 9a1 1 0 0 0 0 1.4l9 9a1 1 0 0 0 1.4 0l9-9a1 1 0 0 0 0-1.4ZM14 14.5V12h-4v3H8v-4a1 1 0 0 1 1-1h5V7.5l3.5 3.5Z"/></svg></i><span data-t="route">Directions</span></button>
+                    <button type="button" data-act="nearby"><i><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/></svg></i><span data-t="nearby">Nearby</span></button>
+                    <a data-act="docs" target="_blank" rel="noopener"><i><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2V5Z"/><path d="M4 19a2 2 0 0 1 2-2h12"/></svg></i><span data-t="docs">Docs</span></a>
+                    <button type="button" data-act="share"><i><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.4M8.2 13.2l7.6 4.4"/></svg></i><span data-t="share">Share</span></button>
+                  </div>
+                  <ul class="sm-panel__rows">
+                    <li><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11Z"/></svg><span class="sm-panel__where"></span></li>
+                    <li><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><span class="sm-panel__status"></span><small class="sm-panel__statusnote"></small></span></li>
+                    <li><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 4a2 2 0 1 1 0 .01M9 21l2-6 3 3v3M7 12l3-4 4 1 3 3"/></svg><span class="sm-panel__dist"></span></li>
+                    <li><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/><circle cx="5" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span class="sm-panel__ll mono"></span></li>
+                    <li><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><a class="sm-panel__site" target="_blank" rel="noopener"></a></li>
+                  </ul>
+                </div>
+                <div class="sm-panel__pane" data-pane="about" hidden>
+                  <p class="sm-panel__blurb"></p>
+                  <p class="sm-panel__label mono" data-t="usedFor">Used for</p>
+                  <ul class="sm-panel__tags"></ul>
+                </div>
+              </div>
+            </aside>
           </div>
 
 
-          <div class="sm-card" id="smCard" role="dialog" aria-live="polite" hidden>
-            <button class="sm-card__x" aria-label="Close">×</button>
-            <span class="sm-card__icon"></span>
-            <div><strong class="sm-card__name"></strong><span class="sm-card__where mono"></span></div>
-            <span class="sm-card__status mono"></span>
-          </div>
       </div>
     </section>
 
@@ -260,6 +288,6 @@
     </div>
   </footer>
 
-  <script src="main.js?v=45" defer></script>
+  <script src="main.js?v=46" defer></script>
 </body>
 </html>

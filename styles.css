@@ -272,16 +272,51 @@ li:has(.sm-vis input:not(:checked)) .sm-fly span { text-decoration: line-through
 .sm-hint { margin: 0 0 0 auto; color: var(--muted); font-size: .72rem; flex: none; }
 @media (max-width: 1100px) { .sm-hint { display: none; } }
 
-/* info card */
-.sm-card { position: absolute; z-index: 5; display: flex; align-items: center; gap: .8rem; padding: .7rem .9rem .7rem .7rem; min-width: 220px; border-radius: 14px; background: var(--card); border: 1px solid var(--rule); box-shadow: 0 18px 40px -18px rgba(0,0,0,.5); transform-origin: 50% 100%; animation: cardIn .35s var(--ease); }
-.sm-card[hidden] { display: none; }
-@keyframes cardIn { from { opacity: 0; transform: translateY(8px) scale(.94); } }
-.sm-card__icon { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 14%, var(--paper)); color: var(--c); flex: none; }
-.sm-card__icon img, .sm-card__icon svg { width: 22px; height: 22px; }
-.sm-card strong { display: block; font-family: var(--display); font-size: 1.05rem; letter-spacing: -0.01em; }
-.sm-card__where { color: var(--muted); font-size: .72rem; }
-.sm-card__status { margin-left: auto; font-size: .7rem; padding: .2rem .5rem; border-radius: 999px; background: color-mix(in srgb, var(--c) 16%, transparent); color: var(--c); }
-.sm-card__x { position: absolute; top: 4px; right: 6px; border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 1rem; line-height: 1; padding: 2px 4px; }
+/* skill detail side panel (left side, like a map app's place panel) */
+.sm-panel { --c: var(--ink); position: absolute; z-index: 6; left: 16px; top: 16px; bottom: 16px; width: 360px; display: flex; flex-direction: column; overflow: hidden; border-radius: 18px; background: var(--card); border: 1px solid var(--rule); box-shadow: 0 24px 50px -24px rgba(0,0,0,.55); animation: panelIn .4s var(--ease); cursor: default; }
+.sm-panel[hidden] { display: none; }
+@keyframes panelIn { from { opacity: 0; transform: translateX(-24px); } }
+.sm-panel__hero { position: relative; flex: none; height: 150px; display: grid; place-items: center; overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 120%, color-mix(in srgb, var(--c) 45%, transparent), transparent 60%),
+    repeating-linear-gradient(45deg, color-mix(in srgb, var(--c) 10%, transparent) 0 2px, transparent 2px 14px),
+    color-mix(in srgb, var(--c) 18%, var(--paper)); }
+.sm-panel__icon { width: 78px; height: 78px; border-radius: 22px; display: grid; place-items: center; background: var(--card); color: var(--c); box-shadow: 0 14px 30px -14px rgba(0,0,0,.5); }
+.sm-panel__icon img, .sm-panel__icon svg { width: 44px; height: 44px; }
+.sm-panel__x { position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--card); color: var(--ink); font-size: 1.3rem; line-height: 1; cursor: pointer; box-shadow: 0 4px 12px -6px rgba(0,0,0,.4); }
+.sm-panel__scroll { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.sm-panel__head { padding: 1rem 1.2rem .6rem; }
+.sm-panel__name { margin: 0; font-family: var(--display); font-size: 1.55rem; font-weight: 500; letter-spacing: -0.01em; }
+.sm-panel__rate { margin: .3rem 0 0; font-size: .85rem; color: var(--muted); display: flex; align-items: center; gap: .3rem; flex-wrap: wrap; }
+.sm-panel__score { color: var(--ink); }
+.sm-panel__stars i { font-style: normal; color: color-mix(in srgb, var(--muted) 45%, transparent); }
+.sm-panel__stars i.on { color: #f5b400; }
+.sm-panel__since { font-size: .72rem; }
+.sm-panel__cat { margin: .15rem 0 0; font-size: .85rem; color: var(--muted); }
+.sm-panel__tabs { display: flex; border-bottom: 1px solid var(--rule); padding: 0 .6rem; position: sticky; top: 0; background: var(--card); z-index: 1; }
+.sm-panel__tabs button { flex: 1; border: 0; background: none; color: var(--muted); font: 500 .88rem var(--body); padding: .8rem .4rem; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.sm-panel__tabs button[aria-selected="true"] { color: var(--c); border-bottom-color: var(--c); }
+.sm-panel__acts { display: flex; justify-content: space-around; gap: .3rem; padding: 1rem .6rem; border-bottom: 1px solid var(--rule); }
+.sm-panel__acts > * { flex: 1; display: flex; flex-direction: column; align-items: center; gap: .4rem; border: 0; background: none; color: var(--c); font: 500 .76rem var(--body); cursor: pointer; text-decoration: none; text-align: center; }
+.sm-panel__acts > [hidden] { display: none; }
+.sm-panel__acts i { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 14%, var(--card)); transition: transform .2s var(--ease), background-color .2s; }
+.sm-panel__acts .is-main i { background: var(--c); color: var(--card); }
+.sm-panel__acts > *:hover i { transform: translateY(-2px); }
+.sm-panel__rows { list-style: none; margin: 0; padding: .4rem 0 .8rem; }
+.sm-panel__rows li { display: flex; align-items: center; gap: 1.1rem; padding: .75rem 1.3rem; font-size: .88rem; }
+.sm-panel__rows li[hidden] { display: none; }
+.sm-panel__rows li > svg { flex: none; color: var(--c); }
+.sm-panel__rows li:hover { background: color-mix(in srgb, var(--c) 6%, transparent); }
+.sm-panel__rows small { display: block; color: var(--muted); font-size: .74rem; }
+.sm-panel__rows .mono { font-size: .8rem; }
+.sm-panel__site { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--c) 50%, transparent); }
+[data-pane="about"] { padding: 1rem 1.3rem 1.3rem; }
+.sm-panel__blurb { margin: 0 0 1rem; line-height: 1.55; font-size: .92rem; }
+.sm-panel__label { margin: 0 0 .5rem; font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.sm-panel__tags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .4rem; }
+.sm-panel__tags li { font-size: .78rem; padding: .3rem .65rem; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--c) 35%, var(--rule)); color: var(--ink); }
+/* with the panel open, nothing else should sit under it */
+.skillmap.has-card .sm-map .maplibregl-ctrl-bottom-left { opacity: 0; }
 
 @media (max-width: 720px) {
   .sm-viewport { height: 66vh; min-height: 460px; }
@@ -292,14 +327,19 @@ li:has(.sm-vis input:not(:checked)) .sm-fly span { text-decoration: line-through
   .sm-zoom button { width: 32px; height: 32px; font-size: 1rem; background: color-mix(in srgb, var(--card) 92%, transparent); }
   /* smaller pins so a phone screen shows more of the map */
   .sm-marker .pin { transform: translate(-50%, -100%) scale(.72); }
-  /* compact info card on one line; the dataset panel steps aside while it is open */
-  .sm-card { min-width: 0; width: calc(100% - 20px); gap: .6rem; padding: .55rem 1.9rem .55rem .55rem; border-radius: 12px; }
-  .sm-card > div { flex: 1; min-width: 0; }
-  .sm-card__icon { width: 34px; height: 34px; }
-  .sm-card__icon img, .sm-card__icon svg { width: 19px; height: 19px; }
-  .sm-card strong { font-size: .95rem; }
-  .sm-card__where { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: .66rem; }
-  .sm-card__status { white-space: nowrap; font-size: .62rem; flex: none; }
+  /* the detail panel becomes a bottom sheet; the dataset panel steps aside while it is open */
+  .sm-panel { left: 0; right: 0; top: auto; bottom: 0; width: auto; max-height: 62%; border-radius: 18px 18px 0 0; border-bottom: 0; animation-name: sheetIn; }
+  @keyframes sheetIn { from { opacity: 0; transform: translateY(40px); } }
+  .sm-panel__hero { height: 84px; }
+  .sm-panel__icon { width: 54px; height: 54px; border-radius: 16px; }
+  .sm-panel__icon img, .sm-panel__icon svg { width: 30px; height: 30px; }
+  .sm-panel__hero::before { content: ""; position: absolute; top: 7px; left: 50%; width: 38px; height: 4px; margin-left: -19px; border-radius: 4px; background: color-mix(in srgb, var(--ink) 30%, transparent); }
+  .sm-panel__head { padding: .7rem 1rem .4rem; }
+  .sm-panel__name { font-size: 1.3rem; }
+  .sm-panel__acts { padding: .75rem .4rem; }
+  .sm-panel__acts i { width: 40px; height: 40px; }
+  .sm-panel__rows li { padding: .6rem 1rem; gap: .9rem; font-size: .84rem; }
+  .skillmap.has-card .sm-zoom { display: none; }
   .skillmap.has-card .sm-data { display: none; }
   .sm-data { right: 10px; bottom: 10px; width: min(230px, calc(100% - 20px)); }
   .sm-data__meta, .sm-data__read { display: none; }
