@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=47" />
+  <link rel="stylesheet" href="styles.css?v=48" />
   <script>
     try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; if (localStorage.getItem('lang') === 'km') document.documentElement.lang = 'km'; } catch (e) {}
   </script>
@@ -240,26 +240,43 @@
       <div class="container">
         <p class="label reveal" data-i18n="l5">05 / Projects</p>
         <h2 class="reveal" data-i18n="projTitle">Selected work</h2>
-        <!-- TODO: your real projects + links -->
         <div class="projects">
-          <a class="project reveal" href="#" style="--c: var(--green)">
-            <span class="project__no mono">01</span>
-            <h3 data-i18n="p1">Mapping project</h3>
-            <p>OSM · Google Maps</p>
-            <span class="project__go" aria-hidden="true">→</span>
-          </a>
-          <a class="project reveal" href="#" style="--c: var(--orange)">
-            <span class="project__no mono">02</span>
-            <h3 data-i18n="p2">Ops dashboard</h3>
-            <p>Vue · Pinia</p>
-            <span class="project__go" aria-hidden="true">→</span>
-          </a>
-          <a class="project reveal" href="#" style="--c: var(--blue)">
-            <span class="project__no mono">03</span>
-            <h3 data-i18n="p3">Full-stack system</h3>
-            <p>Laravel · Vue · SQL</p>
-            <span class="project__go" aria-hidden="true">→</span>
-          </a>
+          <article class="project reveal" style="--c: var(--green)">
+            <div class="project__top"><span class="project__no mono">01</span><span class="project__role mono" data-i18n="role_solo">Solo</span></div>
+            <h3 data-i18n="p1">Air quality map of Cambodia</h3>
+            <p class="project__desc" data-i18n="p1d">Google Maps with live air-quality markers. Each marker’s details can be shared straight to Facebook and Telegram as a dynamic link preview.</p>
+            <p class="project__tech">Vue · Node.js · Google Maps · Tailwind · CSS</p>
+          </article>
+          <article class="project reveal" style="--c: var(--blue)">
+            <div class="project__top"><span class="project__no mono">02</span><span class="project__role mono" data-i18n="role_front">Front end</span></div>
+            <h3 data-i18n="p2">Environment map</h3>
+            <p class="project__desc" data-i18n="p2d">Environmental data layers served from GeoServer and drawn on OpenStreetMap. I built the whole front end.</p>
+            <p class="project__tech">Vue · Pinia · OpenStreetMap · GeoServer · Tailwind</p>
+          </article>
+          <article class="project reveal" style="--c: var(--violet)">
+            <div class="project__top"><span class="project__no mono">03</span><span class="project__role mono" data-i18n="role_front">Front end</span></div>
+            <h3 data-i18n="p3">Internet connection points map</h3>
+            <p class="project__desc" data-i18n="p3d">A map of internet connection points across the country. My main work: loading a huge number of markers without freezing or crashing the browser.</p>
+            <p class="project__tech">Vue · Pinia · OpenStreetMap</p>
+          </article>
+          <article class="project reveal" style="--c: var(--orange)">
+            <div class="project__top"><span class="project__no mono">04</span><span class="project__role mono" data-i18n="role_front">Front end</span></div>
+            <h3 data-i18n="p4">Court data entry system</h3>
+            <p class="project__desc" data-i18n="p4d">Data entry screens and forms for court records, built for fast, accurate everyday input.</p>
+            <p class="project__tech">Vue · Pinia · Tailwind</p>
+          </article>
+          <article class="project reveal" style="--c: var(--green)">
+            <div class="project__top"><span class="project__no mono">05</span><span class="project__role mono" data-i18n="role_solo">Solo</span></div>
+            <h3 data-i18n="p5">Agriculture solar system</h3>
+            <p class="project__desc" data-i18n="p5d">A web app for a solar-powered agriculture system, built alone in Next.js at the customer’s request.</p>
+            <p class="project__tech">Next.js · React</p>
+          </article>
+          <article class="project reveal" style="--c: var(--blue)">
+            <div class="project__top"><span class="project__no mono">06</span><span class="project__role mono" data-i18n="role_full">Full stack</span></div>
+            <h3 data-i18n="p6">Fuel trip order system · Sana</h3>
+            <p class="project__desc" data-i18n="p6d">A transport management system for fuel trip orders, from start to finish: business analysis, database design, front-end structure and the back end.</p>
+            <p class="project__tech">Laravel · Vue · SQL</p>
+          </article>
         </div>
       </div>
     </section>
@@ -287,6 +304,6 @@
     </div>
   </footer>
 
-  <script src="main.js?v=47" defer></script>
+  <script src="main.js?v=48" defer></script>
 </body>
 </html>
