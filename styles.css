@@ -419,7 +419,9 @@ li:has(.sm-vis input:not(:checked)) .sm-fly span { text-decoration: line-through
 
 /* Footer */
 .footer { padding: 1.5rem 0; color: var(--muted); }
-.footer__inner { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.footer__inner { display: flex; justify-content: space-between; align-items: center; gap: .6rem 1.5rem; flex-wrap: wrap; }
+.footer__credit a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 3px; transition: text-decoration-color .25s; }
+.footer__credit a:hover { text-decoration-color: var(--orange); }
 
 /* ============ Reveal ============ */
 .js .reveal { opacity: 0; transform: translateY(26px); transition: opacity .9s var(--ease), transform .9s var(--ease); transition-delay: var(--d, 0ms); }
