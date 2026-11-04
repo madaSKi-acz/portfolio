@@ -218,6 +218,7 @@
     role_frontapi: 'ផ្នែកខាងមុខ · API',
     l6: '06 / ទំនាក់ទំនង', contactTitle: 'ចំណតបន្ទាប់៖ <em>បញ្ហារបស់អ្នក។</em>',
     resume: 'ប្រវត្តិរូប',
+    credit: 'រចនា និងគំនិតដោយ ញ៉ុក សុខ · បង្កើតដោយប្រើ <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a>',
   };
   const TITLE = { en: 'Nhok Sok — Software Engineer', km: 'ញ៉ុក សុខ — វិស្វករកម្មវិធី' };
   const i18nEls = [...document.querySelectorAll('[data-i18n]')];
