@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://madaski-acz.github.io/portfolio/sitemap.xml
