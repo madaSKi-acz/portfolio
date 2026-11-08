@@ -199,11 +199,18 @@ export function startWolf({ reduceMotion = false } = {}) {
   const docW = () => document.documentElement.clientWidth;
   const docH = () => document.documentElement.scrollHeight;
   let blocks = [];
+  // Layout values read once per measure, never inside the frame loop (reading them there
+  // forces a synchronous layout every frame)
+  const footerEl = document.querySelector('.footer');
+  let floorY = 0, petScale = 1, petH = CANVAS_H;
   const measure = () => {
     blocks = [...document.querySelectorAll(AVOID)].map((el) => {
       const r = el.getBoundingClientRect();
       return { l: r.left + scrollX - 10, t: r.top + scrollY - 10, r: r.right + scrollX + 10, b: r.bottom + scrollY + 10 };
     }).filter((b) => b.r > b.l && b.b > b.t);
+    floorY = footerEl ? footerEl.getBoundingClientRect().bottom + scrollY : docH();
+    petScale = pet.offsetWidth / CANVAS_W;
+    petH = pet.offsetHeight;
   };
   const overlapsText = (x, y) => {
     const l = x - FOOT.w / 2, r = x + FOOT.w / 2, t = y - FOOT.h, b = y;
@@ -235,39 +242,90 @@ export function startWolf({ reduceMotion = false } = {}) {
   };
   sizeWater();
   addEventListener('resize', sizeWater);
-  new MutationObserver(sizeWater).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  new MutationObserver(() => { sizeWater(); surfaceColors = new WeakMap(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
   const ripples = [];
   let waterDirty = false;
-  const ripple = (x, y, size = 1, life = 1300) => {
-    if (reduceMotion || ripples.length > 40) return;
-    ripples.push({ x, y, R: 15 * size + rand(-2, 2), t0: performance.now(), life: life * (0.85 + size * 0.15) });
+
+  // Ripple colour follows the surface under the paw: the first opaque background found
+  // walking up from the element there. The plain page keeps the theme's ripple colour;
+  // other surfaces get their own hue, darker on light ones and lighter on dark ones.
+  const parseRGB = (s) => { const m = s.match(/[\d.]+/g); return m ? { r: +m[0], g: +m[1], b: +m[2], a: m[3] === undefined ? 1 : +m[3] } : null; };
+  const bgOf = (el) => {
+    for (; el && el.nodeType === 1; el = el.parentElement) {
+      const c = parseRGB(getComputedStyle(el).backgroundColor);
+      if (c && c.a > 0.5) return { c, el };
+    }
+    return null;
   };
+  // Hit-testing is the costly part, so steps close together in time and space reuse the
+  // last sample, and each element's colour is cached (cleared when the theme changes)
+  let surfaceColors = new WeakMap();
+  let lastSample = { x: -1e4, y: -1e4, t: 0, color: rippleColor };
+  const rippleColorAt = (x, y) => {
+    const vx = x - scrollX, vy = y - scrollY;
+    if (vx < 0 || vy < 0 || vx >= innerWidth || vy >= innerHeight) return rippleColor;
+    const now = performance.now();
+    if (now - lastSample.t < 180 && Math.abs(x - lastSample.x) < 28 && Math.abs(y - lastSample.y) < 28) return lastSample.color;
+    const hit = document.elementsFromPoint(vx, vy).find((el) => !pet.contains(el) && el !== water);
+    let color = hit && surfaceColors.get(hit);
+    if (!color) {
+      color = hit ? surfaceColor(hit) : rippleColor;
+      if (hit) surfaceColors.set(hit, color);
+    }
+    lastSample = { x, y, t: now, color };
+    return color;
+  };
+  const surfaceColor = (hitEl) => {
+    const bg = bgOf(hitEl);
+    if (!bg || bg.el === document.body || bg.el === document.documentElement) return rippleColor;
+    // RGB -> HSL, then push lightness away from the surface so the ring reads on it
+    let { r, g, b } = bg.c; r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2, d = max - min;
+    let h = 0, s = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
+    if (d) h = max === r ? ((g - b) / d) % 6 : max === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    h = Math.round(h * 60 + 360) % 360;
+    if (s > 0.12) s = Math.max(s, 0.5);
+    const L = l > 0.55 ? l * 0.45 : l + (1 - l) * 0.6;
+    return `hsl(${h} ${Math.round(s * 100)}% ${Math.round(L * 100)}%)`;
+  };
+
+  const ripple = (x, y, size = 1, life = 1600) => {
+    if (reduceMotion || ripples.length > 40) return;
+    ripples.push({ x, y, R: 9 * size + rand(-1, 1), t0: performance.now(), life: life * (0.85 + size * 0.15), color: rippleColorAt(x, y) });
+  };
+  const RINGS = [[0, 0.32], [0.2, 0.18]];   // [start offset, alpha] of the two rings
+  let dirty = null;                          // area drawn last frame (CSS px), the only part cleared
   const drawWater = (now) => {
     if (!ripples.length && !waterDirty) return;
-    wctx.setTransform(1, 0, 0, 1, 0, 0);
-    wctx.globalAlpha = 1;
-    wctx.clearRect(0, 0, water.width, water.height);
     wctx.setTransform(wDpr, 0, 0, wDpr, 0, 0);
+    wctx.globalAlpha = 1;
+    if (dirty) wctx.clearRect(dirty.l, dirty.t, dirty.r - dirty.l, dirty.b - dirty.t);
+    dirty = null;
     waterDirty = ripples.length > 0;
-    wctx.strokeStyle = rippleColor; wctx.fillStyle = rippleColor;
     for (let i = ripples.length - 1; i >= 0; i--) {
       const rp = ripples[i];
       const k = (now - rp.t0) / rp.life;
       if (k >= 1) { ripples.splice(i, 1); continue; }
       const x = rp.x - scrollX, y = rp.y - scrollY;
       if (y < -60 || y > innerHeight + 60) continue;
+      const pad = rp.R + 6;
+      if (!dirty) dirty = { l: x - pad, t: y - pad, r: x + pad, b: y + pad };
+      else { dirty.l = Math.min(dirty.l, x - pad); dirty.t = Math.min(dirty.t, y - pad); dirty.r = Math.max(dirty.r, x + pad); dirty.b = Math.max(dirty.b, y + pad); }
+      wctx.strokeStyle = wctx.fillStyle = rp.color;
       // two expanding rings, flattened because we look at the water from above at an angle
-      for (const [off, a] of [[0, 0.4], [0.22, 0.24]]) {
-        const kk = k - off;
+      for (const [off, a] of RINGS) {
+        const kk = (k - off) / (1 - off);
         if (kk <= 0) continue;
-        const e = 1 - Math.pow(1 - kk, 3);
-        const r = 2 + rp.R * e;
-        wctx.globalAlpha = a * Math.pow(1 - kk, 1.5);
-        wctx.lineWidth = 0.6 + 1.4 * (1 - kk);
+        const e = Math.sin(kk * Math.PI / 2);                       // gentle ease-out growth
+        const r = 1.5 + rp.R * e;
+        // soft fade in over the first 12%, then a smooth fade out (no hard pop)
+        const fade = Math.min(1, kk / 0.12) * (0.5 + 0.5 * Math.cos(kk * Math.PI));
+        wctx.globalAlpha = a * fade;
+        wctx.lineWidth = 0.5 + 0.8 * (1 - kk);
         wctx.beginPath(); wctx.ellipse(x, y, r, r * 0.36, 0, 0, Math.PI * 2); wctx.stroke();
       }
-      // a quick bright touch point
-      if (k < 0.25) { wctx.globalAlpha = 0.35 * (1 - k / 0.25); wctx.beginPath(); wctx.ellipse(x, y, 3.5, 1.4, 0, 0, Math.PI * 2); wctx.fill(); }
+      // a soft touch point
+      if (k < 0.3) { wctx.globalAlpha = 0.22 * (0.5 + 0.5 * Math.cos(k / 0.3 * Math.PI)); wctx.beginPath(); wctx.ellipse(x, y, 2.2, 0.9, 0, 0, Math.PI * 2); wctx.fill(); }
     }
     wctx.globalAlpha = 1;
   };
@@ -275,10 +333,13 @@ export function startWolf({ reduceMotion = false } = {}) {
   const v3 = new THREE.Vector3();
   const pawOnPage = (paw) => {
     paw.getWorldPosition(v3); v3.y = 0; v3.project(camera);
-    const sx = pet.offsetWidth / CANVAS_W;
+    const sx = petScale;
     return { x: pos.x - feet.x * sx + (v3.x + 1) / 2 * CANVAS_W * sx, y: pos.y - feet.y * sx + (1 - v3.y) / 2 * CANVAS_H * sx };
   };
-  const view = () => ({ top: scrollY + 90, bottom: scrollY + innerHeight - 16 });
+  // Lowest the feet may go: the whole pet box stays above the footer's bottom edge,
+  // so the wolf can never stretch the page past the footer
+  const maxY = () => floorY - petH + feet.y;
+  const view = () => ({ top: scrollY + 90, bottom: Math.min(scrollY + innerHeight - 16, maxY()) });
   const inView = (y) => y > scrollY + 30 && y < scrollY + innerHeight + 10;
 
   // Find an empty spot (no text under it) inside the current viewport
@@ -326,6 +387,15 @@ export function startWolf({ reduceMotion = false } = {}) {
   addEventListener('resize', measure);
   addEventListener('load', measure);
   setTimeout(measure, 1500);   // after fonts / reveal animations settle
+  // Re-measure when the page height changes (map, images, fonts loading), at most once a frame
+  if ('ResizeObserver' in window) {
+    let queued = false;
+    new ResizeObserver(() => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => { queued = false; measure(); });
+    }).observe(document.body);
+  }
 
   if (!reduceMotion) {
     addEventListener('scroll', () => { lastScroll = performance.now(); }, { passive: true });
@@ -419,7 +489,7 @@ export function startWolf({ reduceMotion = false } = {}) {
     speed = lerp(speed, wantSpeed, 1 - Math.exp(-dt * 4));
     pos.x += Math.cos(heading) * speed * dt;
     pos.y += Math.sin(heading) * speed * dt;
-    pos.y = clamp(pos.y, 100, docH() - 12);
+    pos.y = clamp(pos.y, 100, maxY());
     pet.style.transform = `translate(${(pos.x - feet.x).toFixed(1)}px, ${(pos.y - feet.y).toFixed(1)}px)`;
 
     // Fade gradually with how much text is underneath, so it melts into the page instead of blinking
@@ -429,7 +499,8 @@ export function startWolf({ reduceMotion = false } = {}) {
     pet.style.opacity = opacity.toFixed(3);
     drawWater(now);
     // Hide the layer when there is nothing on it, so a stale frame can never linger
-    water.hidden = pet.hidden || !ripples.length;
+    const noWater = pet.hidden || !ripples.length;
+    if (water.hidden !== noWater) water.hidden = noWater;
 
     // Nothing to draw if it's off screen
     if (pet.hidden || (!inView(pos.y) && !inView(pos.y - CANVAS_H))) { requestAnimationFrame(frame); return; }
@@ -460,11 +531,16 @@ export function startWolf({ reduceMotion = false } = {}) {
 
     if (pawSplash.length) {
       W.wolf.updateMatrixWorld(true);
-      for (const leg of pawSplash) { const q = pawOnPage(leg.paw); ripple(q.x, q.y, lerp(0.8, 1.4, runBlend)); }
+      for (const leg of pawSplash) { const q = pawOnPage(leg.paw); ripple(q.x, q.y, lerp(0.8, 1.2, runBlend)); }
       pawSplash.length = 0;
     }
-    // Standing still: a slow, gentle ripple now and then
-    if (moving < 0.1 && sleepT < 0.5 && now > nextIdleRipple) { ripple(pos.x, pos.y - 2, 1.6, 2400); nextIdleRipple = now + rand(2600, 4200); }
+    // Standing or sleeping: rings keep spreading out from under the body, overlapping so
+    // the wolf always sits in moving water (slower, breath-paced rings while asleep)
+    if (moving < 0.1 && now > nextIdleRipple) {
+      const asleep = sleepT > 0.5;
+      ripple(pos.x, pos.y - 2, asleep ? 3.2 : 2.8, asleep ? 3600 : 3000);
+      nextIdleRipple = now + (asleep ? rand(1700, 2300) : rand(1200, 1700));
+    }
 
     const bob = lerp(Math.abs(Math.cos(phase)) * 0.06, Math.sin(phase + 1.2) * 0.16, runBlend) * moving;
     const breathe = Math.sin(t * 2.4) * 0.012 * (1 - moving);

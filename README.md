@@ -19,7 +19,7 @@ To change the colors, edit `--orange`, `--blue`, `--green` and `--violet` (the m
 
 ## Khmer version
 
-The **ខ្មែរ / EN** button in the top bar switches the whole page between English and Khmer, and remembers the choice. English text is the HTML itself; each element with a `data-i18n="key"` attribute gets its Khmer text from the `KM` table near the top of `main.js` (map labels are in `KM_GROUPS` / `KM_TEXT` in `assets/skillmap.js`, the wolf's lines in `LINES` in `assets/wolf3d.js`). To change a Khmer sentence, edit its entry in that table. Khmer uses the Kantumruy Pro font from Google Fonts.
+The **ខ្មែរ / EN** button in the top bar switches the whole page between English and Khmer, and remembers the choice. English text is the HTML itself; each element with a `data-i18n="key"` attribute gets its Khmer text from the `KM` table near the top of `main.js` (map labels are in `KM_GROUPS` / `KM_TEXT` in `assets/skillmap.js`, the wolf's lines in `LINES` in `assets/wolf3d.js`). To change a Khmer sentence, edit its entry in that table. Khmer uses the Suwannaphum font from Google Fonts.
 
 ## Skill map
 

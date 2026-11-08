@@ -115,7 +115,7 @@
   };
   // What the crest lights up as it passes: text glows, objects (cards, pins, buttons, map panels) get a halo.
   // The objects should read more than the wave itself.
-  const LIT_TEXT = 'h1, h2, h3, .statement, .label, .tag, .metro__key span, .facts strong, .facts span, .route__when, .contact__mail, .sm-district span, .footer__inner';
+  const LIT_TEXT = 'h1, h2, h3, .statement, .label, .tag, .metro__key span, .route__when, .contact__mail, .sm-district span, .footer__inner';
   const LIT_BOX = '.about__photo img, .route__logo, .school, .route__links a, .btn, .nav__cta, .theme-btn, .stn i, .stn b, .project, .route li, .socials a, .sm-data, .sm-panel, .sm-zoom button, .pin__head, .pin__label, .sm-home span';
   const LIT_TEXT_LITE = 'h1, h2, .label, .contact__mail';
   const LIT_BOX_LITE = '.btn, .pin__head, .school, .route__logo, .about__photo img';
@@ -174,8 +174,8 @@
   const KM = {
     skip: 'រំលងទៅមាតិកា',
     name: 'ញ៉ុក សុខ',
-    contact: 'ទំនាក់ទំនង',
-    tag: '<span class="tag__dot"></span>វិស្វករកម្មវិធី · ~4 ឆ្នាំ',
+    navWork: 'ការងារ និងបទពិសោធន៍',
+    tag: '<span class="tag__dot"></span>អ្នកអភិវឌ្ឍន៍កម្មវិធី · ~4 ឆ្នាំ',
     h1: 'ខ្ញុំបំប្លែងដំណើរការដ៏ស្មុគស្មាញ ទៅជា<em>ប្រព័ន្ធដែលដំណើរការបានល្អ។</em>',
     viewWork: 'មើលស្នាដៃ',
     sayHello: 'ទាក់ទងមកខ្ញុំ',
@@ -184,20 +184,19 @@
     keyBack: '<i class="k-blue"></i>ផ្នែកខាងក្រោយ (Back end)',
     keyData: '<i class="k-green"></i>ទិន្នន័យ និងផែនទី',
     l1: '01 / អំពីខ្ញុំ',
-    statement: 'ផ្ដោតលើ Front end ហើយធ្វើ Full stack ជាទម្លាប់។ បើកិច្ចការណាត្រូវធ្វើម្ដងហើយម្ដងទៀត ខ្ញុំ<span class="hl">ធ្វើវាឱ្យស្វ័យប្រវត្តិ</span>។ ខ្ញុំរៀនឧបករណ៍ថ្មីៗបានលឿន ហើយបង្កើតការងារជាមួយ <span class="hl hl--blue">AI agents</span>។',
+    statement: 'ផ្ដោតលើ Front end ហើយធ្វើ Full stack ជាទម្លាប់។ បើកិច្ចការណាត្រូវធ្វើម្ដងហើយម្ដងទៀត ខ្ញុំ<span class="hl">ធ្វើវាឱ្យស្វ័យប្រវត្តិ</span>។ ខ្ញុំរៀនឧបករណ៍ថ្មីៗបានលឿន ហើយប្រើ <span class="hl hl--blue">ឧបករណ៍ AI</span> ដោយប្រុងប្រយ័ត្ន៖ ពិនិត្យ សាកល្បង និងមិនទុកចិត្តដោយងងឹតងងុល។',
     photoAlt: 'រូបថតរបស់ ញ៉ុក សុខ',
     place: '<i aria-hidden="true"></i>ភ្នំពេញ · កម្ពុជា',
-    f1: 'ឆ្នាំនៃការងារជាក់ស្ដែង', f2: 'បច្ចេកវិទ្យាចម្បង', f3: 'កិច្ចការដដែលៗដែលខ្ញុំទុកចោល',
-    l2: '02 / ជំនាញ', skillCity: 'ទីក្រុងជំនាញ',
+    l2: '05 / ជំនាញ', skillCity: 'ទីក្រុងជំនាញ',
     mapHint: 'អូសដើម្បីរុករក · ctrl + រំកិល ដើម្បីពង្រីក',
-    l3: '03 / បទពិសោធន៍', routeTitle: 'ផ្លូវដែលខ្ញុំបានដើរកន្លងមក',
+    l3: '02 / បទពិសោធន៍', routeTitle: 'ផ្លូវដែលខ្ញុំបានដើរកន្លងមក',
     dgcWhen: '2023 — បច្ចុប្បន្ន', dgcTitle: 'អ្នកអភិវឌ្ឍន៍គេហទំព័រ', dgcOrg: 'គណៈកម្មាធិការរដ្ឋាភិបាលឌីជីថល (DGC)',
     z1Title: 'អ្នកអភិវឌ្ឍន៍គេហទំព័រ ផ្នែក Back end', z1Org: 'Z1 Flexible Solution · កម្មសិក្សា 3 ខែ បន្ទាប់មកជាបុគ្គលិក 7 ខែ',
     l4: '04 / ការសិក្សា', eduTitle: 'កន្លែងដែលខ្ញុំបានសិក្សា',
     aeuTitle: 'បរិញ្ញាបត្រ', aeuOrg: 'សាកលវិទ្យាល័យ អាស៊ី អឺរ៉ុប · គម្រោងបញ្ចប់ការសិក្សាលើការរចនាមូលដ្ឋានទិន្នន័យ',
     pnTitle: 'កម្មវិធីបណ្ដុះបណ្ដាលព័ត៌មានវិទ្យា', pnOrg: 'Passerelles Numériques Cambodia · និស្សិតដែលត្រូវបានលើកឡើង',
     story: 'រឿងរ៉ាវរបស់ខ្ញុំ ↗',
-    l5: '05 / គម្រោង', projTitle: 'ស្នាដៃដែលបានជ្រើសរើស',
+    l5: '03 / គម្រោង', projTitle: 'ស្នាដៃដែលបានជ្រើសរើស',
     p1: 'ផែនទីគុណភាពខ្យល់នៅកម្ពុជា',
     p1d: 'ផែនទី Google Maps បង្ហាញគុណភាពខ្យល់។ ព័ត៌មានរបស់សញ្ញាសម្គាល់នីមួយៗអាចចែករំលែកទៅ Facebook និង Telegram ជាតំណដែលមានរូបភាពមើលជាមុន។',
     p2: 'ផែនទីបរិស្ថាន',
@@ -214,18 +213,17 @@
     role_front: 'ផ្នែកខាងមុខ',
     role_full: 'Full stack',
     p7: 'វេទិកាសង្គម CEYFA',
-    p7d: 'វេទិកាសង្គមសម្រាប់សហព័ន្ធសមាគមយុវជនសេដ្ឋកិច្ចកម្ពុជា។ ខ្ញុំបង្កើតផ្នែកខាងមុខភាគច្រើនសម្រាប់គេហទំព័រ និង API ផ្នែកខាងក្រោយមួយចំនួន។',
+    p7d: 'វេទិកាសង្គមសម្រាប់សហព័ន្ធសមាគមយុវជនសេដ្ឋកិច្ចកម្ពុជា។ ខ្ញុំបង្កើតផ្នែកខាងមុខភាគច្រើនសម្រាប់គេហទំព័រ និង API ផ្នែកខាងក្រោយមួយចំនួន។ ដោយសារពេលវេលាខ្លី និងកូដផ្លាស់ប្ដូរលឿន កូដប្រហែល 80% ត្រូវបានសរសេរដោយមានជំនួយពី AI agent (Claude) ដើម្បីប្រគល់ការងារឲ្យទាន់ពេល។ ប៉ុន្តែខ្ញុំនៅតែពិនិត្យការងារទាំងអស់នោះដោយខ្លួនឯង។',
     role_frontapi: 'ផ្នែកខាងមុខ · API',
-    l6: '06 / ទំនាក់ទំនង', contactTitle: 'ចំណតបន្ទាប់៖ <em>បញ្ហារបស់អ្នក។</em>',
-    resume: 'ប្រវត្តិរូប',
-    credit: 'រចនា និងគំនិតដោយ ញ៉ុក សុខ · បង្កើតដោយប្រើ <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a>',
+    l6: '06 / ទំនាក់ទំនង', contactTitle: 'ចំណតបន្ទាប់៖ <em>បញ្ហារបស់អ្នក។</em>',    credit: 'រចនា និងដឹកនាំដោយ ញ៉ុក សុខ · បង្កើតជាមួយ <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a> ដោយរាល់ការកែប្រែត្រូវបានពិនិត្យ និងសាកល្បងដោយផ្ទាល់',
   };
-  const TITLE = { en: 'Nhok Sok — Software Engineer', km: 'ញ៉ុក សុខ — វិស្វករកម្មវិធី' };
+  const TITLE = { en: 'Nhok Sok — Software Developer', km: 'ញ៉ុក សុខ — អ្នកអភិវឌ្ឍន៍កម្មវិធី' };
   const i18nEls = [...document.querySelectorAll('[data-i18n]')];
   i18nEls.forEach((el) => { el.dataset.en = el.innerHTML; });
   const altEls = [...document.querySelectorAll('[data-i18n-alt]')];
   altEls.forEach((el) => { el.dataset.enAlt = el.alt; });
   const langBtn = document.getElementById('langToggle');
+  const langTxt = langBtn.querySelector('.lang-btn__txt');
   const lang = () => (root.lang === 'km' ? 'km' : 'en');
   window.siteLang = lang;
   const setLang = (l, save = true) => {
@@ -234,14 +232,64 @@
     altEls.forEach((el) => { el.alt = l === 'km' && KM[el.dataset.i18nAlt] ? KM[el.dataset.i18nAlt] : el.dataset.enAlt; });
     document.title = TITLE[l];
     // the button offers the other language, written in that language
-    langBtn.textContent = l === 'km' ? 'EN' : 'ខ្មែរ';
+    langTxt.textContent = l === 'km' ? 'EN' : 'ខ្មែរ';
     langBtn.lang = l === 'km' ? 'en' : 'km';
     langBtn.setAttribute('aria-label', l === 'km' ? 'Switch to English' : 'ប្ដូរទៅភាសាខ្មែរ');
     if (save) { try { localStorage.setItem('lang', l); } catch (e) {} }
+    setKhmerDigits(l === 'km');
     document.dispatchEvent(new CustomEvent('lang:change', { detail: l }));
   };
+
+  // Khmer mode shows every number on the page in Khmer digits (០១២…). Text nodes are
+  // converted in place and remembered so English can put the originals back; content
+  // added later (map panels, wolf bubbles) is converted as it appears.
+  const KH_DIGITS = '០១២៣៤៥៦៧៨៩';
+  const toKh = (s) => s.replace(/[0-9]/g, (d) => KH_DIGITS[d]);
+  const NO_KH = 'script, style, textarea, input, code, pre, .maplibregl-ctrl-attrib, a[href^="mailto:"], a[href^="tel:"]';
+  const khNodes = new Map();   // text node -> original text
+  const khmerize = (rootNode) => {
+    const walk = document.createTreeWalker(rootNode, NodeFilter.SHOW_TEXT);
+    for (let n = rootNode.nodeType === 3 ? rootNode : walk.nextNode(); n; n = walk.nextNode()) {
+      if (!/[0-9]/.test(n.data) || n.parentElement?.closest(NO_KH)) continue;
+      khNodes.set(n, n.data);
+      n.data = toKh(n.data);
+    }
+  };
+  const digitWatch = new MutationObserver((records) => {
+    for (const r of records) {
+      if (r.type === 'characterData') khmerize(r.target);
+      else r.addedNodes.forEach((n) => { if (n.nodeType === 1 || n.nodeType === 3) khmerize(n); });
+    }
+  });
+  function setKhmerDigits(on) {
+    digitWatch.disconnect();
+    if (on) {
+      khmerize(document.body);
+      digitWatch.observe(document.body, { childList: true, subtree: true, characterData: true });
+    } else {
+      khNodes.forEach((orig, n) => { if (n.isConnected && n.data === toKh(orig)) n.data = orig; });
+      khNodes.clear();
+    }
+  }
   setLang(lang(), false);
-  langBtn.addEventListener('click', () => setLang(lang() === 'km' ? 'en' : 'km'));
+
+  // Flag: shows the flag of the language on offer (CSS follows the button's lang) and
+  // waves on each switch; the flag swaps mid-wave while the page text blurs out and back
+  const flag = langBtn.querySelector('.lang-flag');
+  let swapTimer = 0;
+  langBtn.addEventListener('click', () => {
+    const next = lang() === 'km' ? 'en' : 'km';
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { setLang(next); return; }
+    flag.classList.remove('is-wave'); void flag.offsetWidth; flag.classList.add('is-wave');
+    clearTimeout(swapTimer);
+    root.classList.remove('is-lang-in');
+    root.classList.add('is-lang-out');
+    swapTimer = setTimeout(() => {
+      setLang(next);
+      root.classList.replace('is-lang-out', 'is-lang-in');
+      swapTimer = setTimeout(() => root.classList.remove('is-lang-in'), 260);
+    }, 220);
+  });
 
   // Stars: a random sky over the top of the page, and a few around the toggle, re-scattered for each night
   const scatter = (box, n, area) => {
@@ -270,6 +318,44 @@
   const onScroll = () => nav.classList.toggle('is-scrolled', scrollY > 10);
   onScroll();
   addEventListener('scroll', onScroll, { passive: true });
+
+  // In-page links: our own smooth scroll. The native CSS one gets cut short on the
+  // first click (the map and wolf load mid-scroll and shift the layout), so this
+  // re-measures the target every frame and always lands on it.
+  const motionOff = matchMedia('(prefers-reduced-motion: reduce)');
+  let scrollAnim = 0;
+  const targetY = (el) => {
+    const margin = parseFloat(getComputedStyle(el).scrollMarginTop) || 0;
+    const max = document.documentElement.scrollHeight - innerHeight;
+    return Math.max(0, Math.min(max, el.getBoundingClientRect().top + scrollY - margin));
+  };
+  const goTo = (el) => {
+    cancelAnimationFrame(scrollAnim);
+    if (motionOff.matches) { scrollTo({ top: targetY(el), behavior: 'instant' }); return; }
+    const from = scrollY;
+    const dur = Math.min(1100, Math.max(450, Math.abs(targetY(el) - from) * 0.45));
+    const t0 = performance.now();
+    const ease = (k) => (k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2);
+    const stop = () => { cancelAnimationFrame(scrollAnim); removeEventListener('wheel', stop); removeEventListener('touchstart', stop); };
+    addEventListener('wheel', stop, { passive: true, once: true });
+    addEventListener('touchstart', stop, { passive: true, once: true });
+    const step = (now) => {
+      const k = Math.min(1, (now - t0) / dur);
+      scrollTo({ top: from + (targetY(el) - from) * ease(k), behavior: 'instant' });
+      if (k < 1) scrollAnim = requestAnimationFrame(step); else stop();
+    };
+    scrollAnim = requestAnimationFrame(step);
+  };
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const id = a.getAttribute('href').slice(1);
+    const el = id && document.getElementById(id);
+    if (!el) return;
+    e.preventDefault();
+    goTo(el);
+    history.pushState(null, '', `#${id}`);
+  });
 
   // Reveal on scroll, staggered per parent
   const reveals = document.querySelectorAll('.reveal');
@@ -345,9 +431,7 @@
     syncToggle();
     if (wolfOff) { if (pet) pet.el.hidden = true; } else loadWolf();
   });
-  if (!wolfOff) {
-    const whenIdle = window.requestIdleCallback || ((fn) => setTimeout(fn, 600));
-    if (document.readyState === 'complete') whenIdle(loadWolf);
-    else addEventListener('load', () => whenIdle(loadWolf));
-  }
+  const whenIdle = window.requestIdleCallback || ((fn) => setTimeout(fn, 600));
+  const afterLoad = (fn) => { if (document.readyState === 'complete') whenIdle(fn); else addEventListener('load', () => whenIdle(fn)); };
+  if (!wolfOff) afterLoad(loadWolf);
 })();

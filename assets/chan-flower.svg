@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-50 -50 100 100">
+  <!-- Khmer Chan flower (ផ្កាចន្ទ), gold line drawing: four lotus petals on the axes,
+       four flame leaves with curls on the diagonals, double circle at the heart -->
+  <defs>
+    <linearGradient id="gold" gradientUnits="userSpaceOnUse" x1="-50" y1="-50" x2="50" y2="50">
+      <stop offset="0" stop-color="#fbe7a1"/>
+      <stop offset=".3" stop-color="#d4a537"/>
+      <stop offset=".55" stop-color="#9c7416"/>
+      <stop offset=".78" stop-color="#f0cf6b"/>
+      <stop offset="1" stop-color="#b88a22"/>
+    </linearGradient>
+    <g id="petal">
+      <path d="M-6 -13C-10 -20 -9 -30 0 -40C9 -30 10 -20 6 -13"/>
+      <path d="M-2.5 -16C-5 -22 -4 -28 0 -33C4 -28 5 -22 2.5 -16"/>
+    </g>
+    <g id="leaf">
+      <path d="M-3 -15C-5 -22 -16 -27 -20 -36C-23 -45 -14 -50 -9 -52C-5 -54 -2 -58 0 -64C2 -58 5 -54 9 -52C14 -50 23 -45 20 -36C16 -27 5 -22 3 -15"/>
+      <path d="M-9 -52C-16 -48 -17 -40 -12.5 -38C-9 -36.5 -7.5 -40.5 -10.5 -42"/>
+      <path d="M9 -52C16 -48 17 -40 12.5 -38C9 -36.5 7.5 -40.5 10.5 -42"/>
+      <path d="M-2 -21C-6 -30 -5 -40 0 -47C5 -40 6 -30 2 -21"/>
+    </g>
+  </defs>
+  <g fill="none" stroke="url(#gold)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <use href="#petal"/>
+    <use href="#petal" transform="rotate(90)"/>
+    <use href="#petal" transform="rotate(180)"/>
+    <use href="#petal" transform="rotate(270)"/>
+    <use href="#leaf" transform="rotate(45)"/>
+    <use href="#leaf" transform="rotate(135)"/>
+    <use href="#leaf" transform="rotate(225)"/>
+    <use href="#leaf" transform="rotate(315)"/>
+    <circle r="12"/>
+    <circle r="7.5"/>
+  </g>
+</svg>
