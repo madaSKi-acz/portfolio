@@ -166,6 +166,9 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     const style = lmap.getStyle();
     // English names, so labels read the same as the rest of the site
     for (const layer of style.layers) {
+      // Hide the basemap's own markers (shops, cafés, bus stops, airports, peaks, road
+      // number shields) in both styles, so only the skill pins show
+      if (['poi', 'aerodrome_label', 'mountain_peak'].includes(layer['source-layer']) || /shield/.test(layer.id)) { lmap.setLayoutProperty(layer.id, 'visibility', 'none'); continue; }
       if (layer.type === 'symbol' && /[{"]name/.test(JSON.stringify(layer.layout?.['text-field'] ?? ''))) {
         lmap.setLayoutProperty(layer.id, 'text-field', EN_LABEL);
       }
