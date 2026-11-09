@@ -157,12 +157,12 @@ section[id] { scroll-margin-top: 64px; }
 /* ============ Sections ============ */
 .section { padding: clamp(48px, 7vw, 88px) 0; }
 .section--tint { background: linear-gradient(to bottom, var(--paper), var(--paper-2) clamp(80px, 12vw, 180px), var(--paper-2) calc(100% - clamp(80px, 12vw, 180px)), var(--paper)); }
-.label { font-family: var(--mono); font-size: .8rem; color: var(--muted); margin-bottom: 1.25rem; display: flex; align-items: center; gap: .75rem; }
+.label { font-family: var(--mono); font-size: 1rem; color: var(--muted); margin-bottom: 1.25rem; display: flex; align-items: center; gap: .75rem; }
 /* Gold Khmer Chan flower; negative margins keep the label's height unchanged */
 .label::before { content: ""; flex: none; width: 30px; height: 30px; margin: -8px 0; background: url("assets/chan-flower.svg") center / contain no-repeat; transition: transform .8s var(--ease); }
 .label:hover::before { transform: rotate(90deg); }
 /* Khmer script reads small at the mono size: bigger and bold */
-:root[lang="km"] .label { font-size: .95rem; font-weight: 700; }
+:root[lang="km"] .label { font-size: 1.15rem; font-weight: 700; }
 
 /* About */
 .about__grid { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
