@@ -385,6 +385,18 @@
   }
 
   // ---------- Project thumbnails + inline preview ----------
+  // Skeleton loading: an image shows a soft shimmer (instead of a flat grey box) until it
+  // has loaded or failed.
+  const skel = (img) => {
+    if (img.complete && img.naturalWidth) return img;
+    img.classList.add('is-loading');
+    const done = () => img.classList.remove('is-loading');
+    img.addEventListener('load', done, { once: true });
+    img.addEventListener('error', done, { once: true });
+    return img;
+  };
+  document.querySelectorAll('.about__photo img, .school__logo, img.route__logo').forEach(skel);
+
   // Every project shows an icon tile; screenshots live only in its <template> gallery.
   // Clicking a row (or its thumbnail button) expands a screenshot panel right under it, in the
   // page flow like an expanded LinkedIn post; clicking again, the close button or Esc folds it.
@@ -448,7 +460,7 @@
       const s = shots[at], big = new Image();
       big.src = s.src; big.alt = s.alt;
       if (s.w) { big.width = s.w; big.height = s.h; }
-      media.replaceChildren(big);
+      media.replaceChildren(skel(big));
       cap.textContent = shots.length > 1 ? `${at + 1} / ${shots.length} · ${s.alt}` : s.alt;
       strip.querySelectorAll('button').forEach((b, i) => b.setAttribute('aria-current', i === at ? 'true' : 'false'));
     };
@@ -481,7 +493,7 @@
         b.type = 'button';
         b.setAttribute('aria-label', s.alt);
         im.src = s.src; im.alt = ''; im.loading = 'lazy';
-        b.append(im);
+        b.append(skel(im));
         b.addEventListener('click', () => show(k));
         li.append(b);
         strip.append(li);
@@ -532,7 +544,7 @@
       document.head.append(link);
       import(`./assets/skillmap.js?v=${V}`)
         .then((m) => m.initSkillMap({ root: map, reduce, isDark }))
-        .catch((err) => { console.error(err); map.classList.add('is-nomap'); });
+        .catch((err) => { console.error(err); map.classList.add('is-nomap'); document.getElementById('smViewport')?.classList.remove('is-loading'); });
     };
     if ('IntersectionObserver' in window) {
       const near = new IntersectionObserver((e) => { if (e[0].isIntersecting) { start(); near.disconnect(); } }, { rootMargin: '900px 0px' });

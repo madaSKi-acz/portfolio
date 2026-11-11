@@ -52,7 +52,7 @@ const SKILLS = {
   'ASP.NET · Entity Framework': { level: 3.0, url: 'https://dotnet.microsoft.com/apps/aspnet', about: 'Back-end APIs in ASP.NET with Entity Framework, written for the CEYFA social platform.', uses: ['Web APIs', 'Data models', 'Migrations'] },
   'Node.js': { level: 3.0, url: 'https://nodejs.org', about: 'JavaScript on the server, for small services, scripts and build tooling.', uses: ['Small APIs', 'Build tools', 'Automation scripts'] },
   Python: { level: 3.0, url: 'https://www.python.org', about: 'Scripts and data work: cleaning, converting and moving data around.', uses: ['Data scripts', 'Scraping', 'Automation'] },
-  'REST APIs': { level: 3.0, url: 'https://developer.mozilla.org/docs/Web/HTTP', about: 'Designing and consuming clean HTTP APIs between front end and back end.', uses: ['API design', 'Auth tokens', 'Third-party integrations'] },
+  'REST APIs': { level: 3.0, url: 'https://developer.mozilla.org/docs/Web/HTTP', about: 'Building REST APIs in Laravel with the Eloquent ORM, and consuming them cleanly from the front end.', uses: ['API design', 'Eloquent ORM', 'Auth tokens'] },
   'SQL & DB design': { level: 4.3, url: 'https://www.postgresql.org/docs/', about: 'SQL, relational schemas, indexes and migrations that keep data tidy as apps grow.', uses: ['Schema design', 'Queries and reports', 'Migrations'] },
   OpenStreetMap: { level: 4.2, url: 'https://www.openstreetmap.org', about: 'Open map data and vector tiles, the base of this very map.', uses: ['Vector maps', 'Geocoding', 'Custom map styles'] },
   'Google Maps': { level: 4.3, url: 'https://developers.google.com/maps', about: 'Maps JavaScript API for markers, places and directions.', uses: ['Store locators', 'Place search', 'Directions'] },
@@ -267,6 +267,10 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   // Tell the page when a new (theme) style has been drawn, so the theme sweep can include the map
   lmap.on('style.load', () => lmap.once('idle', () => document.dispatchEvent(new Event('skillmap:styled'))));
   map.classList.add('has-map');
+  // Hide the skeleton once the basemap has drawn (or after 8 s, so it never sticks)
+  const ready = () => vp.classList.remove('is-loading');
+  lmap.once('load', ready);
+  setTimeout(ready, 8000);
 
   // Safety net: if a pin lands on water in the real basemap, walk it toward its district's middle
   const waterLayers = () => lmap.getStyle().layers.filter((l) => l['source-layer'] === 'water' && l.type === 'fill').map((l) => l.id);

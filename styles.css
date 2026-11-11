@@ -564,6 +564,27 @@ li:has(.sm-vis input:not(:checked)) .sm-fly span { text-decoration: line-through
 
 
 
+/* ============ Skeleton loading ============ */
+/* A soft light band sweeps across anything still loading (images, the skill map) */
+@keyframes shimmer { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+img.is-loading, .js .sm-viewport::before {
+  background: linear-gradient(100deg, var(--paper-2) 35%, color-mix(in srgb, var(--card) 75%, var(--paper-2)) 50%, var(--paper-2) 65%) 0 0 / 250% 100%;
+}
+img.is-loading, .js .sm-viewport.is-loading::before { animation: shimmer 1.4s linear infinite; }
+img.is-loading { color: transparent; }   /* hide the alt text while it loads */
+.pv__media img.is-loading { min-width: min(100%, 520px); border-radius: 10px; }
+/* Skill map: a full-size skeleton with pin shapes and a "Loading map" note, fading out once the basemap draws */
+.js .sm-viewport::before {
+  content: ""; position: absolute; inset: 0; z-index: 7; pointer-events: none; opacity: 0; transition: opacity .6s;
+  -webkit-mask: radial-gradient(circle at 30% 28%, #000 26px, transparent 27px), radial-gradient(circle at 46% 22%, #000 26px, transparent 27px), radial-gradient(circle at 42% 52%, #000 26px, transparent 27px), radial-gradient(circle at 60% 30%, #000 26px, transparent 27px), radial-gradient(circle at 26% 66%, #000 26px, transparent 27px), radial-gradient(circle at 56% 70%, #000 26px, transparent 27px), linear-gradient(#0003, #0003);
+  mask: radial-gradient(circle at 30% 28%, #000 26px, transparent 27px), radial-gradient(circle at 46% 22%, #000 26px, transparent 27px), radial-gradient(circle at 42% 52%, #000 26px, transparent 27px), radial-gradient(circle at 60% 30%, #000 26px, transparent 27px), radial-gradient(circle at 26% 66%, #000 26px, transparent 27px), radial-gradient(circle at 56% 70%, #000 26px, transparent 27px), linear-gradient(#0003, #0003);
+}
+.js .sm-viewport::after { content: "Loading map…"; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 8; pointer-events: none; font: 500 .78rem var(--mono); color: var(--muted); background: var(--card); padding: .35rem .8rem; border-radius: 999px; border: 1px solid var(--rule); opacity: 0; transition: opacity .4s; }
+.js:root[lang="km"] .sm-viewport::after { content: "កំពុងផ្ទុកផែនទី…"; font-family: var(--body); }
+.js .sm-viewport.is-loading::before { opacity: 1; }
+.js .sm-viewport.is-loading::after { opacity: 1; }
+.js .sm-viewport.is-loading { background: var(--paper); }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .001ms !important; animation-delay: 0ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; transition-delay: 0ms !important; }
