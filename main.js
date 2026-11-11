@@ -184,7 +184,8 @@
     keyBack: '<i class="k-blue"></i>ផ្នែកខាងក្រោយ (Back end)',
     keyData: '<i class="k-green"></i>ទិន្នន័យ និងផែនទី',
     l1: '01 / អំពីខ្ញុំ',
-    statement: 'ផ្ដោតលើ Front end ហើយធ្វើ Full stack ជាទម្លាប់។ បើកិច្ចការណាត្រូវធ្វើម្ដងហើយម្ដងទៀត ខ្ញុំ<span class="hl">ធ្វើវាឱ្យស្វ័យប្រវត្តិ</span>។ ខ្ញុំរៀន<span class="hl hl--blue">ឧបករណ៍ថ្មីៗ</span>បានលឿន។',
+    aboutMore: 'ខ្ញុំធ្វើគម្រោងជាមួយក្រុម តាំងពីដើមដល់ចប់៖ យល់ពីតម្រូវការ រៀបចំរចនាសម្ព័ន្ធ រួចបង្កើតប្រព័ន្ធដែលដំណើរការលឿន មានសុវត្ថិភាព និងអាចពង្រីកបាន ដោយប្រើផ្នែកដែលប្រើឡើងវិញបាន ដើម្បីឲ្យអ្វីៗទាំងអស់ស៊ីសង្វាក់គ្នា។ ខ្ញុំនៅស្ងប់ពេលមានសម្ពាធ ហើយប្រគល់ការងារទាន់ពេល។',
+    statement: 'ផ្ដោតលើ Front end ហើយធ្វើ Full stack ជាទម្លាប់។ ខ្ញុំបង្កើតវាម្ដង រួច<span class="hl">ប្រើវាឡើងវិញ</span>គ្រប់ទីកន្លែង។ ខ្ញុំរៀន<span class="hl hl--blue">ឧបករណ៍ថ្មីៗ</span>បានលឿន។',
     photoAlt: 'រូបថតរបស់ ញ៉ុក សុខ',
     place: '<i aria-hidden="true"></i>ភ្នំពេញ · កម្ពុជា',
     l2: '04 / ជំនាញ', skillCity: 'ទីក្រុងជំនាញ',
@@ -194,8 +195,7 @@
     z1Title: 'អ្នកអភិវឌ្ឍន៍គេហទំព័រ ផ្នែក Back end', z1Org: 'Z1 Flexible Solution · កម្មសិក្សា 3 ខែ បន្ទាប់មកជាបុគ្គលិក 7 ខែ',
     l4: '03 / ការសិក្សា', eduTitle: 'ការសិក្សា',
     aeuTitle: 'បរិញ្ញាបត្រវិទ្យាសាស្ត្រកុំព្យូទ័រ', aeuOrg: 'សាកលវិទ្យាល័យ អាស៊ី អឺរ៉ុប',
-    pnTitle: 'ការអភិវឌ្ឍគេហទំព័រ', pnOrg: 'Passerelles Numériques Cambodia',
-    story: 'រឿងរ៉ាវរបស់ខ្ញុំ ↗',
+    pnTitle: 'ការអភិវឌ្ឍគេហទំព័រ', pnOrg: 'Passerelles Numériques Cambodia',    story: 'រឿងរ៉ាវរបស់ខ្ញុំ ↗',
     freeTitle: 'គម្រោងឯករាជ្យ និងគម្រោងផ្ទាល់ខ្លួន',
     p1: 'ផែនទីគុណភាពខ្យល់នៅកម្ពុជា',
     p1d: 'ផែនទី Google Maps បង្ហាញគុណភាពខ្យល់។ ព័ត៌មានរបស់សញ្ញាសម្គាល់នីមួយៗអាចចែករំលែកទៅ Facebook និង Telegram ជាតំណដែលមានរូបភាពមើលជាមុន។',
@@ -213,16 +213,18 @@
     role_front: 'ផ្នែកខាងមុខ',
     role_full: 'Full stack',
     p7: 'វេទិកាសង្គម CEYFA',
-    p7d: 'វេទិកាសង្គមសម្រាប់សហព័ន្ធសមាគមយុវជនសេដ្ឋកិច្ចកម្ពុជា។ ខ្ញុំបង្កើតផ្នែកខាងមុខភាគច្រើនសម្រាប់គេហទំព័រ និង API ផ្នែកខាងក្រោយមួយចំនួន ក្នុងរយៈពេលកំណត់ដ៏ខ្លី ដោយប្រើលំហូរការងារដែលមានជំនួយពី AI។ ខ្ញុំជាអ្នកទទួលខុសត្រូវលើស្ថាបត្យកម្ម ការពិនិត្យកូដ និងការសាកល្បង។',
+    p7d: 'វេទិកាសង្គមសម្រាប់សហព័ន្ធសមាគមយុវជនសេដ្ឋកិច្ចកម្ពុជា។ ខ្ញុំបង្កើតផ្នែកខាងមុខភាគច្រើនសម្រាប់គេហទំព័រ និង API ផ្នែកខាងក្រោយមួយចំនួន ក្នុងរយៈពេលកំណត់ដ៏ខ្លី ដោយប្រើលំហូរការងារដែលមានជំនួយពី AI។ ខ្ញុំជាអ្នកទទួលខុសត្រូវលើស្ថាបត្យកម្ម ការពិនិត្យកូដ និងការសាកល្បង ហើយបានដាក់ Google reCAPTCHA v3 ដើម្បីការពារ bot។',
     preview: 'មើលរូបថត៖', close: 'បិទ', prevShot: 'រូបមុន', nextShot: 'រូបបន្ទាប់',
     p8: 'ឧបករណ៍កែទិន្នន័យសម្រាប់ក្រុមគាំទ្រ',
     p8d: 'ឧបករណ៍ប្រើក្នុងក្រុមហ៊ុន ឲ្យបុគ្គលិកគាំទ្រមួយចំនួនដែលមានសិទ្ធិ កែទិន្នន័យខុសបានលឿន ពេលមានករណីបន្ទាន់។ ប្រព័ន្ធធំមិនអាចធ្វើបែបនេះបានទេ។ ខ្ញុំបង្កើតវាដោយ Laravel Backpack ហើយផ្ដោតលើសិទ្ធិប្រើប្រាស់ និងសុវត្ថិភាព។',
     p9d: 'ខ្ញុំបន្ថែមមុខងារមួយចំនួនឲ្យ Indication Plus ដែលជាប្រព័ន្ធធំបង្កើតដោយ Laravel Backpack។ វាជាគម្រោងធំដំបូងរបស់ខ្ញុំ ដែលមានរចនាសម្ព័ន្ធរឹងមាំ និងធ្វើការជាក្រុម Scrum។',
     role_contrib: 'អ្នករួមចំណែក',
     role_frontapi: 'ផ្នែកខាងមុខ · API',
+    p10: 'ការកសាងឡើងវិញនូវ Logistics Gateway',
+    p10d: 'កសាងឡើងវិញនូវ Logistics Gateway ចាស់ដែលធ្វើពី Windows Forms ឲ្យក្លាយជាកម្មវិធីគេហទំព័រទំព័រតែមួយ (SPA) ដែលដំណើរការលឿន ដោយប្រើ Vue, Pinia និង Tailwind។ វាកាត់បន្ថយការយឺតរបស់ប្រព័ន្ធ លុបចោលលំហូរការងារចាស់ៗដែលស្ទួន និងសម្រួលការងារដឹកជញ្ជូនសំខាន់ៗ ឲ្យដំណើរការពីដើមដល់ចប់បានលឿនជាងមុន។',
     l6: '05 / ទំនាក់ទំនង',
   };
-  const TITLE = { en: 'Nhok Sok — Software Developer', km: 'ញ៉ុក សុខ — អ្នកអភិវឌ្ឍន៍កម្មវិធី' };
+  const TITLE = { en: 'Sok Nhok — Software Developer', km: 'ញ៉ុក សុខ — អ្នកអភិវឌ្ឍន៍កម្មវិធី' };
   const i18nEls = [...document.querySelectorAll('[data-i18n]')];
   i18nEls.forEach((el) => { el.dataset.en = el.innerHTML; });
   const altEls = [...document.querySelectorAll('[data-i18n-alt]')];
@@ -383,12 +385,7 @@
   }
 
   // ---------- Project thumbnails + inline preview ----------
-  // A screenshot that fails to load is swapped for a placeholder in the row's line color.
-  const markMissing = (img) => img.closest('.project__thumb').classList.add('is-missing');
-  document.querySelectorAll('.project__thumb img').forEach((img) => {
-    if (img.complete && !img.naturalWidth) markMissing(img);
-    else img.addEventListener('error', () => markMissing(img), { once: true });
-  });
+  // Every project shows an icon tile; screenshots live only in its <template> gallery.
   // Clicking a row (or its thumbnail button) expands a screenshot panel right under it, in the
   // page flow like an expanded LinkedIn post; clicking again, the close button or Esc folds it.
   const pv = document.getElementById('preview');
@@ -400,19 +397,52 @@
     let row = null, shots = [], at = 0;
     const shotsOf = (r) => {
       const tpl = r.querySelector('template.project__gallery');
-      if (tpl) return [...tpl.content.querySelectorAll('img')].map((i) => ({
+      if (!tpl) return [];
+      return [...tpl.content.querySelectorAll('img')].map((i) => ({
         src: i.getAttribute('src'), w: i.getAttribute('width'), h: i.getAttribute('height'),
         alt: lang() === 'km' && i.dataset.altKm ? i.dataset.altKm : i.alt,
       }));
-      const thumb = r.querySelector('.project__thumb');
-      if (thumb.classList.contains('is-missing')) return [];
-      const img = thumb.querySelector('img');
-      return [{ src: img.currentSrc || img.src, alt: (lang() === 'km' ? 'រូបថតអេក្រង់៖ ' : 'Screenshot: ') + r.querySelector('h3').textContent.replace('↗', '').trim() }];
     };
-    // Rows with nothing to show don't expand
-    const sync = () => route.querySelectorAll('.project').forEach((r) => r.classList.toggle('is-static', !shotsOf(r).length));
-    sync();
-    route.querySelectorAll('.project__thumb img').forEach((img) => img.addEventListener('error', sync, { once: true }));
+    // Rows with nothing to show don't expand; rows with screenshots get a shot-count badge
+    route.querySelectorAll('.project').forEach((r) => {
+      const n = shotsOf(r).length;
+      r.classList.toggle('is-static', !n);
+      if (!n) return;
+      const thumb = r.querySelector('.project__thumb');
+      thumb.insertAdjacentHTML('beforeend',
+        `<span class="project__count" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 16 5-5 4 4 3-3 6 6"/></svg>${n}</span>`);
+      thumb.dataset.tipEn = `View ${n} screenshots`;
+      thumb.dataset.tipKm = `មើលរូបថតអេក្រង់ ${n}`;
+    });
+    route.querySelectorAll('.project__link').forEach((a) => {
+      a.dataset.tipEn = 'Open the live project ↗';
+      a.dataset.tipKm = 'បើកគម្រោងពិត ↗';
+    });
+
+    // One floating tooltip for clickable tiles and live links (floats on <body>, so the
+    // tile's overflow:hidden can't clip it). Text follows the current language.
+    const tip = document.createElement('div');
+    tip.className = 'tip';
+    tip.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(tip);
+    const showTip = (el) => {
+      tip.textContent = lang() === 'km' ? el.dataset.tipKm : el.dataset.tipEn;
+      const b = el.getBoundingClientRect();
+      tip.classList.add('is-on');
+      const w = tip.offsetWidth;
+      const x = Math.min(Math.max(8, b.left + b.width / 2 - w / 2), innerWidth - w - 8);
+      tip.style.left = `${x + scrollX}px`;
+      tip.style.top = `${b.top + scrollY - tip.offsetHeight - 8}px`;
+    };
+    const hideTip = () => tip.classList.remove('is-on');
+    route.querySelectorAll('[data-tip-en]').forEach((el) => {
+      el.addEventListener('mouseenter', () => showTip(el));
+      el.addEventListener('mouseleave', hideTip);
+      el.addEventListener('focus', () => { if (el.matches(':focus-visible')) showTip(el); });
+      el.addEventListener('blur', hideTip);
+      el.addEventListener('click', hideTip);
+    });
+    addEventListener('scroll', hideTip, { passive: true });
     const show = (k) => {
       at = (k + shots.length) % shots.length;
       const s = shots[at], big = new Image();
@@ -486,7 +516,7 @@
       if (e.key === 'Escape' && row && (pv.contains(document.activeElement) || row.contains(document.activeElement))) close();
     });
     // captions follow the language switch
-    document.addEventListener('lang:change', () => { sync(); if (row) { const k = at; shots = shotsOf(row); show(k); } });
+    document.addEventListener('lang:change', () => { if (row) { const k = at; shots = shotsOf(row); show(k); } });
   }
 
   // ---------- Skill city map (MapLibre, loaded when the section gets close) ----------

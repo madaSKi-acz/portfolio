@@ -12,24 +12,24 @@ const GROUPS = {
   front: { name: 'Front end', where: 'Front-end Old Town', area: 'Boeung Keng Kang 1', c: '--orange', rect: [104.9233, 11.5418, 104.9279, 11.5521] },
   back: { name: 'Back end', where: 'Back-end Harbor', area: 'Tonle Bassac', c: '--blue', rect: [104.9287, 11.5458, 104.9332, 11.5521] },
   data: { name: 'Data & maps', where: 'Data Park', area: 'Boeung Keng Kang 3', c: '--green', rect: [104.9182, 11.5414, 104.9223, 11.5456] },
-  flow: { name: 'Workflow', where: 'Automation Hills', area: 'Boeung Keng Kang 2', c: '--violet', rect: [104.9182, 11.5476, 104.9223, 11.5521] },
+  flow: { name: 'Quality & docs', where: 'Quality Hills', area: 'Boeung Keng Kang 2', c: '--violet', rect: [104.9182, 11.5476, 104.9223, 11.5521] },
 };
 // Khmer text for the map (the page's language switch sets <html lang="km">)
 const KM_GROUPS = {
   front: { name: 'ផ្នែកខាងមុខ', where: 'សង្កាត់ Front-end', area: 'បឹងកេងកង ១' },
   back: { name: 'ផ្នែកខាងក្រោយ', where: 'កំពង់ផែ Back-end', area: 'ទន្លេបាសាក់' },
   data: { name: 'ទិន្នន័យ និងផែនទី', where: 'សួនទិន្នន័យ', area: 'បឹងកេងកង ៣' },
-  flow: { name: 'លំហូរការងារ', where: 'ភ្នំស្វ័យប្រវត្តិកម្ម', area: 'បឹងកេងកង ២' },
+  flow: { name: 'គុណភាព និងឯកសារ', where: 'ភ្នំគុណភាព', area: 'បឹងកេងកង ២' },
 };
 const KM_TEXT = {
   all: 'ជំនាញទាំងអស់', here: 'អ្នកនៅទីនេះ', daily: 'ប្រើរាល់ថ្ងៃ', ready: 'ត្រៀមរួចជាស្រេច',
-  overview: 'ទិដ្ឋភាពទូទៅ', about: 'អំពី', route: 'ផ្លូវ', nearby: 'ជិតៗ', docs: 'ឯកសារ', share: 'ចែករំលែក', usedFor: 'ប្រើសម្រាប់',
-  selfRated: 'វាយតម្លៃខ្លួនឯង', dailyNote: 'ប្រើស្ទើររាល់ថ្ងៃ', readyNote: 'បានប្រើក្នុងគម្រោងពិត', walk: 'ដើរ', fromHere: 'ពីទីនេះ', copied: 'បានចម្លងតំណ',
+  usedFor: 'ប្រើសម្រាប់',
+  selfRated: 'វាយតម្លៃខ្លួនឯង', dailyNote: 'ប្រើស្ទើររាល់ថ្ងៃ', readyNote: 'បានប្រើក្នុងគម្រោងពិត',
 };
 const EN_TEXT = {
   all: 'All skills', here: 'You are here', daily: 'Daily driver', ready: 'Ready to ship',
-  overview: 'Overview', about: 'About', route: 'Directions', nearby: 'Nearby', docs: 'Docs', share: 'Share', usedFor: 'Used for',
-  selfRated: 'self-rated', dailyNote: 'Used almost every day', readyNote: 'Used in real projects', walk: 'walk', fromHere: 'from “You are here”', copied: 'Link copied',
+  usedFor: 'Used for',
+  selfRated: 'self-rated', dailyNote: 'Used almost every day', readyNote: 'Used in real projects',
 };
 const isKm = () => document.documentElement.lang === 'km';
 const G = (g, k) => (isKm() ? KM_GROUPS[g][k] : GROUPS[g][k]);
@@ -39,24 +39,29 @@ const SKILLS = {
   Vue: { level: 4.8, url: 'https://vuejs.org', about: 'My home framework: single-file components, the Composition API and Vite.', uses: ['Admin dashboards', 'Government web apps', 'Reusable components'] },
   JavaScript: { level: 4.7, url: 'https://developer.mozilla.org/docs/Web/JavaScript', about: 'Modern ES modules, async code and the browser APIs underneath every framework.', uses: ['Interactive UI', 'Maps and charts', 'Tooling scripts'] },
   Tailwind: { level: 4.6, url: 'https://tailwindcss.com', about: 'Utility-first CSS for building layouts quickly and keeping them consistent.', uses: ['Responsive layouts', 'Design systems', 'Dark mode'] },
-  TypeScript: { level: 4.0, url: 'https://www.typescriptlang.org', about: 'Typed Vue components and API models, used on the CEYFA social platform.', uses: ['Typed components', 'API models', 'Safer refactors'] },
+  Bootstrap: { level: 4.0, url: 'https://getbootstrap.com', about: 'Grid, components and utilities for building responsive admin screens quickly.', uses: ['Admin screens', 'Responsive layouts', 'Forms'] },
+  Figma: { level: 3.5, url: 'https://www.figma.com', about: 'Reading and inspecting designs to build screens that match them, and sketching simple layouts myself.', uses: ['Design handoff', 'Layout mockups', 'Spacing and colours'] },
+  TypeScript: { level: 3.0, url: 'https://www.typescriptlang.org', about: 'Typed Vue components and API models, used on the CEYFA social platform.', uses: ['Typed components', 'API models', 'Safer refactors'] },
   Pinia: { level: 4.4, url: 'https://pinia.vuejs.org', about: 'State management for Vue apps, kept small and typed.', uses: ['App-wide state', 'Auth and session', 'Caching API data'] },
   'HTML & CSS': { level: 4.7, url: 'https://developer.mozilla.org/docs/Web/HTML', about: 'Semantic, accessible markup with grid, flexbox, custom properties and animation, like the ones on this page.', uses: ['Accessible pages', 'Layouts and theming', 'Animation'] },
   React: { level: 3.6, url: 'https://react.dev', about: 'Components and hooks, used for a customer project built in Next.js.', uses: ['Component UI', 'Hooks', 'Client apps'] },
   'Next.js': { level: 3.6, url: 'https://nextjs.org', about: 'Built an agriculture solar-system web app on my own in Next.js, at the customer’s request.', uses: ['Routing', 'Server rendering', 'Customer web apps'] },
   'Map performance': { level: 4.5, url: '', about: 'Loading a huge number of map markers without freezing or crashing the browser, as on the national internet connection points map.', uses: ['Large marker sets', 'Nationwide data', 'No browser freezes'] },
   'Front-end architecture': { level: 4.3, url: '', about: 'Setting up the front-end structure of whole systems: folders, state, API layers and shared components that a team can grow.', uses: ['Project structure', 'Shared components', 'State and API layers'] },
-  'Laravel · PHP': { level: 4.3, url: 'https://laravel.com', about: 'PHP and Laravel for APIs and server-rendered apps: Eloquent, queues and auth. Used end to end on the Sana fuel trip order system.', uses: ['REST back ends', 'Admin systems', 'Scheduled jobs'] },
-  'ASP.NET · Entity Framework': { level: 3.8, url: 'https://dotnet.microsoft.com/apps/aspnet', about: 'Back-end APIs in ASP.NET with Entity Framework, written for the CEYFA social platform.', uses: ['Web APIs', 'Data models', 'Migrations'] },
-  'Node.js': { level: 4.1, url: 'https://nodejs.org', about: 'JavaScript on the server, for small services, scripts and build tooling.', uses: ['Small APIs', 'Build tools', 'Automation scripts'] },
-  Python: { level: 4.0, url: 'https://www.python.org', about: 'Scripts and data work: cleaning, converting and moving data around.', uses: ['Data scripts', 'Scraping', 'Automation'] },
-  'REST APIs': { level: 4.6, url: 'https://developer.mozilla.org/docs/Web/HTTP', about: 'Designing and consuming clean HTTP APIs between front end and back end.', uses: ['API design', 'Auth tokens', 'Third-party integrations'] },
+  'Laravel · PHP': { level: 4.0, url: 'https://laravel.com', about: 'PHP and Laravel for APIs and server-rendered apps: Eloquent, queues and auth. Used end to end on the Sana fuel trip order system.', uses: ['REST back ends', 'Admin systems', 'Scheduled jobs'] },
+  'ASP.NET · Entity Framework': { level: 3.0, url: 'https://dotnet.microsoft.com/apps/aspnet', about: 'Back-end APIs in ASP.NET with Entity Framework, written for the CEYFA social platform.', uses: ['Web APIs', 'Data models', 'Migrations'] },
+  'Node.js': { level: 3.0, url: 'https://nodejs.org', about: 'JavaScript on the server, for small services, scripts and build tooling.', uses: ['Small APIs', 'Build tools', 'Automation scripts'] },
+  Python: { level: 3.0, url: 'https://www.python.org', about: 'Scripts and data work: cleaning, converting and moving data around.', uses: ['Data scripts', 'Scraping', 'Automation'] },
+  'REST APIs': { level: 3.0, url: 'https://developer.mozilla.org/docs/Web/HTTP', about: 'Designing and consuming clean HTTP APIs between front end and back end.', uses: ['API design', 'Auth tokens', 'Third-party integrations'] },
   'SQL & DB design': { level: 4.3, url: 'https://www.postgresql.org/docs/', about: 'SQL, relational schemas, indexes and migrations that keep data tidy as apps grow.', uses: ['Schema design', 'Queries and reports', 'Migrations'] },
   OpenStreetMap: { level: 4.2, url: 'https://www.openstreetmap.org', about: 'Open map data and vector tiles, the base of this very map.', uses: ['Vector maps', 'Geocoding', 'Custom map styles'] },
   'Google Maps': { level: 4.3, url: 'https://developers.google.com/maps', about: 'Maps JavaScript API for markers, places and directions.', uses: ['Store locators', 'Place search', 'Directions'] },
   GeoServer: { level: 3.9, url: 'https://geoserver.org', about: 'Environmental data layers served from GeoServer and drawn on OpenStreetMap.', uses: ['WMS layers', 'Map data services', 'Layer styling'] },
-  'AI-assisted dev': { level: 4.3, url: '', about: 'I use AI to speed up routine work. Every change is reviewed and tested by me, and no private or customer data goes into AI tools.', uses: ['Code review', 'Test writing', 'Docs'] },
-  Automation: { level: 4.4, url: 'https://docs.github.com/actions', about: 'Removing repeat work with CI pipelines, scripts and scheduled jobs.', uses: ['CI/CD', 'Deploy scripts', 'Report generation'] },
+  'AI-assisted dev': { level: 4.3, url: '', about: 'I use AI to speed up routine work. Every change is reviewed and tested by me, and no private or customer data goes into AI tools.', uses: ['Code generation', 'Research assistant'] },
+  'Testing & linting': { level: 3.0, url: '', about: 'Unit tests for core logic, plus custom lint rules that keep the code in shape. On CEYFA, the lint rules kept AI-written code following the project’s own patterns.', uses: ['Logic tests', 'Custom lint rules', 'Keeping AI code on track'] },
+  'Feature reports': { level: 4.0, url: '', about: 'After a feature is done, I write a clear report of what was built, how it works and how to test it, for the team and the client.', uses: ['Feature handover', 'Test steps'] },
+  Git: { level: 4.5, url: 'https://git-scm.com', about: 'Everyday version control with the team: feature branches, clean commits, merge requests and resolving conflicts.', uses: ['Feature branches', 'Merge requests', 'Code review'] },
+  Mentoring: { level: 4.0, url: '', about: 'Helping developers who are new to the front end when they get stuck: pairing on the problem, explaining the why, and pointing them to the patterns the project already uses.', uses: ['Pairing on bugs', 'Explaining patterns', 'Onboarding new devs'] },
 };
 const EN_LABEL = ['coalesce', ['get', 'name:en'], ['get', 'name_en'], ['get', 'name:latin'], ['get', 'name']];
 
@@ -112,8 +117,72 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     const use = free.slice(0, list.length);
     const lastY = use[use.length - 1][1], last = use.filter((u) => u[1] === lastY);
     if (last.length < cols && last.length === 1 && cols > 1) last[0][0] = (x0 + x1) / 2;
-    list.forEach((p, k) => { spot[p.dataset.name] = use[k]; });
+    // Nudge each pin off its grid cell so the layout looks like real places, not a table.
+    // The offset comes from the skill's name, so every visit shows the same layout.
+    const dx = cols > 1 ? (x1 - x0) / (cols - 1) : (x1 - x0) / 2;
+    const dy = rows > 1 ? (y1 - y0) / (rows - 1) : (y1 - y0) / 2;
+    const rnd = (str, salt) => { let h = 2166136261 ^ salt; for (const ch of str) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return ((h >>> 0) % 1000) / 1000 - 0.5; };
+    list.forEach((p, k) => {
+      const [cx, cy] = use[k], name = p.dataset.name;
+      const moved = [
+        Math.min(e - (e - w) * 0.1, Math.max(w + (e - w) * 0.1, cx + rnd(name, 1) * dx * 0.9 + (k % 2 ? 0.15 : -0.15) * dx)),
+        Math.min(n - mLat(130), Math.max(sth + mLat(35), cy + rnd(name, 2) * dy * 0.95)),
+      ];
+      spot[name] = metres(moved, HOME) > 140 ? moved : use[k];
+    });
   });
+  // Push apart any pins whose icon + label would overlap at the default desktop zoom.
+  // Each pin is a box in metres: the icon rises ~72px above its spot, the label hangs
+  // ~24px below and is as wide as its text. Boxes that overlap move apart along the
+  // shorter overlap; "You are here" (dot + label to its right) stays put.
+  {
+    const mpp = (40075016.686 * cosLat) / (512 * 2 ** Z);   // metres per pixel at the start zoom
+    const toXY = (ll) => [(ll[0] - HOME[0]) * 111320 * cosLat, (ll[1] - HOME[1]) * 110540];
+    const toLL = ([x, y]) => [HOME[0] + x / (111320 * cosLat), HOME[1] + y / 110540];
+    const GAP = 10;   // px of air between boxes
+    const boxes = pinEls.map((p) => {
+      const big = p.dataset.status === 'Daily' ? 1.2 : 1;
+      const label = p.querySelector('.pin__label').textContent.length * 6.9 + 22;
+      const wPx = Math.max(66 * big, label) + GAP, hPx = 72 * big + 26 + GAP;
+      const [x, y] = toXY(spot[p.dataset.name]);
+      return { p, x, y, hw: (wPx / 2) * mpp, hh: (hPx / 2) * mpp, up: (hPx / 2 - 26) * mpp };
+    });
+    const home = { x: 60 * mpp, y: 0, hw: 75 * mpp, hh: 18 * mpp, up: 0, fixed: true };
+    const all = [...boxes, home];
+    for (let pass = 0; pass < 300; pass++) {
+      let moved = false;
+      for (let a = 0; a < all.length; a++) for (let b = a + 1; b < all.length; b++) {
+        const A = all[a], B = all[b];
+        const dx = B.x - A.x, dy = (B.y + B.up) - (A.y + A.up);
+        const ox = A.hw + B.hw - Math.abs(dx), oy = A.hh + B.hh - Math.abs(dy);
+        if (ox <= 0 || oy <= 0) continue;
+        moved = true;
+        const share = A.fixed || B.fixed ? 1 : 0.5;
+        // push sideways when that is the smaller fix (keeps rows tidy-ish), else up/down
+        if (ox < oy) {
+          const s = (dx || (a % 2 ? 1 : -1)) > 0 ? 1 : -1;
+          if (!A.fixed) A.x -= s * ox * share;
+          if (!B.fixed) B.x += s * ox * share;
+        } else {
+          const s = (dy || (b % 2 ? 1 : -1)) > 0 ? 1 : -1;
+          if (!A.fixed) A.y -= s * oy * share;
+          if (!B.fixed) B.y += s * oy * share;
+        }
+      }
+      if (!moved) break;
+    }
+    boxes.forEach((bx) => { spot[bx.p.dataset.name] = toLL([bx.x, bx.y]); });
+    // Grow each district so it still wraps its pins (icon above, label below)
+    Object.entries(byGroup).forEach(([g, list]) => {
+      const r = GROUPS[g].rect, pad = 30 * mpp;
+      list.forEach((p) => {
+        const bx = boxes.find((o) => o.p === p);
+        const [lw, ls] = toLL([bx.x - bx.hw - pad, bx.y - 26 * mpp - pad]);
+        const [le, ln] = toLL([bx.x + bx.hw + pad, bx.y + 2 * bx.up + 26 * mpp + pad]);
+        r[0] = Math.min(r[0], lw); r[1] = Math.min(r[1], ls); r[2] = Math.max(r[2], le); r[3] = Math.max(r[3], ln);
+      });
+    });
+  }
   const feats = pinEls.map((p, i) => {
     const wrap = document.createElement('div');
     wrap.className = 'sm-marker';
@@ -128,8 +197,19 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   Object.keys(GROUPS).forEach((g) => {
     const own = feats.filter((f) => f.g === g);
     const [w, sth, e, n] = GROUPS[g].rect;
-    const poly = [[w, sth], [e, sth], [e, n], [w, n], [w, sth]];
-    const bounds = new ml.LngLatBounds([w, sth], [e, n]);
+    // An uneven, rounded outline around the district's box (so it reads like a real
+    // neighbourhood, not a rectangle). It always covers the pins; the wobble is seeded
+    // by the group name, so the shape is the same on every visit.
+    const cx = (w + e) / 2, cy = (sth + n) / 2, rx = (e - w) / 2, ry = (n - sth) / 2;
+    const ph = [...g].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) % 997, 7);
+    const poly = [];
+    for (let k = 0; k <= 48; k++) {
+      const t = (k % 48) / 48 * Math.PI * 2, c = Math.cos(t), s = Math.sin(t);
+      const sq = Math.pow(Math.abs(c) ** 4 + Math.abs(s) ** 4, -0.25);   // squircle: box-like but rounded
+      const wob = 1.05 + 0.04 * Math.sin(3 * t + ph) + 0.025 * Math.sin(5 * t + ph * 1.7) + 0.015 * Math.sin(8 * t + ph * 2.3);
+      poly.push([cx + rx * c * sq * wob, cy + ry * s * sq * wob]);
+    }
+    const bounds = poly.reduce((b, p) => b.extend(p), new ml.LngLatBounds(poly[0], poly[0]));
     const lab = document.createElement('div');
     lab.className = 'sm-district';
     lab.innerHTML = `<span>${G(g, 'where')}<small>${G(g, 'area')}</small></span>`;
@@ -149,18 +229,18 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   new ml.Marker({ element: homeEl, anchor: 'center' }).setLngLat(HOME).addTo(lmap);
 
   // ---------- Our layers on top of the basemap (re-added after a theme/style switch) ----------
-  let focusGroup = 'all', pickGroup = null, routeLine = [], routeColor = '#000';
+  let focusGroup = 'all', routeLine = [], routeColor = '#000';
   const restyle = () => {
     if (!lmap.getLayer('sm-district-fill')) return;
     const on = Object.keys(layers).filter((g) => layers[g].on);
     const filter = ['in', ['get', 'g'], ['literal', on]];
-    const lit = focusGroup !== 'all' ? focusGroup : pickGroup;   // a filter or a selected pin keeps one district bright
-    const op = (a, dim) => (!lit ? a : ['case', ['==', ['get', 'g'], lit], a, dim]);
+    // District areas stay hidden on the overview; a filter draws just that one district
+    const op = (a) => (focusGroup === 'all' ? 0 : ['case', ['==', ['get', 'g'], focusGroup], a, 0]);
     lmap.getSource('sm-districts').setData(districtData());
     lmap.setFilter('sm-district-fill', filter);
     lmap.setFilter('sm-district-line', filter);
-    lmap.setPaintProperty('sm-district-fill', 'fill-opacity', op(isDark() ? 0.16 : 0.11, 0.04));
-    lmap.setPaintProperty('sm-district-line', 'line-opacity', op(0.75, 0.25));
+    lmap.setPaintProperty('sm-district-fill', 'fill-opacity', op(isDark() ? 0.16 : 0.11));
+    lmap.setPaintProperty('sm-district-line', 'line-opacity', op(0.75));
   };
   const addOverlays = () => {
     const style = lmap.getStyle();
@@ -175,8 +255,8 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     }
     const beforeId = style.layers.find((l) => l.type === 'symbol')?.id;
     lmap.addSource('sm-districts', { type: 'geojson', data: districtData() });
-    lmap.addLayer({ id: 'sm-district-fill', type: 'fill', source: 'sm-districts', paint: { 'fill-color': ['get', 'color'], 'fill-opacity': 0.11, 'fill-opacity-transition': { duration: 400 } } }, beforeId);
-    lmap.addLayer({ id: 'sm-district-line', type: 'line', source: 'sm-districts', layout: { 'line-join': 'round' }, paint: { 'line-color': ['get', 'color'], 'line-width': ['interpolate', ['linear'], ['zoom'], 13, 1, 17, 2.5], 'line-opacity': 0.75 } }, beforeId);
+    lmap.addLayer({ id: 'sm-district-fill', type: 'fill', source: 'sm-districts', paint: { 'fill-color': ['get', 'color'], 'fill-opacity': 0, 'fill-opacity-transition': { duration: 400 } } }, beforeId);
+    lmap.addLayer({ id: 'sm-district-line', type: 'line', source: 'sm-districts', layout: { 'line-join': 'round' }, paint: { 'line-color': ['get', 'color'], 'line-width': ['interpolate', ['linear'], ['zoom'], 13, 1, 17, 2.5], 'line-opacity': 0, 'line-opacity-transition': { duration: 400 } } }, beforeId);
     lmap.addSource('sm-route', { type: 'geojson', data: lineData(routeLine) });
     lmap.addLayer({ id: 'sm-route-halo', type: 'line', source: 'sm-route', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': css('--card') || '#fff', 'line-width': 9, 'line-opacity': 0.85 } });
     lmap.addLayer({ id: 'sm-route', type: 'line', source: 'sm-route', layout: { 'line-cap': 'round', 'line-join': 'round' }, paint: { 'line-color': routeColor, 'line-width': 5 } });
@@ -281,22 +361,10 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   const clearRoute = () => { cancelAnimationFrame(routeAnim); routeLine = []; const s = lmap.getSource('sm-route'); if (s) s.setData(lineData([])); };
 
   // ---------- Detail side panel (left on wide screens, bottom sheet on phones) ----------
-  let selected = null, routeToken = null, routeLen = 0;
+  let selected = null, routeToken = null;
   const ROUTE_WAIT = 900;
   const $ = (q) => card.querySelector(q);
   const wide = () => vp.clientWidth >= 720;
-  const panelPad = () => (wide() ? { left: card.offsetWidth + 40, right: 80, top: 140, bottom: 50 } : { top: 130, bottom: card.offsetHeight + 30, left: 30, right: 30 });
-  const fmtLL = (ll) => `${Math.abs(ll[1]).toFixed(5)}° ${ll[1] >= 0 ? 'N' : 'S'}, ${Math.abs(ll[0]).toFixed(5)}° ${ll[0] >= 0 ? 'E' : 'W'}`;
-  const pathLen = (pts) => pts.slice(1).reduce((m, p, k) => m + metres(pts[k], p), 0);
-  const showDist = (m) => {
-    routeLen = m;
-    const mins = Math.max(1, Math.round(m / 80));
-    $('.sm-panel__dist').textContent = `${m < 1000 ? `${Math.round(m / 10) * 10} m` : `${(m / 1000).toFixed(1)} km`} · ${mins} min ${TX('walk')} ${TX('fromHere')}`;
-  };
-  const setTab = (t) => {
-    card.querySelectorAll('[data-tab]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === t)));
-    card.querySelectorAll('[data-pane]').forEach((p) => { p.hidden = p.dataset.pane !== t; });
-  };
   const relabel = () => card.querySelectorAll('[data-t]').forEach((n) => { n.textContent = TX(n.dataset.t); });
   const fill = (f) => {
     const d = SKILLS[f.name] || { level: 4, url: '', about: '', uses: [] };
@@ -308,19 +376,14 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     $('.sm-panel__stars').innerHTML = [1, 2, 3, 4, 5].map((k) => `<i class="${k <= full ? 'on' : ''}">★</i>`).join('');
     $('.sm-panel__since').textContent = `· ${TX('selfRated')}`;
     $('.sm-panel__cat').textContent = G(f.g, 'name');
-    $('.sm-panel__where').textContent = `${G(f.g, 'where')}, ${G(f.g, 'area')}, Phnom Penh`;
     $('.sm-panel__status').textContent = f.status === 'Daily' ? TX('daily') : TX('ready');
     $('.sm-panel__statusnote').textContent = f.status === 'Daily' ? TX('dailyNote') : TX('readyNote');
-    $('.sm-panel__ll').textContent = fmtLL(f.ll);
     const site = $('.sm-panel__site');
     site.textContent = d.url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
     site.href = d.url; site.parentElement.hidden = !d.url;
-    const docs = card.querySelector('[data-act="docs"]');
-    docs.href = d.url; docs.hidden = !d.url;
     $('.sm-panel__blurb').textContent = d.about;
     $('.sm-panel__tags').innerHTML = d.uses.map((u) => `<li>${u}</li>`).join('');
     relabel();
-    showDist(routeLen || metres(HOME, f.ll) * 1.3);
   };
   const route = (f) => {
     clearRoute();
@@ -329,24 +392,19 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     Promise.race([roadRoute(f), wait]).then((pts) => {
       if (selected !== f || routeToken !== token) return;
       const line = pts || curve(HOME, f.ll);
-      if (pts) showDist(pathLen(pts));
       drawRoute(line, css(GROUPS[f.g].c));
     });
   };
   const select = (f) => {
     feats.forEach((o) => o.pin.classList.toggle('is-on', o === f));
-    const was = selected;
     selected = f;
     map.classList.toggle('has-card', !!f);
     // Low-focus mode: everything but the chosen pin (and its district) fades back
     f?.wrap.parentElement?.append(f.wrap);   // draw the chosen pin above its neighbours
-    pickGroup = f ? f.g : null;
     Object.entries(layers).forEach(([g, l]) => l.label.getElement().classList.toggle('is-dim', !!f && g !== f.g));
     restyle();
     if (!f) { card.hidden = true; clearRoute(); return; }
-    routeLen = 0;
     fill(f);
-    if (!was) setTab('overview');
     card.hidden = false;
     card.querySelector('.sm-panel__scroll').scrollTop = 0;
     route(f);
@@ -361,22 +419,6 @@ export function initSkillMap({ root: map, reduce, isDark }) {
   lmap.on('click', () => select(null));
   $('.sm-panel__x').addEventListener('click', () => select(null));
   card.addEventListener('keydown', (e) => { if (e.key === 'Escape') select(null); });
-  card.querySelectorAll('[data-tab]').forEach((b) => b.addEventListener('click', () => setTab(b.dataset.tab)));
-  card.querySelector('[data-act="route"]').addEventListener('click', () => {
-    if (!selected) return;
-    route(selected);
-    const b = new ml.LngLatBounds(HOME, HOME).extend(selected.ll);
-    lmap.fitBounds(b, { padding: panelPad(), maxZoom: Z + 1.6, duration: reduce ? 0 : 900, essential: true });
-  });
-  card.querySelector('[data-act="share"]').addEventListener('click', async (e) => {
-    if (!selected) return;
-    const url = `${location.origin}${location.pathname}#skills`;
-    const text = `${selected.name} · ${G(selected.g, 'where')}`;
-    try {
-      if (navigator.share) await navigator.share({ title: text, url });
-      else { await navigator.clipboard.writeText(url); const s = e.currentTarget.querySelector('span'); s.textContent = TX('copied'); setTimeout(relabel, 1600); }
-    } catch { /* cancelled */ }
-  });
 
   // ---------- Camera ----------
   // Fit the district outlines (not just the pins), so no district is cut at the edge
@@ -430,7 +472,7 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     Object.keys(GROUPS).forEach((g) => { layers[g].label.getElement().innerHTML = `<span>${G(g, 'where')}<small>${G(g, 'area')}</small></span>`; });
     list.querySelectorAll('li').forEach((li) => { const g = li.dataset.layer; li.querySelector('.sm-fly span').textContent = g === 'all' ? TX('all') : G(g, 'name'); });
     homeEl.querySelector('b').textContent = TX('here');
-    if (selected) { const keep = routeLen; fill(selected); if (keep) showDist(keep); }
+    if (selected) fill(selected);
     relabel();
   });
   const chips = [...map.querySelectorAll('[data-fly]')];
@@ -446,7 +488,6 @@ export function initSkillMap({ root: map, reduce, isDark }) {
     fly(layers[g].bounds);
   };
   chips.forEach((chip) => chip.addEventListener('click', () => focus(chip.dataset.fly)));
-  card.querySelector('[data-act="nearby"]').addEventListener('click', () => { if (selected) focus(selected.g); });
 
   // Zoom buttons
   map.querySelectorAll('[data-zoom]').forEach((b) => b.addEventListener('click', () => {
