@@ -8,18 +8,16 @@ A one-page personal portfolio built with plain HTML, CSS and JavaScript. It has 
 | --- | --- |
 | `index.html` | All the content (English). Look for `TODO` comments. |
 | `styles.css` | Design tokens (colors, fonts) at the top, then the styles for each section. |
-| `main.js` | Theme toggle and scroll reveal animations. Loads the skill map when it comes near the screen and the wolf after the page is ready. |
-| `assets/wolf3d.js` | The 3D pet wolf: low-poly model, trot/gallop/idle/sleep/howl animation, curved roaming in page space, time-of-day greeting. It walks on the page as if it were water: each paw leaves a ripple where it touches down, and a faint reflection follows under it. It rests only on empty space and fades gradually the more text it passes over. Visitors can hide it from the footer. |
+| `main.js` | Theme toggle and scroll reveal animations. Loads the skill map when it comes near the screen. |
 | `assets/skillmap.js` | The skill map. Loaded only when the Skills section gets close to the screen. |
 | `assets/vendor/maplibre/` | [MapLibre GL JS](https://maplibre.org) 6.11.2 (BSD-3-Clause, see `LICENSE.txt`), bundled locally. Draws the skill map as vector tiles from [OpenFreeMap](https://openfreemap.org) (the same "liberty" style as JIS; "dark" in dark mode). No API key needed. |
-| `assets/vendor/three.module.min.js` | [Three.js](https://threejs.org) r160 (MIT, see `three.LICENSE`), bundled locally. |
 | `.nojekyll` | Tells GitHub Pages to serve the files without running Jekyll. |
 
 To change the colors, edit `--orange`, `--blue`, `--green` and `--violet` (the metro line colors) at the top of `styles.css`. There is one set of values for light mode and one for dark mode.
 
 ## Khmer version
 
-The **ខ្មែរ / EN** button in the top bar switches the whole page between English and Khmer, and remembers the choice. English text is the HTML itself; each element with a `data-i18n="key"` attribute gets its Khmer text from the `KM` table near the top of `main.js` (map labels are in `KM_GROUPS` / `KM_TEXT` in `assets/skillmap.js`, the wolf's lines in `LINES` in `assets/wolf3d.js`). To change a Khmer sentence, edit its entry in that table. Khmer uses the Suwannaphum font from Google Fonts.
+The **ខ្មែរ / EN** button in the top bar switches the whole page between English and Khmer, and remembers the choice. English text is the HTML itself; each element with a `data-i18n="key"` attribute gets its Khmer text from the `KM` table near the top of `main.js` (map labels are in `KM_GROUPS` / `KM_TEXT` in `assets/skillmap.js`). To change a Khmer sentence, edit its entry in that table. Khmer uses the Suwannaphum font from Google Fonts.
 
 ## Skill map
 
@@ -27,7 +25,7 @@ The skills section is a real street map. Plain scrolling over it scrolls the pag
 
 ## Run locally
 
-Start a local server (the 3D wolf is an ES module, so it won't load from a plain `file://` path):
+Start a local server (the skill map is an ES module, so it won't load from a plain `file://` path):
 
 ```bash
 python3 -m http.server 8000

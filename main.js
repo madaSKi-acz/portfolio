@@ -116,7 +116,7 @@
   // What the crest lights up as it passes: text glows, objects (cards, pins, buttons, map panels) get a halo.
   // The objects should read more than the wave itself.
   const LIT_TEXT = 'h1, h2, h3, .statement, .label, .tag, .metro__key span, .route__when, .contact__mail, .sm-district span, .footer__inner';
-  const LIT_BOX = '.about__photo img, .route__logo, .school, .route__links a, .btn, .nav__cta, .theme-btn, .stn i, .stn b, .project, .route li, .socials a, .sm-data, .sm-panel, .sm-zoom button, .pin__head, .pin__label, .sm-home span';
+  const LIT_BOX = '.about__photo img, .route__logo, .school, .route__links a, .btn, .nav__cta, .theme-btn, .stn i, .stn b, .project, .route > li, .socials a, .sm-data, .sm-panel, .sm-zoom button, .pin__head, .pin__label, .sm-home span';
   const LIT_TEXT_LITE = 'h1, h2, .label, .contact__mail';
   const LIT_BOX_LITE = '.btn, .pin__head, .school, .route__logo, .about__photo img';
   const lightText = (G, startAt, lite) => {
@@ -174,29 +174,29 @@
   const KM = {
     skip: 'រំលងទៅមាតិកា',
     name: 'ញ៉ុក សុខ',
-    navWork: 'ការងារ និងបទពិសោធន៍',
+    navResume: 'ប្រវត្តិរូបសង្ខេប',
     tag: '<span class="tag__dot"></span>អ្នកអភិវឌ្ឍន៍កម្មវិធី · ~4 ឆ្នាំ',
     h1: 'ខ្ញុំបំប្លែងដំណើរការដ៏ស្មុគស្មាញ ទៅជា<em>ប្រព័ន្ធដែលដំណើរការបានល្អ។</em>',
     viewWork: 'មើលស្នាដៃ',
     sayHello: 'ទាក់ទងមកខ្ញុំ',
-    stAbout: 'អំពីខ្ញុំ', stSkills: 'ជំនាញ', stExperience: 'បទពិសោធន៍', stProjects: 'គម្រោង', stContact: 'ទំនាក់ទំនង',
+    stAbout: 'អំពីខ្ញុំ', stSkills: 'ជំនាញ', stExperience: 'បទពិសោធន៍', stEducation: 'ការសិក្សា', stContact: 'ទំនាក់ទំនង',
     keyFront: '<i class="k-orange"></i>ផ្នែកខាងមុខ (Front end)',
     keyBack: '<i class="k-blue"></i>ផ្នែកខាងក្រោយ (Back end)',
     keyData: '<i class="k-green"></i>ទិន្នន័យ និងផែនទី',
     l1: '01 / អំពីខ្ញុំ',
-    statement: 'ផ្ដោតលើ Front end ហើយធ្វើ Full stack ជាទម្លាប់។ បើកិច្ចការណាត្រូវធ្វើម្ដងហើយម្ដងទៀត ខ្ញុំ<span class="hl">ធ្វើវាឱ្យស្វ័យប្រវត្តិ</span>។ ខ្ញុំរៀនឧបករណ៍ថ្មីៗបានលឿន ហើយប្រើ <span class="hl hl--blue">ឧបករណ៍ AI</span> ដោយប្រុងប្រយ័ត្ន៖ ពិនិត្យ សាកល្បង និងមិនទុកចិត្តដោយងងឹតងងុល។',
+    statement: 'ផ្ដោតលើ Front end ហើយធ្វើ Full stack ជាទម្លាប់។ បើកិច្ចការណាត្រូវធ្វើម្ដងហើយម្ដងទៀត ខ្ញុំ<span class="hl">ធ្វើវាឱ្យស្វ័យប្រវត្តិ</span>។ ខ្ញុំរៀន<span class="hl hl--blue">ឧបករណ៍ថ្មីៗ</span>បានលឿន។',
     photoAlt: 'រូបថតរបស់ ញ៉ុក សុខ',
     place: '<i aria-hidden="true"></i>ភ្នំពេញ · កម្ពុជា',
-    l2: '05 / ជំនាញ', skillCity: 'ទីក្រុងជំនាញ',
+    l2: '04 / ជំនាញ', skillCity: 'ទីក្រុងជំនាញ',
     mapHint: 'អូសដើម្បីរុករក · ctrl + រំកិល ដើម្បីពង្រីក',
-    l3: '02 / បទពិសោធន៍', routeTitle: 'ផ្លូវដែលខ្ញុំបានដើរកន្លងមក',
+    l3: '02 / បទពិសោធន៍ និងស្នាដៃ', routeTitle: 'ផ្លូវដែលខ្ញុំបានដើរកន្លងមក',
     dgcWhen: '2023 — បច្ចុប្បន្ន', dgcTitle: 'អ្នកអភិវឌ្ឍន៍គេហទំព័រ', dgcOrg: 'គណៈកម្មាធិការរដ្ឋាភិបាលឌីជីថល (DGC)',
     z1Title: 'អ្នកអភិវឌ្ឍន៍គេហទំព័រ ផ្នែក Back end', z1Org: 'Z1 Flexible Solution · កម្មសិក្សា 3 ខែ បន្ទាប់មកជាបុគ្គលិក 7 ខែ',
-    l4: '04 / ការសិក្សា', eduTitle: 'កន្លែងដែលខ្ញុំបានសិក្សា',
-    aeuTitle: 'បរិញ្ញាបត្រ', aeuOrg: 'សាកលវិទ្យាល័យ អាស៊ី អឺរ៉ុប · គម្រោងបញ្ចប់ការសិក្សាលើការរចនាមូលដ្ឋានទិន្នន័យ',
-    pnTitle: 'កម្មវិធីបណ្ដុះបណ្ដាលព័ត៌មានវិទ្យា', pnOrg: 'Passerelles Numériques Cambodia · និស្សិតដែលត្រូវបានលើកឡើង',
+    l4: '03 / ការសិក្សា', eduTitle: 'ការសិក្សា',
+    aeuTitle: 'បរិញ្ញាបត្រវិទ្យាសាស្ត្រកុំព្យូទ័រ', aeuOrg: 'សាកលវិទ្យាល័យ អាស៊ី អឺរ៉ុប',
+    pnTitle: 'ការអភិវឌ្ឍគេហទំព័រ', pnOrg: 'Passerelles Numériques Cambodia',
     story: 'រឿងរ៉ាវរបស់ខ្ញុំ ↗',
-    l5: '03 / គម្រោង', projTitle: 'ស្នាដៃជ្រើសរើស និងព័ត៌មានលម្អិត',
+    freeTitle: 'គម្រោងឯករាជ្យ និងគម្រោងផ្ទាល់ខ្លួន',
     p1: 'ផែនទីគុណភាពខ្យល់នៅកម្ពុជា',
     p1d: 'ផែនទី Google Maps បង្ហាញគុណភាពខ្យល់។ ព័ត៌មានរបស់សញ្ញាសម្គាល់នីមួយៗអាចចែករំលែកទៅ Facebook និង Telegram ជាតំណដែលមានរូបភាពមើលជាមុន។',
     p2: 'ផែនទីបរិស្ថាន',
@@ -213,9 +213,14 @@
     role_front: 'ផ្នែកខាងមុខ',
     role_full: 'Full stack',
     p7: 'វេទិកាសង្គម CEYFA',
-    p7d: 'វេទិកាសង្គមសម្រាប់សហព័ន្ធសមាគមយុវជនសេដ្ឋកិច្ចកម្ពុជា។ ខ្ញុំបង្កើតផ្នែកខាងមុខភាគច្រើនសម្រាប់គេហទំព័រ និង API ផ្នែកខាងក្រោយមួយចំនួន។ ដោយសារពេលវេលាខ្លី និងកូដផ្លាស់ប្ដូរលឿន កូដប្រហែល 80% ត្រូវបានសរសេរដោយមានជំនួយពី AI agent (Claude) ដើម្បីប្រគល់ការងារឲ្យទាន់ពេល។ ប៉ុន្តែខ្ញុំនៅតែពិនិត្យការងារទាំងអស់នោះដោយខ្លួនឯង។',
+    p7d: 'វេទិកាសង្គមសម្រាប់សហព័ន្ធសមាគមយុវជនសេដ្ឋកិច្ចកម្ពុជា។ ខ្ញុំបង្កើតផ្នែកខាងមុខភាគច្រើនសម្រាប់គេហទំព័រ និង API ផ្នែកខាងក្រោយមួយចំនួន ក្នុងរយៈពេលកំណត់ដ៏ខ្លី ដោយប្រើលំហូរការងារដែលមានជំនួយពី AI។ ខ្ញុំជាអ្នកទទួលខុសត្រូវលើស្ថាបត្យកម្ម ការពិនិត្យកូដ និងការសាកល្បង។',
+    preview: 'មើលរូបថត៖', close: 'បិទ', prevShot: 'រូបមុន', nextShot: 'រូបបន្ទាប់',
+    p8: 'ឧបករណ៍កែទិន្នន័យសម្រាប់ក្រុមគាំទ្រ',
+    p8d: 'ឧបករណ៍ប្រើក្នុងក្រុមហ៊ុន ឲ្យបុគ្គលិកគាំទ្រមួយចំនួនដែលមានសិទ្ធិ កែទិន្នន័យខុសបានលឿន ពេលមានករណីបន្ទាន់។ ប្រព័ន្ធធំមិនអាចធ្វើបែបនេះបានទេ។ ខ្ញុំបង្កើតវាដោយ Laravel Backpack ហើយផ្ដោតលើសិទ្ធិប្រើប្រាស់ និងសុវត្ថិភាព។',
+    p9d: 'ខ្ញុំបន្ថែមមុខងារមួយចំនួនឲ្យ Indication Plus ដែលជាប្រព័ន្ធធំបង្កើតដោយ Laravel Backpack។ វាជាគម្រោងធំដំបូងរបស់ខ្ញុំ ដែលមានរចនាសម្ព័ន្ធរឹងមាំ និងធ្វើការជាក្រុម Scrum។',
+    role_contrib: 'អ្នករួមចំណែក',
     role_frontapi: 'ផ្នែកខាងមុខ · API',
-    l6: '06 / ទំនាក់ទំនង', credit: 'រចនា និងដឹកនាំដោយ ញ៉ុក សុខ · បង្កើតជាមួយ <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a> ដោយរាល់ការកែប្រែត្រូវបានពិនិត្យ និងសាកល្បងដោយផ្ទាល់',
+    l6: '05 / ទំនាក់ទំនង',
   };
   const TITLE = { en: 'Nhok Sok — Software Developer', km: 'ញ៉ុក សុខ — អ្នកអភិវឌ្ឍន៍កម្មវិធី' };
   const i18nEls = [...document.querySelectorAll('[data-i18n]')];
@@ -242,7 +247,7 @@
 
   // Khmer mode shows every number on the page in Khmer digits (០១២…). Text nodes are
   // converted in place and remembered so English can put the originals back; content
-  // added later (map panels, wolf bubbles) is converted as it appears.
+  // added later (map panels) is converted as it appears.
   const KH_DIGITS = '០១២៣៤៥៦៧៨៩';
   const toKh = (s) => s.replace(/[0-9]/g, (d) => KH_DIGITS[d]);
   const NO_KH = 'script, style, textarea, input, code, pre, .maplibregl-ctrl-attrib, a[href^="mailto:"], a[href^="tel:"]';
@@ -320,7 +325,7 @@
   addEventListener('scroll', onScroll, { passive: true });
 
   // In-page links: our own smooth scroll. The native CSS one gets cut short on the
-  // first click (the map and wolf load mid-scroll and shift the layout), so this
+  // first click (the map loads mid-scroll and shift the layout), so this
   // re-measures the target every frame and always lands on it.
   const motionOff = matchMedia('(prefers-reduced-motion: reduce)');
   let scrollAnim = 0;
@@ -377,6 +382,113 @@
     reveals.forEach((el) => io.observe(el));
   }
 
+  // ---------- Project thumbnails + inline preview ----------
+  // A screenshot that fails to load is swapped for a placeholder in the row's line color.
+  const markMissing = (img) => img.closest('.project__thumb').classList.add('is-missing');
+  document.querySelectorAll('.project__thumb img').forEach((img) => {
+    if (img.complete && !img.naturalWidth) markMissing(img);
+    else img.addEventListener('error', () => markMissing(img), { once: true });
+  });
+  // Clicking a row (or its thumbnail button) expands a screenshot panel right under it, in the
+  // page flow like an expanded LinkedIn post; clicking again, the close button or Esc folds it.
+  const pv = document.getElementById('preview');
+  const route = document.querySelector('.route');
+  if (pv && route) {
+    const q = (s) => pv.querySelector(s);
+    const media = q('.pv__media'), strip = q('.pv__shots'), cap = q('.pv__cap');
+    const prev = q('.pv__nav--prev'), next = q('.pv__nav--next');
+    let row = null, shots = [], at = 0;
+    const shotsOf = (r) => {
+      const tpl = r.querySelector('template.project__gallery');
+      if (tpl) return [...tpl.content.querySelectorAll('img')].map((i) => ({
+        src: i.getAttribute('src'), w: i.getAttribute('width'), h: i.getAttribute('height'),
+        alt: lang() === 'km' && i.dataset.altKm ? i.dataset.altKm : i.alt,
+      }));
+      const thumb = r.querySelector('.project__thumb');
+      if (thumb.classList.contains('is-missing')) return [];
+      const img = thumb.querySelector('img');
+      return [{ src: img.currentSrc || img.src, alt: (lang() === 'km' ? 'រូបថតអេក្រង់៖ ' : 'Screenshot: ') + r.querySelector('h3').textContent.replace('↗', '').trim() }];
+    };
+    // Rows with nothing to show don't expand
+    const sync = () => route.querySelectorAll('.project').forEach((r) => r.classList.toggle('is-static', !shotsOf(r).length));
+    sync();
+    route.querySelectorAll('.project__thumb img').forEach((img) => img.addEventListener('error', sync, { once: true }));
+    const show = (k) => {
+      at = (k + shots.length) % shots.length;
+      const s = shots[at], big = new Image();
+      big.src = s.src; big.alt = s.alt;
+      if (s.w) { big.width = s.w; big.height = s.h; }
+      media.replaceChildren(big);
+      cap.textContent = shots.length > 1 ? `${at + 1} / ${shots.length} · ${s.alt}` : s.alt;
+      strip.querySelectorAll('button').forEach((b, i) => b.setAttribute('aria-current', i === at ? 'true' : 'false'));
+    };
+    const close = (focusBack = true) => {
+      if (!row) return;
+      const was = row;
+      was.classList.remove('is-open');
+      was.querySelector('.project__thumb').setAttribute('aria-expanded', 'false');
+      row = null;
+      pv.classList.remove('is-open');
+      const done = () => { if (!row) pv.hidden = true; };
+      if (reduce) done(); else setTimeout(done, 350);
+      if (focusBack) was.querySelector('.project__thumb').focus({ preventScroll: true });
+    };
+    const open = (r) => {
+      if (row === r) { close(); return; }
+      if (row) close(false);
+      shots = shotsOf(r);
+      if (!shots.length) return;
+      row = r;
+      r.after(pv);                                   // the panel lives right under its row
+      pv.style.setProperty('--c', r.style.getPropertyValue('--c') || 'var(--ink)');
+      pv.setAttribute('aria-labelledby', r.querySelector('h3').id);
+      r.classList.add('is-open');
+      r.querySelector('.project__thumb').setAttribute('aria-expanded', 'true');
+      strip.replaceChildren();
+      strip.hidden = prev.hidden = next.hidden = shots.length < 2;
+      shots.forEach((s, k) => {
+        const li = document.createElement('li'), b = document.createElement('button'), im = new Image();
+        b.type = 'button';
+        b.setAttribute('aria-label', s.alt);
+        im.src = s.src; im.alt = ''; im.loading = 'lazy';
+        b.append(im);
+        b.addEventListener('click', () => show(k));
+        li.append(b);
+        strip.append(li);
+      });
+      show(0);
+      pv.hidden = false;
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        pv.classList.add('is-open');
+        setTimeout(() => {
+          const box = pv.getBoundingClientRect();
+          if (box.bottom > innerHeight || box.top < 64) pv.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+        }, reduce ? 0 : 360);
+      }));
+    };
+    route.querySelectorAll('.project__thumb').forEach((b) => { b.setAttribute('aria-expanded', 'false'); b.setAttribute('aria-controls', 'preview'); });
+    route.addEventListener('click', (e) => {
+      if (pv.contains(e.target)) return;
+      const r = e.target.closest('.project');
+      // links and tech chips keep their own behaviour; don't hijack a text selection
+      if (!r || r.classList.contains('is-static') || e.target.closest('a, .project__tech li') || String(getSelection()).trim()) return;
+      open(r);
+    });
+    q('.pv__x').addEventListener('click', () => close());
+    prev.addEventListener('click', () => show(at - 1));
+    next.addEventListener('click', () => show(at + 1));
+    pv.addEventListener('keydown', (e) => {
+      if (shots.length < 2) return;
+      if (e.key === 'ArrowLeft') { e.preventDefault(); show(at - 1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); show(at + 1); }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && row && (pv.contains(document.activeElement) || row.contains(document.activeElement))) close();
+    });
+    // captions follow the language switch
+    document.addEventListener('lang:change', () => { sync(); if (row) { const k = at; shots = shotsOf(row); show(k); } });
+  }
+
   // ---------- Skill city map (MapLibre, loaded when the section gets close) ----------
   const map = document.getElementById('skillmap');
   if (map) {
@@ -406,32 +518,4 @@
     } else live();
   }
 
-  // ---------- 3D pet wolf (loaded after the page is ready) ----------
-  const toggle = document.getElementById('wolfToggle');
-  let wolfOff = false;
-  try { wolfOff = localStorage.getItem('wolf-off') === '1'; } catch (e) {}
-  let pet = null, loading = false;
-  const loadWolf = () => {
-    if (pet || loading) { if (pet) pet.el.hidden = false; return; }
-    loading = true;
-    import(`./assets/wolf3d.js?v=${V}`)
-      .then((m) => { pet = m.startWolf({ reduceMotion: reduce }); })
-      .catch(() => {})
-      .finally(() => { loading = false; });
-  };
-  const syncToggle = () => {
-    const km = root.lang === 'km';
-    toggle.textContent = wolfOff ? (km ? '🐺 បង្ហាញចចក' : '🐺 Show wolf') : (km ? '🐺 លាក់ចចក' : '🐺 Hide wolf');
-  };
-  document.addEventListener('lang:change', () => syncToggle());
-  syncToggle();
-  toggle.addEventListener('click', () => {
-    wolfOff = !wolfOff;
-    try { localStorage.setItem('wolf-off', wolfOff ? '1' : '0'); } catch (e) {}
-    syncToggle();
-    if (wolfOff) { if (pet) pet.el.hidden = true; } else loadWolf();
-  });
-  const whenIdle = window.requestIdleCallback || ((fn) => setTimeout(fn, 600));
-  const afterLoad = (fn) => { if (document.readyState === 'complete') whenIdle(fn); else addEventListener('load', () => whenIdle(fn)); };
-  if (!wolfOff) afterLoad(loadWolf);
 })();
